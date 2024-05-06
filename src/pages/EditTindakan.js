@@ -13,29 +13,63 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   updateDoc,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-class InputTindakan extends React.Component {
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
+import withRouter from "../withRouter";
+class EditTindakan extends React.Component {
   constructor(props) {
     super(props);
     console.log(props);
+    const idTindakan = this.props.params.id;
     this.state = {
+      idTindakan: idTindakan,
       value: "hadir",
       tanggal: dayjs().locale("id"),
-      tindakans: [],
+      tindakan: {},
       id: null,
       nama: "",
       deskripsi: "",
       gambar: null,
       isProses: false,
       isEdit: false,
+      foto: null,
     };
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.getNamaTindakan();
+  }
+
+  getNamaTindakan = async () => {
+    try {
+      const tindakanDoc = await getDoc(
+        doc(db, "tindakans", this.state.idTindakan)
+      );
+      const tindakanData = tindakanDoc.data();
+      console.log("tidanakan", tindakanData);
+      if (tindakanData) {
+        this.setState({
+          nama: tindakanData.nama_tindakan,
+          deskripsi: tindakanData.deskripsi_tindakan,
+          foto: tindakanData.foto_tindakan,
+          tindakan: tindakanData,
+        });
+      } else {
+        console.error("Tindakan not found");
+      }
+    } catch (error) {
+      console.error("Error fetching nama tindakan:", error);
+    }
+  };
   formatTanggal = () => {
     const today = dayjs().locale("id"); // Gunakan dayjs() tanpa argumen untuk mendapatkan tanggal hari ini
     const formattedDate = today.format("YYYY-MM-DD");
@@ -53,8 +87,34 @@ class InputTindakan extends React.Component {
   handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Update the state with the new value
     this.setState({ [name]: value });
+    console.log(value);
+  };
+  handleImageChange = (e) => {
+    const file = e.target.files[0]; // Ambil file pertama dari daftar files
+    const filename = file.name; // Ambil nama file
+
+    // Update state dengan nama file dan file itu sendiri
+    this.setState({ gambar: file });
+
+    // Pastikan bahwa file adalah Blob sebelum membacanya
+    if (file instanceof Blob) {
+      // Buat objek FileReader
+      const reader = new FileReader();
+
+      // Setelah FileReader selesai membaca file, atur sumber gambar
+      reader.onload = (e) => {
+        // e.target.result adalah data URL dari gambar yang dibaca
+        this.setState({ foto: e.target.result });
+        console.log(e.target.result, "Hasil");
+      };
+
+      // Membaca file sebagai URL data
+      reader.readAsDataURL(file);
+      console.log(file, "Awal");
+    } else {
+      console.error("File yang dipilih tidak didukung.");
+    }
   };
 
   handleDateChange = (name, selectedDate) => {
@@ -109,69 +169,54 @@ class InputTindakan extends React.Component {
     this.setState({ value: newValue });
   };
 
-  handleSubmit = async (e) => {
+  handleUpdate = async (e) => {
     e.preventDefault();
     this.setState({ isProses: true });
-    console.log(this.state.gambar, "ini foto mentah");
 
-    const nama = this.state.nama;
-    const imageUrl = nama.toLowerCase().replace(/\s+/g, "-");
+    const { idTindakan, nama, deskripsi, gambar } = this.state;
+    console.log("sebelum", gambar);
     try {
-      const imgRef = ref(dbImage, `tindakans/${imageUrl}`);
-      await uploadBytes(imgRef, this.state.gambar);
-      console.log("proses sebelum upload", imgRef);
-      const urlFoto = await getDownloadURL(imgRef);
-      console.log("ini foto jadi", urlFoto);
-      const newTindakan = {
-        nama_tindakan: this.state.nama,
-        deskripsi_tindakan: this.state.deskripsi,
-        foto_tindakan: urlFoto,
-      };
-      await addDoc(collection(db, "tindakans"), newTindakan);
+      // Upload gambar baru (jika ada)
+      if (gambar) {
+        const imageUrl = nama.toLowerCase().replace(/\s+/g, "-");
+        const imgRef = ref(dbImage, `tindakans/${imageUrl}`);
+        console.log("proses sebelum upload", imgRef);
+
+        await uploadBytes(imgRef, gambar);
+        const foto_tindakan = await getDownloadURL(imgRef);
+        console.log("proses sesudah upload", foto_tindakan);
+
+        // Update properti foto_tindakan pada dokumen tindakan yang sesuai
+        await updateDoc(doc(db, "tindakans", idTindakan), {
+          nama_tindakan: nama,
+          deskripsi_tindakan: deskripsi,
+          foto_tindakan: foto_tindakan,
+        });
+      } else {
+        // Jika tidak ada gambar baru, hanya perbarui properti nama_tindakan dan deskripsi_tindakan
+        await updateDoc(doc(db, "tindakans", idTindakan), {
+          nama_tindakan: nama,
+          deskripsi_tindakan: deskripsi,
+        });
+      }
+
+      Swal.fire("Berhasil", "Data Tindakan Berhasil Diperbarui", "success");
       this.setState({
         nama: "",
         deskripsi: "",
-        gambar: "",
+        isEdit: !this.state.isEdit,
         isProses: false,
       });
-      Swal.fire(
-        "Berhasil",
-        "Data Tindakan berhasil ditambah",
-        "success",
-        () => {
-          window.location.href = "/tindakan/";
-        }
-      );
+
+      this.getNamaTindakan();
+      window.location.href = `/tindakan/detail-tindakan/${idTindakan}`;
     } catch (error) {
-      Swal.fire("Gagal", "Gagal menyimpan", "error");
-      console.error("Error menambahkan data:", error);
+      console.error("Error updating data:", error);
+      Swal.fire("Error", "Gagal Memperbarui Data Tindakan", "error");
+      this.setState({ isProses: false });
     }
   };
-  handleEdit = (dokter) => {
-    const { id, nama_tindakan, deskripsi_tindakan, foto_tindakan } = dokter;
 
-    this.setState({
-      id: id,
-      nama: nama_tindakan,
-      deskripsi: deskripsi_tindakan,
-      gambar: foto_tindakan,
-      isEdit: !this.state.isEdit,
-    });
-  };
-
-  handleDelete = async (id) => {
-    try {
-      const result = window.confirm("Apakah Anda yakin ingin menghapus?");
-      if (result === true) {
-        await deleteDoc(doc(db, "tindakans", id));
-        alert("Data berhasil dihapus.");
-        this.getAllTindakan();
-      }
-    } catch (error) {
-      console.error("Error menghapus data:", error);
-      alert("Gagal menghapus data.");
-    }
-  };
   render() {
     return (
       <div
@@ -188,7 +233,7 @@ class InputTindakan extends React.Component {
           <div className="flex gap-5 self-stretch p-4 w-full  text-center text-stone-900">
             <button
               onClick={() => {
-                window.location.href = "/tindakan/";
+                window.location.href = `/tindakan/detail-tindakan/${this.state.idTindakan}`;
               }}
               className="w-11 h-auto "
             >
@@ -211,7 +256,7 @@ class InputTindakan extends React.Component {
               <input
                 type="text"
                 placeholder="Nama Tindakan"
-                required
+                value={this.state.nama}
                 onChange={this.handleInputChange}
                 name="nama"
                 className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
@@ -222,23 +267,30 @@ class InputTindakan extends React.Component {
               <input
                 type="text"
                 placeholder="Deskripsi"
-                required
+                value={this.state.deskripsi}
                 name="deskripsi"
                 onChange={this.handleInputChange}
                 className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
+              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
+                Foto Tindakan
+              </div>
               <div
                 id="fileUpload"
-                className="text-[14px] justify-center px-4 py-3 bg-white mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className="text-[12px] justify-center px-4 py-3 bg-white mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               >
-                <input
-                  type="file"
-                  onChange={(e) => this.setState({ gambar: e.target.files[0] })}
+                <input type="file" onChange={this.handleImageChange} />
+              </div>
+              <div className="w-[100%] h-[8.5rem] flex justify-center items-center px-10 py-4 bg-white border border-solid border-gray-500 rounded-md  mt-3">
+                <img
+                  loading="lazy"
+                  src={this.state.foto}
+                  className="shrink-0 gap-0 w-6 aspect-square w-[80%] h-[100%] rounded-md"
                 />
               </div>
             </div>
             <button
-              onClick={this.handleSubmit}
+              onClick={this.handleUpdate}
               className="justify-center p-2 w-full text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
             >
               Simpan
@@ -250,4 +302,4 @@ class InputTindakan extends React.Component {
   }
 }
 
-export default InputTindakan;
+export default withRouter(EditTindakan);

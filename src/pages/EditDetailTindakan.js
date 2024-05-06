@@ -17,13 +17,17 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import Swal from "sweetalert2";
-class InputDetailTindakan extends React.Component {
+class EditDetailTindakan extends React.Component {
   constructor(props) {
     super(props);
-    const idTindakan = this.props.params.id;
+    const idTindakan = this.props.params.idTindakan;
+    const id = this.props.params.id;
+    console.log(idTindakan);
+    console.log(id);
     console.log(props);
     this.state = {
       idTindakan: idTindakan,
+      idDetail: id,
       tanggal: dayjs().locale("id"),
       tindakan: {},
       namaTindakan: "",
@@ -33,34 +37,29 @@ class InputDetailTindakan extends React.Component {
     };
   }
   componentDidMount() {
-    this.getAllWaktuTindakan();
+    this.getDetailTindakan();
   }
 
-  getAllWaktuTindakan = async () => {
+  getDetailTindakan = async () => {
+    const { idTindakan, idDetail } = this.state;
+    const id = idDetail;
+    console.log(id);
     try {
-      const { idTindakan } = this.state;
-
-      const waktuTindakanCollection = collection(
-        db,
-        `tindakans/${idTindakan}/waktu_tindakan`
+      const tindakanDoc = await getDoc(
+        doc(db, `tindakans/${idTindakan}/waktu_tindakan`, id)
       );
-
-      const querySnapshot = await getDocs(waktuTindakanCollection);
-
-      const waktuTindakanList = [];
-
-      querySnapshot.forEach((doc) => {
-        waktuTindakanList.push({ id: doc.id, ...doc.data() });
-      });
-      if (waktuTindakanList.length) {
+      const tindakanData = tindakanDoc.data();
+      console.log("tidanakan", tindakanData);
+      if (tindakanData) {
         this.setState({
-          detailtindakan: waktuTindakanList,
-          isAda: true,
+          durasi: tindakanData.durasi,
+          biaya: tindakanData.biaya,
         });
+      } else {
+        console.error("Tindakan not found");
       }
     } catch (error) {
-      console.error("Error fetching waktu tindakan data:", error);
-      throw error;
+      console.error("Error fetching nama tindakan:", error);
     }
   };
   handleInputChange = (e) => {
@@ -72,35 +71,44 @@ class InputDetailTindakan extends React.Component {
     });
   };
 
-  handleSubmit = async (e) => {
+  handleUpdate = async (e) => {
     e.preventDefault();
-    this.setState({ isProses: false });
+    this.setState({ isProses: true });
+
     try {
-      const { durasi, biaya } = this.state;
-      const data = {
-        durasi: parseInt(durasi),
-        biaya: parseInt(biaya),
+      const { idTindakan, idDetail, durasi, biaya } = this.state;
+      const id = idDetail;
+
+      // Menyiapkan data yang akan diupdate
+      const dataToUpdate = {
+        durasi: parseInt(durasi), // Pastikan durasi berupa integer
+        biaya: parseInt(biaya), // Pastikan biaya berupa integer
       };
 
-      await addDoc(
-        collection(db, `tindakans/${this.state.idTindakan}/waktu_tindakan`),
-        data
+      // Mengupdate data di Firestore
+      await updateDoc(
+        doc(db, `tindakans/${idTindakan}/waktu_tindakan`, id),
+        dataToUpdate
       );
-      this.setState({ isProses: false, durasi: "", biaya: "" });
+      this.setState({ isProses: false, durasi: 0, biaya: 0 });
 
-      Swal.fire({
-        icon: "success",
-        text: "Data Detail Tindakan Berhasil ditambah",
-        confirmButtonColor: "#3B82F6",
-        confirmButtonText: "Ya",
-      }).then((result) => {
-        if (result.isConfirmed) {
+      Swal.fire(
+        "Berhasil",
+        "Data Detail Tindakan Berhasil Diubah",
+        "success",
+        () => {
           window.location.href = `/tindakan/detail-tindakan/${this.state.idTindakan}`;
         }
-      });
+      );
+      window.location.href = `/tindakan/detail-tindakan/${this.state.idTindakan}`;
+
+      // Mengatur state isEdit menjadi false dan isProses menjadi false
+      this.setState({ isEdit: false, isProses: false });
     } catch (error) {
-      console.error("Error menambah data:", error);
-      alert("Gagal menambah data.");
+      console.error("Error mengupdate data:", error);
+      Swal.fire("Error", "Gagal Memperbarui Data Detail Tindakan", "error");
+
+      this.setState({ isProses: false });
     }
   };
 
@@ -131,7 +139,7 @@ class InputDetailTindakan extends React.Component {
               />
             </button>
             <div className="flex-auto gap-0 text-xl font-medium">
-              Input Detail Tindakan
+              Edit Detail Tindakan
             </div>
           </div>
           <div className="flex flex-col gap-2.5 p-2 w-[100%] h-auto justify-center items-center">
@@ -142,6 +150,7 @@ class InputDetailTindakan extends React.Component {
               <input
                 type="text"
                 placeholder="Lama Waktu Tindakan"
+                value={this.state.durasi}
                 required
                 onChange={this.handleInputChange}
                 name="durasi"
@@ -154,13 +163,14 @@ class InputDetailTindakan extends React.Component {
                 type="text"
                 placeholder="Biaya Tindakan"
                 required
+                value={this.state.biaya}
                 name="biaya"
                 onChange={this.handleInputChange}
                 className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
             </div>
             <button
-              onClick={this.handleSubmit}
+              onClick={this.handleUpdate}
               className="justify-center p-2 w-full text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
             >
               Simpan
@@ -172,4 +182,4 @@ class InputDetailTindakan extends React.Component {
   }
 }
 
-export default withRouter(InputDetailTindakan);
+export default withRouter(EditDetailTindakan);

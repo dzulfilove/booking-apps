@@ -4,36 +4,83 @@ import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import withRouter from "../withRouter";
+
+import { db } from "../config/firebase";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
+import Swal from "sweetalert2";
 class ListDetailTindakan extends React.Component {
   constructor(props) {
     super(props);
+    const idTindakan = this.props.params;
+    console.log(this.props.params);
     console.log(props);
+    console.log("props", idTindakan);
     this.state = {
-      nama: "",
-      alamat: "",
-      tanggalLahir: "",
-      photo: null,
-      email: "",
-      no_hp: "",
-      value: "hadir",
+      idTindakan: idTindakan.id,
       tanggal: dayjs().locale("id"),
+      tindakan: {},
+      namaTindakan: "",
+      isAda: false,
+      detailtindakan: [],
     };
   }
-  componentDidMount() {}
-  formatTanggal = () => {
-    const today = dayjs().locale("id"); // Gunakan dayjs() tanpa argumen untuk mendapatkan tanggal hari ini
-    const formattedDate = today.format("YYYY-MM-DD");
-    const formattedDate2 = today.format("YYYY/MM/DD");
-    const jam = today.format("HH:mm");
-    const day = today.format("YYYY-MM-DDTHH:mm:ss");
-    this.setState({
-      tanggal: today,
-      tanggalFilter: formattedDate,
-      tanggalData: formattedDate2,
-      jam: jam,
-    });
-    console.log(today.format("YYYY-MM-DDTHH:mm"));
+  componentDidMount() {
+    this.getNamaTindakan();
+    this.getAllWaktuTindakan();
+  }
+
+  getNamaTindakan = async () => {
+    try {
+      const tindakanDoc = await getDoc(
+        doc(db, "tindakans", this.state.idTindakan)
+      );
+      const tindakanData = tindakanDoc.data();
+      console.log("tidanakan", tindakanData);
+      if (tindakanData) {
+        this.setState({
+          namaTindakan: tindakanData.nama_tindakan,
+          tindakan: tindakanData,
+        });
+      } else {
+        console.error("Tindakan not found");
+      }
+    } catch (error) {
+      console.error("Error fetching nama tindakan:", error);
+    }
   };
+  formatRupiah(biaya) {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(biaya);
+  }
+
+  // Fungsi untuk mengonversi durasi menjadi format jam atau menit
+  formatDurasi(durasi) {
+    if (durasi < 60) {
+      return durasi + " menit";
+    } else if (durasi === 60) {
+      return "1 jam";
+    } else {
+      const jam = Math.floor(durasi / 60);
+      const menit = durasi % 60;
+      if (menit === 0) {
+        return jam + " jam";
+      } else {
+        return jam + " jam " + menit + " menit";
+      }
+    }
+  }
+
   handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -43,6 +90,39 @@ class ListDetailTindakan extends React.Component {
     });
   };
 
+  getAllWaktuTindakan = async () => {
+    try {
+      const { idTindakan } = this.state;
+
+      const waktuTindakanCollection = collection(
+        db,
+        `tindakans/${idTindakan}/waktu_tindakan`
+      );
+
+      const querySnapshot = await getDocs(waktuTindakanCollection);
+
+      const waktuTindakanList = [];
+
+      querySnapshot.forEach((doc) => {
+        waktuTindakanList.push({ id: doc.id, ...doc.data() });
+      });
+      const hasilTransformasi = waktuTindakanList.map((objek) => ({
+        ...objek,
+        biaya: this.formatRupiah(objek.biaya),
+        lama: this.formatDurasi(objek.durasi),
+      }));
+      console.log(waktuTindakanList, "Detail");
+      if (waktuTindakanList.length > 0) {
+        this.setState({
+          detailtindakan: hasilTransformasi,
+          isAda: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching waktu tindakan data:", error);
+      throw error;
+    }
+  };
   handleDateChange = (name, selectedDate) => {
     // Convert selectedDate to Dayjs object if it's not already
     const dayjsDate = dayjs(selectedDate);
@@ -97,6 +177,37 @@ class ListDetailTindakan extends React.Component {
   handleTab = (newValue) => {
     this.setState({ value: newValue });
   };
+  handleDelete = async (id) => {
+    try {
+      const result = await Swal.fire({
+        icon: "info",
+        title: "Apakah Anda Yakin Untuk Menghapus ?",
+        showConfirmButton: true,
+        showDenyButton: true,
+        confirmButtonText: "Ya",
+        denyButtonText: "Tidak",
+        customClass: {
+          actions: "my-actions",
+          cancelButton: "order-1 right-gap",
+          confirmButton: "order-2",
+        },
+      });
+
+      if (result.isConfirmed) {
+        await deleteDoc(
+          doc(db, `tindakans/${this.state.idTindakan}/waktu_tindakan`, id)
+        );
+        this.getAllWaktuTindakan();
+        this.getNamaTindakan();
+      } else if (result.isDenied) {
+        // Tidak melakukan apa pun jika pengguna menolak
+      }
+    } catch (error) {
+      console.error("Error menghapus data:", error);
+      Swal.fire("Error", "Gagal Menghapus Data", "error");
+    }
+  };
+
   render() {
     return (
       <div
@@ -109,11 +220,11 @@ class ListDetailTindakan extends React.Component {
           overflowX: "hidden",
         }}
       >
-        <div className="flex flex-col mt-3 gap-0 h-[100%] items-center pb-4 font-medium bg-white w-[100%]">
-          <div className="flex gap-5 self-stretch p-4 w-full text-xl font-medium text-center bg-white text-stone-900">
+        <div className="flex flex-col mt-3 gap-0 h-[100%] items-center font-medium bg-white w-[100%]">
+          <div className="flex gap-5 self-stretch p-4 w-full text-xl font-medium text-center  text-stone-900">
             <button
               onClick={() => {
-                window.location.href = "/janji-temu/";
+                window.location.href = "/tindakan/";
               }}
               className="w-11 h-auto "
             >
@@ -132,72 +243,127 @@ class ListDetailTindakan extends React.Component {
               <div className="flex overflow-hidden relative flex-col pb-20 w-full aspect-[1.23]">
                 <img
                   loading="lazy"
-                  srcSet="https://asset.kompas.com/crops/V_-VW5U-BhXThXirUT1iCWPOS6c=/0x0:1000x667/1200x800/data/photo/2020/03/03/5e5e1dd32b931.jpg"
+                  srcSet={this.state.tindakan.foto_tindakan}
                   className="object-cover absolute inset-0 size-full"
                 />
               </div>
               <div className="absolute top-[50%] w-[100%] h-auto flex flex-col justify-start  items-center">
-                <div className="flex flex-col justify-center bg-white px-4 pt-2 mt-0 w-full rounded-2xl z-[9999] ">
+                <div className="flex flex-col justify-center bg-white px-4 pt-2 mt-0 w-full rounded-2xl z-[9] ">
                   <div className="flex gap-4 mt-4">
                     <div className="flex flex-col flex-1 justify-center">
                       <div className="text-xs text-zinc-400">
                         Layanan Tindakan
                       </div>
                       <div className="mt-2 text-sm font-semibold text-black">
-                        Terapi Ear Candle.
+                        {this.state.tindakan.nama_tindakan}
                       </div>
                     </div>
-                    <img
-                      loading="lazy"
-                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/a119df0c500a9dc38ac1a67312096aa5acb0863e7d5efd5f5e3944385c59fac7?"
-                      className="shrink-0 self-start w-6 aspect-square"
-                    />
+                    <button
+                      className="w-auto h-auto flex justify-center items-center  bg-green-100 rounded-md p-2"
+                      onClick={() => {
+                        window.location.href = `/tindakan/update/${this.state.idTindakan}`;
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fill="#44BED0"
+                          fill-rule="evenodd"
+                          d="M6.169 6.331a3 3 0 0 0-.833 1.6l-.338 1.912a1 1 0 0 0 1.159 1.159l1.912-.338a3 3 0 0 0 1.6-.833l3.07-3.07l2-2A.894.894 0 0 0 15 4.13A3.13 3.13 0 0 0 11.87 1a.894.894 0 0 0-.632.262l-2 2l-3.07 3.07Zm3.936-1.814L7.229 7.392a1.5 1.5 0 0 0-.416.8L6.6 9.4l1.208-.213l.057-.01a1.5 1.5 0 0 0 .743-.406l2.875-2.876a1.63 1.63 0 0 0-1.378-1.378m2.558.199a3.143 3.143 0 0 0-1.379-1.38l.82-.82a1.63 1.63 0 0 1 1.38 1.38l-.82.82ZM8 2.25a.75.75 0 0 0-.75-.75H4.5a3 3 0 0 0-3 3v7a3 3 0 0 0 3 3h7a3 3 0 0 0 3-3V8.75a.75.75 0 0 0-1.5 0v2.75a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 11.5v-7A1.5 1.5 0 0 1 4.5 3h2.75A.75.75 0 0 0 8 2.25"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </button>
                   </div>
-                </div>
-                <div className="flex flex-col px-4 mt-4 w-full text-xs text-justify text-black bg-white rounded-2xl">
-                  <div>
-                    Terapi ear candle diartikan sebagai tindakan yang
-                    menggunakan lilin berbentuk tabung yang sudah direndam di
-                    dalam paraffiffiffin, beeswax atau campuran keduanya. Lilin
-                    ini biasanya memiliki panjang sekitar 10 inch (± 25 cm),
-                    berbentuk hollow.
+                  <div className="flex flex-col mt-4 w-full text-xs text-justify text-black bg-white rounded-2xl">
+                    <div className="text-xs text-zinc-400 mb-2">
+                      Deskripsi Tindakan
+                    </div>
+                    <div className="text-[14px]">
+                      {this.state.tindakan.deskripsi_tindakan}
+                    </div>
                   </div>
-                  <div className="mt-4">
-                    Cara penggunaan ear candle, biasanya klien/pasien akan
-                    diminta untuk tidur menyamping. Kemudian lilin berbentuk
-                    tabung tersebut akan dimasukkan ke dalam liang telinga.
-                    Untuk menghindari adanya tetesan lilin ke rambut, wajah,
-                    leher, atau daun telinga, maka area sekitar telinga akan
-                    ditutup kertas, plastik atau foil berbentuk kotak atau
-                    bulat, yang area tengahnya sudah dilubangi untuk memasukkan
-                    lilin. Kemudian lilin tersebut akan dinyalakan selama
-                    sepuluh hingga dua puluh menit.
-                  </div>
-                </div>
-                <div className="flex flex-col px-4 mt-4 w-full text-xs text-justify text-black bg-white rounded-2xl">
-                  <div className="mt-2 text-sm font-semibold text-black">
-                    Lama dan Biaya
-                  </div>
-                  <div className="mt-4 flex flex-col justify-start gap-4">
-                    <p>1. Lama : 1 Jam, Biaya : Rp. 100.000,00</p>
-                    <p>2. Lama : 2 Jam, Biaya : Rp. 150.000,00</p>
+                  <div className="flex flex-col mt-4 w-full text-xs text-justify text-black bg-white rounded-2xl">
+                    <div className="text-xs text-zinc-400">Durasi Tindakan</div>
+                    <div className="mt-4 flex flex-col justify-start gap-4 text-[12px]">
+                      {this.state.detailtindakan.map((item, index) => (
+                        <div className="flex justify-between">
+                          <div className="w-auto h-auto flex flex-col justify-start items-start gap-2">
+                            <p className="text-black">
+                              {index + 1}. Durasi {index + 1}
+                            </p>
+                            <p className="text-blue-500 ml-3 mt-2">
+                              {" "}
+                              <span className="font-semibold">Lama</span> :{" "}
+                              {item.lama},{" "}
+                              <span className="font-semibold">Biaya</span> :{" "}
+                              {item.biaya}
+                            </p>
+                          </div>
+                          <div className="w-auto h-auto flex justify-end gap-4 items-end">
+                            <button
+                              onClick={() => this.handleDelete(item.id)}
+                              className="w-[auto] h-[auto] flex justify-center items-center p-2 bg-red-100 rounded-md"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="#ce3636"
+                                  d="M7 6v13zm4.25 15H7q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v4.3q-.425-.125-.987-.213T17 10V6H7v13h3.3q.15.525.4 1.038t.55.962M9 17h1q0-1.575.5-2.588L11 13.4V8H9zm4-5.75q.425-.275.963-.55T15 10.3V8h-2zM17 22q-2.075 0-3.537-1.463T12 17t1.463-3.537T17 12t3.538 1.463T22 17t-1.463 3.538T17 22m1.65-2.65l.7-.7l-1.85-1.85V14h-1v3.2z"
+                                />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => {
+                                window.location.href = `/tindakan/detail-tindakan/update/${this.state.idTindakan}/${item.id}`;
+                              }}
+                              className="w-[auto] h-[auto] flex justify-center items-center p-2 bg-green-100 rounded-md"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 16 16"
+                              >
+                                <path
+                                  fill="#44BED0"
+                                  fill-rule="evenodd"
+                                  d="M6.169 6.331a3 3 0 0 0-.833 1.6l-.338 1.912a1 1 0 0 0 1.159 1.159l1.912-.338a3 3 0 0 0 1.6-.833l3.07-3.07l2-2A.894.894 0 0 0 15 4.13A3.13 3.13 0 0 0 11.87 1a.894.894 0 0 0-.632.262l-2 2l-3.07 3.07Zm3.936-1.814L7.229 7.392a1.5 1.5 0 0 0-.416.8L6.6 9.4l1.208-.213l.057-.01a1.5 1.5 0 0 0 .743-.406l2.875-2.876a1.63 1.63 0 0 0-1.378-1.378m2.558.199a3.143 3.143 0 0 0-1.379-1.38l.82-.82a1.63 1.63 0 0 1 1.38 1.38l-.82.82ZM8 2.25a.75.75 0 0 0-.75-.75H4.5a3 3 0 0 0-3 3v7a3 3 0 0 0 3 3h7a3 3 0 0 0 3-3V8.75a.75.75 0 0 0-1.5 0v2.75a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 11.5v-7A1.5 1.5 0 0 1 4.5 3h2.75A.75.75 0 0 0 8 2.25"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <button
-            onClick={() => {
-              window.location.href = "/tindakan/detail-tindakan/tambah-data";
-            }}
-            className="justify-center p-3 w-full text-[0.9rem] text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
-          >
-            Tambah Waktu Tindakan
-          </button>
+          <div className="flex  p-4 w-full text-xl font-medium text-center bg-[transparent] text-stone-900 items-center justify-center">
+            <button
+              onClick={() => {
+                window.location.href = `/tindakan/detail-tindakan/tambah-data/${this.state.idTindakan}`;
+              }}
+              className="justify-center p-3 w-full text-[0.9rem] text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
+            >
+              Tambah Waktu Tindakan
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 }
 
-export default ListDetailTindakan;
+export default withRouter(ListDetailTindakan);

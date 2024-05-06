@@ -13,6 +13,10 @@ import JanjiTemu from "./pages/ListJanjiTemu";
 import ListDetailTindakan from "./pages/ListDetailTindakan";
 import InputDetailTindakan from "./pages/InputDetailTindakan";
 import Loading from "./components/loading";
+import EditTindakan from "./pages/EditTindakan";
+import EditDetailTindakan from "./pages/EditDetailTindakan";
+import Login from "./pages/Login";
+import UpdateTerapis from "./pages/UpdateTerapis";
 
 function App() {
   return (
@@ -24,11 +28,16 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/terapis" element={<Terapis />} />
             <Route
-              path="/tindakan/detail-tindakan/"
+              path="/tindakan/detail-tindakan/:id"
               element={<ListDetailTindakan />}
             />{" "}
             <Route
-              path="/tindakan/detail-tindakan/tambah-data"
+              path="/tindakan/detail-tindakan/update/:idTindakan/:id"
+              element={<EditDetailTindakan />}
+            />{" "}
+            <Route path="/tindakan/update/:id" element={<EditTindakan />} />{" "}
+            <Route
+              path="/tindakan/detail-tindakan/tambah-data/:id"
               element={<InputDetailTindakan />}
             />
             <Route path="/tindakan" element={<ListTindakan />} />
@@ -38,11 +47,13 @@ function App() {
               element={<InputJanjiTemu />}
             />
             <Route path="/janji-temu/" element={<JanjiTemu />} />
+            <Route path="/terapis/:id/" element={<UpdateTerapis />} />
+            <Route path="/masuk/" element={<Login />} />
             <Route path="/terapis/tambah-data/" element={<InputTerapis />} />
           </Routes>
         </div>
 
-        <div className="mt-6 h-[8%] w-[100%] p-0 m-0 z-[999] sticky bg-green-500">
+        <div className="mt-4 h-[8%] w-[100%] p-0 m-0 z-[999] sticky bg-green-500">
           <Sidebar />
         </div>
       </Router>

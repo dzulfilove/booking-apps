@@ -9,9 +9,11 @@
   width: 100%;
   height: auto;
   padding: 8px;
-  background-color: #f1f1f1;
+  background-color: white;
   border-radius: 8px;
+  border-color: #3b82f6; /* kode warna biru-nya */
   font-size: 14px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 .custom-tab-bar .nav-link.active {
   display: flex;
@@ -25,7 +27,7 @@
 
 .custom-tab-bar .nav-link {
   display: flex;
-  width: 7rem;
+  width: 6rem;
   align-items: center;
   justify-content: center;
   padding: 12px;
@@ -42,7 +44,7 @@
   align-items: center;
   color: white;
   white-space: nowrap;
-  background-color: #3b83f680; /* kode warna biru-nya */
+  background-color: #3b82f6; /* kode warna biru-nya */
   border-radius: 30px; /* untuk membuat sudut bulat */
 }
 
@@ -79,11 +81,11 @@
   padding-bottom: 1rem; /* Setara dengan py-4 */
   margin-top: 1rem; /* Setara dengan mt-4 */
   width: 100%;
-  font-size: 0.75rem; /* Setara dengan text-xs */
+  font-size: 0.875rem; /* Setara dengan text-xs */
   white-space: nowrap;
   border-radius: 0.375rem; /* Setara dengan rounded */
   border-width: 1px; /* Setara dengan border */
   border-style: solid; /* Setara dengan border-solid */
   border-color: #cbd5e1; /* Setara dengan border-neutral-400 */
-  color: #a0aec0; /* Setara dengan text-neutral-400 */
+  color: #222222; /* Setara dengan text-neutral-400 */
 }
