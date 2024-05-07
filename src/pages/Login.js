@@ -1,12 +1,12 @@
 import React from "react";
-
+import { Redirect } from "react-router-dom";
 import withRouter from "../withRouter";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../config/firebase";
-
+import { Navigate } from "react-router-dom";
 import { db } from "../config/firebase";
 import {
   addDoc,
@@ -30,6 +30,7 @@ class Login extends React.Component {
       username: "",
       isSignUpActive: false,
       load: false,
+      login: false,
     };
   }
 
@@ -80,10 +81,8 @@ class Login extends React.Component {
         });
         // Setelah berhasil masuk, set sessionStorage dan arahkan ke dashboard
         sessionStorage.setItem("isLoggedIn", true);
-        sessionStorage.setItem("user", JSON.stringify(user)); // Jika perlu menyimpan info pengguna
-        // Redirect setelah sessionStorage diset
-        sessionStorage.getItem("isLoggedIn") &&
-          (window.location.href = "/dashboard");
+        sessionStorage.setItem("user", JSON.stringify(user));
+        this.setState({ login: true }); // Jika perlu menyimpan info pengguna
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -128,6 +127,9 @@ class Login extends React.Component {
   };
 
   render() {
+    if (this.state.login == true) {
+      return <Navigate to="/dashboard" />;
+    }
     return (
       <div
         style={{
