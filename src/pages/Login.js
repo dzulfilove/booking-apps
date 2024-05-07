@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { redirect } from "react-router-dom";
 import withRouter from "../withRouter";
 import {
   createUserWithEmailAndPassword,
@@ -129,7 +129,7 @@ class Login extends React.Component {
 
   render() {
     if (this.state.login == true) {
-      return <Link to="/dashboard" />;
+      return redirect("/dashboard");
     }
     return (
       <div
