@@ -91,7 +91,7 @@ class InputDetailTindakan extends React.Component {
       Swal.fire({
         icon: "success",
         text: "Data Detail Tindakan Berhasil ditambah",
-        confirmButtonColor: "#3B82F6",
+        confirmButtonColor: "#10B981",
         confirmButtonText: "Ya",
       }).then((result) => {
         if (result.isConfirmed) {
@@ -161,7 +161,7 @@ class InputDetailTindakan extends React.Component {
             </div>
             <button
               onClick={this.handleSubmit}
-              className="justify-center p-2 w-full text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
+              className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
             >
               Simpan
             </button>

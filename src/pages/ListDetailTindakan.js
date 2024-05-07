@@ -238,7 +238,7 @@ class ListDetailTindakan extends React.Component {
             <div className="flex-auto">Detail Tindakan</div>
           </div>
 
-          <div className="flex flex-col w-[100%]  h-[100%] justify-start items-center mb-4 overflow-y-scroll relative">
+          <div className="flex flex-col w-[100%]  h-[26.5rem] justify-start items-center mb-4 overflow-y-scroll relative">
             <div className="flex flex-col bg-white w-[100%]">
               <div className="flex overflow-hidden relative flex-col pb-20 w-full aspect-[1.23]">
                 <img
@@ -259,7 +259,7 @@ class ListDetailTindakan extends React.Component {
                       </div>
                     </div>
                     <button
-                      className="w-auto h-auto flex justify-center items-center  bg-green-100 rounded-md p-2"
+                      className="w-auto h-auto flex justify-center items-center  bg-emerald-100 rounded-md p-2"
                       onClick={() => {
                         window.location.href = `/tindakan/update/${this.state.idTindakan}`;
                       }}
@@ -296,7 +296,7 @@ class ListDetailTindakan extends React.Component {
                             <p className="text-black">
                               {index + 1}. Durasi {index + 1}
                             </p>
-                            <p className="text-blue-500 ml-3 mt-2">
+                            <p className="text-emerald-500 ml-3 mt-2">
                               {" "}
                               <span className="font-semibold">Lama</span> :{" "}
                               {item.lama},{" "}
@@ -325,7 +325,7 @@ class ListDetailTindakan extends React.Component {
                               onClick={() => {
                                 window.location.href = `/tindakan/detail-tindakan/update/${this.state.idTindakan}/${item.id}`;
                               }}
-                              className="w-[auto] h-[auto] flex justify-center items-center p-2 bg-green-100 rounded-md"
+                              className="w-[auto] h-[auto] flex justify-center items-center p-2 bg-emerald-100 rounded-md"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -355,7 +355,7 @@ class ListDetailTindakan extends React.Component {
               onClick={() => {
                 window.location.href = `/tindakan/detail-tindakan/tambah-data/${this.state.idTindakan}`;
               }}
-              className="justify-center p-3 w-full text-[0.9rem] text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
+              className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
             >
               Tambah Waktu Tindakan
             </button>

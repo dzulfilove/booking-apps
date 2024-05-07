@@ -48,6 +48,7 @@ class InputJanjiTemu extends React.Component {
       tindakanRef: null,
       biaya: 0,
       jam_selesai: "",
+      bulan: dayjs().locale("id").format("MMMM"),
     };
   }
   componentDidMount() {
@@ -187,7 +188,26 @@ class InputJanjiTemu extends React.Component {
 
     return waktuBulatStr;
   }
+  formatBulan = (bulanInggris) => {
+    // Objek untuk memetakan nama bulan dalam bahasa Inggris ke bahasa Indonesia
+    const namaBulan = {
+      January: "Januari",
+      February: "Februari",
+      March: "Maret",
+      April: "April",
+      May: "Mei",
+      June: "Juni",
+      July: "Juli",
+      August: "Agustus",
+      September: "September",
+      October: "Oktober",
+      November: "November",
+      December: "Desember",
+    };
 
+    // Mengembalikan nama bulan dalam bahasa Indonesia berdasarkan nama bulan dalam bahasa Inggris
+    return namaBulan[bulanInggris];
+  };
   handleDropdown = (name, selectedOption) => {
     if (name == "dokter") {
       this.setState({ dokterRef: selectedOption });
@@ -211,7 +231,7 @@ class InputJanjiTemu extends React.Component {
           title: "Perhatian!",
           text: "Durasi Tindakan Tidak Ditemukan, Harap Isi Durasi Tindakan Terlebih Dahulu",
           icon: "warning",
-          confirmButtonColor: "#3B82F6",
+          confirmButtonColor: "#10B981",
           confirmButtonText: "Ya",
           showCancelButton: "true",
           cancelButtonText: "Tidak",
@@ -283,6 +303,7 @@ class InputJanjiTemu extends React.Component {
         status,
         tanggalString,
         biaya,
+        bulan,
       } = this.state;
 
       // Membuat objek referensi Firestore untuk dokterRef, tindakanRef, dan waktuTindakanRef
@@ -308,6 +329,7 @@ class InputJanjiTemu extends React.Component {
 
       const jamAwal = this.bulatkanWaktu(jam_mulai);
       const jamAkhir = this.bulatkanWaktu(this.state.jam_selesai);
+      const bulanString = this.formatBulan(bulan);
       // Membuat objek data baru untuk ditambahkan ke koleksi "janji_temu"
       const newData = {
         dokter_ref: dokterDocRef,
@@ -318,6 +340,7 @@ class InputJanjiTemu extends React.Component {
         nama_pasien: nama,
         status: status.value,
         tanggal: tanggalString,
+        bulan: bulanString,
         biaya: biaya,
       };
 
@@ -329,7 +352,7 @@ class InputJanjiTemu extends React.Component {
         title: "Berhasil",
         text: "Data janji temu berhasil ditambah",
         type: "warning",
-        confirmButtonColor: "#3B82F6",
+        confirmButtonColor: "#10B981",
         confirmButtonText: "Oke",
         closeOnConfirm: false,
       }).then((result) => {
@@ -428,8 +451,8 @@ class InputJanjiTemu extends React.Component {
               Pilih Terapis
             </div>
             <div className="select-container relative w-[100%]">
-              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-blue-100 text-neutral-950 rounded-lg">
-                <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-blue-100 rounded-lg  gap-2 ">
+              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
+                <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-emerald-100 rounded-lg  gap-2 ">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -451,17 +474,17 @@ class InputJanjiTemu extends React.Component {
                     value={this.state.dokterRef}
                     classNames={{
                       menuButton: ({ isDisabled }) =>
-                        `text-[15px] flex text-sm text-blue-500 w-[100%] bg-blue-100 rounded shadow-sm transition-all duration-300 focus:outline-none ${
+                        `text-[15px] flex text-sm text-emerald-500 w-[100%] bg-emerald-100 rounded shadow-sm transition-all duration-300 focus:outline-none ${
                           isDisabled
-                            ? "bg-blue-100 "
-                            : "bg-blue-100 focus:ring focus:ring-blue-500/20"
+                            ? "bg-emerald-100 "
+                            : "bg-emerald-100 focus:ring focus:ring-blue-500/20"
                         }`,
                       menu: "absolute z-10 w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
                       listItem: ({ isSelected }) =>
                         `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
                           isSelected
-                            ? `text-blue-500 bg-slate-50`
-                            : `text-blue-500 hover:bg-blue-100 hover:text-blue-500`
+                            ? `text-emerald-500 bg-slate-50`
+                            : `text-emerald-500 hover:bg-emerald-100 hover:text-emerald-500`
                         }`,
                     }}
                   />
@@ -472,8 +495,8 @@ class InputJanjiTemu extends React.Component {
               Pilih Tindakan
             </div>
             <div className="select-container relative w-[100%]">
-              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-blue-100 text-neutral-950 rounded-lg">
-                <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-blue-100 rounded-lg  gap-2 ">
+              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
+                <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-emerald-100 rounded-lg  gap-2 ">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"
@@ -495,17 +518,17 @@ class InputJanjiTemu extends React.Component {
                     }
                     classNames={{
                       menuButton: ({ isDisabled }) =>
-                        `text-[15px] flex text-sm text-blue-500 w-[100%] bg-blue-100 rounded shadow-sm transition-all duration-300 focus:outline-none ${
+                        `text-[15px] flex text-sm text-emerald-500 w-[100%] bg-emerald-100 rounded shadow-sm transition-all duration-300 focus:outline-none ${
                           isDisabled
-                            ? "bg-blue-100 "
-                            : "bg-blue-100 focus:ring focus:ring-blue-500/20"
+                            ? "bg-emerald-100 "
+                            : "bg-emerald-100 focus:ring focus:ring-blue-500/20"
                         }`,
                       menu: "absolute z-10 w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
                       listItem: ({ isSelected }) =>
                         `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
                           isSelected
-                            ? `text-blue-500 bg-slate-50`
-                            : `text-blue-500 hover:bg-blue-100 hover:text-blue-500`
+                            ? `text-emerald-500 bg-slate-50`
+                            : `text-emerald-500 hover:bg-emerald-100 hover:text-emerald-500`
                         }`,
                     }}
                   />
@@ -518,8 +541,8 @@ class InputJanjiTemu extends React.Component {
                   Pilih Durasi Tindakan
                 </div>
                 <div className="select-container relative w-[100%]">
-                  <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-blue-100 text-neutral-950 rounded-lg">
-                    <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-blue-100 rounded-lg  gap-2 ">
+                  <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
+                    <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-emerald-100 rounded-lg  gap-2 ">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -541,17 +564,17 @@ class InputJanjiTemu extends React.Component {
                         placeholder="Pilih Lama Tindakan"
                         classNames={{
                           menuButton: ({ isDisabled }) =>
-                            `text-[15px] flex text-sm text-blue-500 w-[100%] bg-blue-100 rounded shadow-sm transition-all duration-300 focus:outline-none ${
+                            `text-[15px] flex text-sm text-emerald-500 w-[100%] bg-emerald-100 rounded shadow-sm transition-all duration-300 focus:outline-none ${
                               isDisabled
-                                ? "bg-blue-100 "
-                                : "bg-blue-100 focus:ring focus:ring-blue-500/20"
+                                ? "bg-emerald-100 "
+                                : "bg-emerald-100 focus:ring focus:ring-blue-500/20"
                             }`,
                           menu: "absolute z-10 w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
                           listItem: ({ isSelected }) =>
                             `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
                               isSelected
-                                ? `text-blue-500 bg-slate-50`
-                                : `text-blue-500 hover:bg-blue-100 hover:text-blue-500`
+                                ? `text-emerald-500 bg-slate-50`
+                                : `text-emerald-500 hover:bg-emerald-100 hover:text-emerald-500`
                             }`,
                         }}
                       />
@@ -565,8 +588,8 @@ class InputJanjiTemu extends React.Component {
               Pilih Status
             </div>
             <div className="select-container relative w-[100%]">
-              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-blue-100 text-neutral-950 rounded-lg">
-                <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-blue-100 rounded-lg  gap-2 ">
+              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
+                <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-emerald-100 rounded-lg  gap-2 ">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"
@@ -588,17 +611,17 @@ class InputJanjiTemu extends React.Component {
                     value={this.state.status}
                     classNames={{
                       menuButton: ({ isDisabled }) =>
-                        `text-[15px] flex text-sm text-blue-500 w-[100%] bg-blue-100 rounded shadow-sm transition-all duration-300 focus:outline-none ${
+                        `text-[15px] flex text-sm text-emerald-500 w-[100%] bg-emerald-100 rounded shadow-sm transition-all duration-300 focus:outline-none ${
                           isDisabled
-                            ? "bg-blue-100 "
-                            : "bg-blue-100 focus:ring focus:ring-blue-500/20"
+                            ? "bg-emerald-100 "
+                            : "bg-emerald-100 focus:ring focus:ring-blue-500/20"
                         }`,
                       menu: "absolute z-10 w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
                       listItem: ({ isSelected }) =>
                         `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
                           isSelected
-                            ? `text-blue-500 bg-slate-50`
-                            : `text-blue-500 hover:bg-blue-100 hover:text-blue-500`
+                            ? `text-emerald-500 bg-slate-50`
+                            : `text-emerald-500 hover:bg-emerald-100 hover:text-emerald-500`
                         }`,
                     }}
                   />
@@ -622,7 +645,7 @@ class InputJanjiTemu extends React.Component {
             <div className="flex  justify-center self-stretch h-12 mt-14 w-[100%] text-sm font-medium text-center text-white whitespace-nowrap bg-white">
               <button
                 onClick={this.handleSubmit}
-                className=" flex justify-center p-6 items-center w-full h-9 text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
+                className=" flex justify-center p-6 items-center w-full h-9 text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
               >
                 Simpan
               </button>

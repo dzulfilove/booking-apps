@@ -252,10 +252,10 @@ class ListTindakan extends React.Component {
             </div>
           </div>
 
-          <div className="flex flex-col w-[100%] h-[100%] mt-3 gap-4 justify-start items-center mb-4 overflow-y-scroll rounded-md ">
+          <div className="flex flex-col w-[100%] h-[29.5rem] mt-3 gap-4 justify-start items-center  overflow-y-scroll rounded-md ">
             {this.state.dataList.map((item) => (
               <div className="flex gap-4 justify-center p-4 bg-white w-[90%] rounded-lg cursor-pointer shadow-md">
-                <div className="flex justify-center items-center p-3.5 bg-blue-100 rounded-lg h-[50px] w-[50px]">
+                <div className="flex justify-center items-center p-3.5 bg-emerald-100 rounded-lg h-[50px] w-[50px]">
                   <img
                     loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/912112b743bb3145e7319e41dc115e7a4e66cc6ccecbb1b521e245ffee9048ec?"
@@ -266,7 +266,7 @@ class ListTindakan extends React.Component {
                   onClick={() => {
                     window.location.href = `/tindakan/detail-tindakan/${item.id}`;
                   }}
-                  className="flex flex-col flex-1 justify-center my-auto whitespace-nowrap"
+                  className="flex flex-col flex-1 justify-center my-auto"
                 >
                   <div className="text-xs text-gray-400">Layanan</div>
                   <div className="mt-1 text-base font-medium leading-6 text-black">
@@ -277,12 +277,12 @@ class ListTindakan extends React.Component {
                 <div className="w-auto h-auto flex justify-end gap-4 items-center ">
                   <button
                     onClick={() => this.handleDelete(item.id)}
-                    className="w-[auto] h-[auto] flex justify-center items-center py-3 px-4 bg-red-100 rounded-md "
+                    className="w-[auto] h-[auto] flex justify-center items-center py-2 px-3 bg-red-100 rounded-md "
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
+                      width="16"
+                      height="16"
                       viewBox="0 0 24 24"
                     >
                       <path
@@ -297,7 +297,7 @@ class ListTindakan extends React.Component {
           </div>
           <button
             onClick={this.handleAdd}
-            className="justify-center p-2 w-full text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
+            className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
           >
             Tambah
           </button>

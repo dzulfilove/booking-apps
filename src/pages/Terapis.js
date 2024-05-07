@@ -31,7 +31,11 @@ class Terapis extends React.Component {
       kontak: null,
       value: "hadir",
       absen: [],
+      dataHadir: [],
+      dataAbsen: [],
       isHadir: true,
+      search: "",
+      dataSemua: [],
     };
   }
 
@@ -52,7 +56,7 @@ class Terapis extends React.Component {
       });
 
       await new Promise((resolve) => {
-        this.setState({ dokters: dokterList }, resolve);
+        this.setState({ dokters: dokterList, dataSemua: dokterList }, resolve);
       });
     } catch (error) {
       console.error("Error fetching dokter data:", error);
@@ -60,6 +64,41 @@ class Terapis extends React.Component {
     }
   };
 
+  // Menangani perubahan input pencarian
+  handleSearchChange = (event) => {
+    this.setState({ search: event.target.value });
+    this.handleSearch(event.target.value);
+  };
+
+  // Menjalankan pencarian
+  handleSearch = (search) => {
+    const { dataHadir, dataAbsen, dataSemua } = this.state;
+    // Lakukan pencarian di sini
+    console.log(dataAbsen);
+    console.log(dataHadir);
+    console.log(dataSemua);
+    // Misalnya, jika data Anda disimpan di dalam 'data', Anda dapat menggunakan metode filter
+    if (dataAbsen.length > 0) {
+      const results2 = dataAbsen.filter((item) =>
+        item.nama.toLowerCase().includes(search.toLowerCase())
+      );
+      this.setState({ absen: results2 });
+    }
+
+    if (dataHadir.length > 0) {
+      const results3 = dataHadir.filter((item) =>
+        item.nama.toLowerCase().includes(search.toLowerCase())
+      );
+
+      this.setState({ hadir: results3 });
+    }
+
+    const results = dataSemua.filter((item) =>
+      item.nama.toLowerCase().includes(search.toLowerCase())
+    );
+
+    this.setState({ dokters: results });
+  };
   getAllKehadiran = async () => {
     try {
       const currentDate = new Date();
@@ -114,7 +153,15 @@ class Terapis extends React.Component {
       (item) => item.is_hadir == false
     );
     await new Promise((resolve) => {
-      this.setState({ hadir: filteredArray, absen: filteredArray2 }, resolve);
+      this.setState(
+        {
+          hadir: filteredArray,
+          absen: filteredArray2,
+          dataHadir: filteredArray,
+          dataAbsen: filteredArray2,
+        },
+        resolve
+      );
     });
     console.log("hadir", filteredArray);
     console.log("absen", filteredArray2);
@@ -162,7 +209,7 @@ class Terapis extends React.Component {
         Swal.fire({
           icon: "success",
           text: "Terapis Berhasil Hadir",
-          confirmButtonColor: "#3B82F6",
+          confirmButtonColor: "#10B981",
           confirmButtonText: "Ya",
         }).then((result) => {
           if (result.isConfirmed) {
@@ -175,7 +222,7 @@ class Terapis extends React.Component {
         Swal.fire({
           icon: "success",
           text: "Terapis Berhasil Absen",
-          confirmButtonColor: "#3B82F6",
+          confirmButtonColor: "#10B981",
           confirmButtonText: "Ya",
         }).then((result) => {
           if (result.isConfirmed) {
@@ -214,20 +261,20 @@ class Terapis extends React.Component {
           </div>
           <div className="w-[100%] h-auto pl-3 pr-3">
             <div className="flex gap-4 bg-white  px-4 py-3 w-full text-xs tracking-normal leading-4  rounded-lg shadow-sm  mt-3 text-neutral-400">
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/e2779943858cc6dd76b2feebe0c17cecc9a5287dfa76d9a94d344c614a742faa?"
-                className="shrink-0 gap-0 w-6 aspect-square"
-              />
+              <button className="w-auto h-auto" onClick={this.handleSearch}>
+                <img
+                  loading="lazy"
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/e2779943858cc6dd76b2feebe0c17cecc9a5287dfa76d9a94d344c614a742faa?"
+                  className="shrink-0 gap-0 w-6 aspect-square"
+                />
+              </button>
               <input
                 type="text"
                 required
                 name="search"
-                placeholder="Cari layanan, klinik, dan dokter"
+                placeholder="Cari Nama Terapis"
                 className="flex-1 gap-0 my-auto h-8 border-none"
-                onChange={(e) => {
-                  e.target.value = "";
-                }}
+                onChange={this.handleSearchChange}
               />
             </div>
           </div>
@@ -249,7 +296,7 @@ class Terapis extends React.Component {
               </Tab>
             </Tabs>
           </div>
-          <div className="flex flex-col w-full px-5 h-[25rem] justify-start items-center p-2 gap-3 overflow-y-scroll bg-slate-50">
+          <div className="flex flex-col w-full px-5 h-[23rem] justify-start items-center p-2 gap-3 overflow-y-scroll bg-slate-50">
             {this.state.value == "semua" && (
               <>
                 {/* Looping semua data terapis */}
@@ -333,7 +380,7 @@ class Terapis extends React.Component {
                         Absen
                       </button>
                       <button
-                        className="flex-1 w-12 p-2 justify-center text-white bg-blue-500 rounded-lg items-center"
+                        className="flex-1 w-12 p-2 justify-center text-white bg-emerald-500 rounded-lg items-center"
                         onClick={(e) => {
                           this.handlePresensi(true, dokter);
                         }}
@@ -418,7 +465,7 @@ class Terapis extends React.Component {
                           </div>
                         </div>
                         <div className="flex gap-4 mt-4 text-sm text-center whitespace-nowrap">
-                          <div className="flex-1 w-12 p-2 justify-center text-green-500 bg-green-100 border border-solid border-green-500 rounded-lg items-center">
+                          <div className="flex-1 w-12 p-2 justify-center text-emerald-500 bg-emerald-100 border border-solid border-emerald-500 rounded-lg items-center">
                             Hadir
                           </div>
                         </div>
@@ -550,7 +597,7 @@ class Terapis extends React.Component {
             onClick={() => {
               window.location.href = "/terapis/tambah-data/";
             }}
-            className="justify-center p-2 w-full text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
+            className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
           >
             Tambah
           </button>

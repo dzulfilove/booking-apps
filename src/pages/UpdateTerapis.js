@@ -199,7 +199,7 @@ class UpdateTerapis extends React.Component {
       Swal.fire({
         icon: "success",
         text: "Data Dokter Berhasil Diperbarui",
-        confirmButtonColor: "#3B82F6",
+        confirmButtonColor: "#10B981",
         confirmButtonText: "Ya",
       }).then((result) => {
         if (result.isConfirmed) {
@@ -306,12 +306,12 @@ class UpdateTerapis extends React.Component {
             </div>
           </div>
           <div className="flex flex-col w-[100%]  h-[100%] justify-start items-center mb-4 overflow-y-scroll relative">
-            <div className="flex flex-col gap-2.5 justify-center font-medium text-center text-blue-500 max-w-[328px]">
-              <div className=" text-[14px] flex justify-center items-center self-center  text-lg tracking-widest whitespace-nowrap bg-blue-100 h-[120px] rounded-[120px] w-[120px]">
+            <div className="flex flex-col gap-2.5 justify-center font-medium text-center text-emerald-500 max-w-[328px]">
+              <div className=" text-[14px] flex justify-center items-center self-center  text-lg tracking-widest whitespace-nowrap bg-emerald-100 h-[120px] rounded-[120px] w-[120px]">
                 <img
                   src={this.state.fotoDisplay}
                   alt=""
-                  className="text-[14px] object-cover bg-cover flex justify-center items-center self-center  text-lg tracking-widest whitespace-nowrap bg-blue-100 h-[120px] rounded-[120px] w-[120px]"
+                  className="text-[14px] object-cover bg-cover flex justify-center items-center self-center  text-lg tracking-widest whitespace-nowrap bg-emerald-100 h-[120px] rounded-[120px] w-[120px]"
                 />
               </div>
               <div className="gap-0 mt-2.5 w-full text-[14px] relative">
@@ -414,7 +414,7 @@ class UpdateTerapis extends React.Component {
                           `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
                             isSelected
                               ? `text-gray-700 bg-white`
-                              : `text-gray-700 hover:bg-blue-500 hover:text-white`
+                              : `text-gray-700 hover:bg-emerald-500 hover:text-white`
                           }`,
                       }}
                     />
@@ -466,7 +466,7 @@ class UpdateTerapis extends React.Component {
               </div>
             </div>
             <button
-              className="justify-center p-2 w-full text-[0.9rem] text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
+              className="justify-center p-2 w-full text-[0.9rem] text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
               disabled={this.state.isProses}
               type="submit"
               onClick={this.handleSubmit}

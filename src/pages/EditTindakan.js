@@ -291,7 +291,7 @@ class EditTindakan extends React.Component {
             </div>
             <button
               onClick={this.handleUpdate}
-              className="justify-center p-2 w-full text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
+              className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
             >
               Simpan
             </button>

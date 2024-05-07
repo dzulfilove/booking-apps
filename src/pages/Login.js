@@ -18,6 +18,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import Swal from "sweetalert2";
+import Loading from "../components/loading";
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -28,6 +29,7 @@ class Login extends React.Component {
       password: "",
       username: "",
       isSignUpActive: false,
+      load: false,
     };
   }
 
@@ -37,6 +39,11 @@ class Login extends React.Component {
     }));
   };
 
+  handleLogin = () => {
+    this.setState({ load: true }, () => {
+      this.handleSignIn();
+    });
+  };
   handleSignUp = () => {
     console.log("daftar");
     const { email, password, username } = this.state;
@@ -46,7 +53,9 @@ class Login extends React.Component {
       .then((userCredential) => {
         const user = userCredential.user;
         console.log(user);
-        this.handleSubmit();
+        this.setState({ load: true }, () => {
+          this.handleSubmit();
+        });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -72,7 +81,8 @@ class Login extends React.Component {
           },
           () => {}
         );
-        window.location.href = "/";
+        sessionStorage.setItem("isLoggedIn", true);
+        window.location.href = "/dashboard";
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -108,6 +118,8 @@ class Login extends React.Component {
         "Berhasil Membuat Akun Baru, Silakan Masuk Ke Akun Anda",
         "success"
       );
+      this.handleMethodChange();
+      this.setState({ load: false });
     } catch (error) {
       Swal.fire("Gagal", "Gagal menyimpan", "error");
       console.error("Error menambahkan data:", error);
@@ -126,20 +138,15 @@ class Login extends React.Component {
           overflowX: "hidden",
         }}
       >
-        <div className="flex flex-col gap-0 items-start h-[100%] overflow-y-scroll pb-4 font-medium bg-slate-50 w-[100%]">
+        {this.state.load == true && (
+          <>
+            <div className="absolute w-[100%] h-[100%] z-[99999]">
+              <Loading />
+            </div>
+          </>
+        )}
+        <div className="flex flex-col gap-0 items-start mt-3 h-[100%] overflow-y-scroll pb-4 font-medium bg-slate-50 w-[100%]">
           <div className="flex gap-5 self-stretch p-4 w-full  text-center text-stone-900">
-            <button
-              onClick={() => {
-                window.location.href = `/tindakan/detail-tindakan/${this.state.idTindakan}`;
-              }}
-              className="w-auto h-auto "
-            >
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/8b2d02e05b773c962fdd4341539effdff4e46139a4745b83f97d7e9cb10455ed?"
-                className="shrink-0 gap-0 w-6 aspect-square"
-              />
-            </button>
             <div className="flex-auto gap-0 text-xl font-medium">Masuk</div>
           </div>
           <div className="flex flex-col gap-2.5 p-2 w-[100%] h-auto justify-center items-center">
@@ -181,13 +188,13 @@ class Login extends React.Component {
                 name="password"
                 className=" w-full text-[14px] justify-center px-4 py-4 mt-2.5  whitespace-nowrap rounded border border-solid border-neutral-600 text-neutral-400"
               />
-              <div className="flex gap-5 px-5 mt-9 w-full text-sm text-blue-500 capitalize max-w-[349px]">
+              <div className="flex gap-5 px-5 mt-9 w-full text-sm text-emerald-500 capitalize max-w-[349px]">
                 <div className="flex-auto font-medium">Lupa Password</div>
                 <div className="flex-auto font-semibold">
                   <span className="font-medium text-black">User</span>{" "}
                   <span className="font-medium text-black">Baru ?</span>{" "}
                   <button
-                    className="text-blue-500"
+                    className="text-emerald-500"
                     onClick={this.handleMethodChange}
                   >
                     Daftar
@@ -200,7 +207,7 @@ class Login extends React.Component {
               <>
                 <button
                   onClick={this.handleSignUp}
-                  className="justify-center p-2 w-full text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
+                  className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
                 >
                   Daftar
                 </button>
@@ -208,8 +215,8 @@ class Login extends React.Component {
             ) : (
               <>
                 <button
-                  onClick={this.handleSignIn}
-                  className="justify-center p-2 w-full text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
+                  onClick={this.handleLogin}
+                  className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
                 >
                   Masuk
                 </button>

@@ -15,9 +15,18 @@ import TimeImage from "../assets/clock.png";
 import Loading from "../components/loading";
 import { collection, getDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../config/firebase";
+import BotBar from "../components/botBar";
+import Paper from "@mui/material/Paper";
+import Fade from "@mui/material/Fade";
+import Guide from "../components/guide";
 class HomePage extends Component {
   constructor(props) {
     super(props);
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    let login = false;
+    if (isLoggedIn) {
+      login = true;
+    }
     this.state = {
       // sudah terpakai
       dokterHadir: [],
@@ -31,6 +40,7 @@ class HomePage extends Component {
       tanggalString: dayjs().locale("id").format("YYYY-MM-DD"),
       // belum terpakai
       dataList: [],
+      isLogin: login,
       dataRegistrasi: {},
       kd_dokter: "",
       dokterTerpilih: {},
@@ -43,11 +53,15 @@ class HomePage extends Component {
       dataSelesai: [],
       dataJanji: [],
       dataKosong: [],
+      checked: false,
     };
   }
 
   handleTab = (newValue) => {
     this.setState({ value: newValue });
+  };
+  handleMenu = () => {
+    this.setState({ checked: true });
   };
   componentDidMount() {
     this.getAllKehadiran();
@@ -70,6 +84,7 @@ class HomePage extends Component {
     console.log("tanggal", hasil);
     this.setState({ tanggalTampil: hasil });
   };
+
   sortirBerdasarkanJamKeluar(arrayObjek) {
     // Menggunakan metode sort() untuk melakukan pengurutan
     arrayObjek.sort((a, b) => {
@@ -353,10 +368,14 @@ class HomePage extends Component {
     const waktuSelesai = new Date(waktuMulai.getTime() + 60 * 60000); // Konversi durasi dari menit ke milidetik
 
     // Format waktuSelesai ke dalam string "HH:mm"
-    const jamSelesai = `${String(waktuSelesai.getHours()).padStart(
+    let jamSelesai = `${String(waktuSelesai.getHours()).padStart(
       2,
       "0"
     )}:${String(waktuSelesai.getMinutes()).padStart(2, "0")}`;
+    const cek = this.cekJamLebihBesar(jamSelesai, "21:00");
+    if (cek == true) {
+      jamSelesai = "21:00";
+    }
     return jamSelesai;
   }
 
@@ -502,8 +521,10 @@ class HomePage extends Component {
           height: "100%",
           overflowX: "hidden",
           position: "relative",
+          marginBottom: "2rem",
         }}
       >
+        {/* <Guide /> */}
         {this.state.loading == true && (
           <>
             <div className="w-[100%] h-[100%] absolute z-[999999] bg-white">
@@ -513,30 +534,14 @@ class HomePage extends Component {
         )}
 
         <div className="flex flex-col mx-auto w-[100%] justify-start mt-6">
-          <div className="flex gap-5 justify-between px-3 w-full max-w-[367px]">
-            <div className="my-auto text-ms font-medium leading-6 text-black capitalize">
-              Jadwal {this.state.tanggalTampil}
-            </div>
-            <div className="flex gap-4">
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb52366082b5ffeff39179fc487c8b0862a72b54d1514b2779cb106f6f8bc0a5?"
-                className="shrink-0 my-auto aspect-[0.85] fill-zinc-300 w-[18px]"
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="#2d9cf4"
-                  d="M19 2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h4l3 3l3-3h4a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2m-7 3c1.727 0 3 1.272 3 3s-1.273 3-3 3c-1.726 0-3-1.272-3-3s1.274-3 3-3M7.177 16c.558-1.723 2.496-3 4.823-3s4.266 1.277 4.823 3z"
-                />
-              </svg>
+          <div className="w-full h-auto flex justify-center px-3">
+            <div className="flex gap-5 justify-between w-full ">
+              <div className="my-auto text-ms font-medium leading-6 text-black capitalize">
+                Jadwal {this.state.tanggalTampil}
+              </div>
             </div>
           </div>
-          <div className="flex flex-col justify-center px-7 mt-3 w-full text-xs leading-4 capitalize bg-white text-neutral-950">
+          <div className="flex flex-col justify-center px-7 mt-3 w-full text-xs leading-4 capitalize bg-white h-auto text-neutral-950">
             <div className="flex items-center px-2.5 h-10  w-full bg-white rounded-lg border border-solid border-zinc-400 gap-2 ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -570,192 +575,255 @@ class HomePage extends Component {
                   listItem: ({ isSelected }) =>
                     `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
                       isSelected
-                        ? `text-white bg-blue-500`
-                        : `text-gray-500 hover:bg-blue-100 hover:text-blue-500`
+                        ? `text-white bg-emerald-500`
+                        : `text-gray-500 hover:bg-emerald-100 hover:text-emerald-500`
                     }`,
                 }}
               />
             </div>
           </div>
           <div className="flex flex-col gap-4 px-4 py-3.5 mt-1.5 w-full bg-slate-50 leading-[120%] ">
-            <div className="w-100 h-auto py-4 px-2 flex flex-col justify-between gap-4  bg-gradient-to-r from-blue-500 to-blue-800 rounded-lg">
+            <div className="w-100 h-auto py-4 px-2 flex flex-col justify-between gap-4  bg-gradient-to-r from-emerald-400 to-emerald-700 rounded-lg">
               <div className="w-full text-base leading-5 capitalize text-white font-medium flex justify-start px-3">
                 Terapis Yang Tersedia
               </div>
+              {this.state.dokterHadir.length <= 1 ? (
+                <>
+                  {this.state.dokterHadir.map((dokter) => (
+                    <div className="flex flex-col justify-center px-4 py-3  text-xs bg-white rounded-xl shadow-sm w-full">
+                      <div className="flex gap-2.5 text-black">
+                        <img
+                          loading="lazy"
+                          srcSet={dokter.foto}
+                          className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
+                        />
+                        <div className="flex flex-col flex-1 justify-center">
+                          <div className="text-sm font-medium">
+                            {dokter.nama}
+                          </div>
+                          <div className="text-gray-400 mt-1">
+                            Umur : {dokter.umur} Tahun
+                          </div>
+                          <div className="flex gap-2 mt-2.5">
+                            <div className="flex  gap-2 justify-center bg-emerald-100 text-emerald-500 rounded-md p-1 text-xs">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="#10B981"
+                                  d="M19 6h-3V5c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1H5C3.3 6 2 7.3 2 9v9c0 1.7 1.3 3 3 3h14c1.7 0 3-1.3 3-3V9c0-1.7-1.3-3-3-3m-9-1h4v1h-4zm10 13c0 .6-.4 1-1 1H5c-.6 0-1-.4-1-1v-5.6L8.7 14H15c.1 0 .2 0 .3-.1l4.7-1.6z"
+                                />
+                              </svg>
+                              <div className="flex-1">
+                                {dokter.pengalaman} Tahun
+                              </div>
+                            </div>
+                            <div className="flex  gap-2 justify-center bg-emerald-100 text-emerald-500 rounded-md p-1 text-xs">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 1024 1024"
+                              >
+                                <path
+                                  fill="#10B981"
+                                  d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311H144c-17.7 0-32 14.3-32 32v364c0 17.7 14.3 32 32 32h601.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1M184 852V568h81v284zm636.4-353l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 22.4-13.2 42.6-33.6 51.8H329V564.8l99.5-360.5a44.1 44.1 0 0 1 42.2-32.3c7.6 0 15.1 2.2 21.1 6.7c9.9 7.4 15.2 18.6 14.6 30.5l-9.6 198.4h314.4C829 418.5 840 436.9 840 456c0 16.5-7.2 32.1-19.6 43"
+                                />
+                              </svg>
+                              <div className="flex-1">4.8</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col flex-1 justify-end w-full mt-2 text-sm">
+                        <div className="flex  gap-2 justify-center bg-emerald-500 text-white border border-solid font-semibold border-emerald-500 rounded-md p-1 text-xs">
+                          {dokter.jenis_kelamin}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <Slider {...settings}>
+                    {/* Card Dokter */}
+                    {this.state.jenisKelamin === "Laki-laki"
+                      ? this.state.dokterHadirLakilaki.map((dokter) => (
+                          <div className="flex flex-col justify-center px-4 py-3  text-xs bg-white rounded-xl shadow-md w-full">
+                            <div className="flex gap-2.5 text-black">
+                              <img
+                                loading="lazy"
+                                srcSet={dokter.foto}
+                                className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
+                              />
+                              <div className="flex flex-col flex-1 justify-center">
+                                <div className="text-sm font-medium">
+                                  {dokter.nama}
+                                </div>
+                                <div className="text-gray-400 mt-1">
+                                  Umur : {dokter.umur} Tahun
+                                </div>
+                                <div className="flex gap-2 mt-2.5">
+                                  <div className="flex  gap-2 justify-center bg-emerald-100 text-emerald-500 rounded-md p-1 text-xs">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="18"
+                                      height="18"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        fill="#10B981"
+                                        d="M19 6h-3V5c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1H5C3.3 6 2 7.3 2 9v9c0 1.7 1.3 3 3 3h14c1.7 0 3-1.3 3-3V9c0-1.7-1.3-3-3-3m-9-1h4v1h-4zm10 13c0 .6-.4 1-1 1H5c-.6 0-1-.4-1-1v-5.6L8.7 14H15c.1 0 .2 0 .3-.1l4.7-1.6z"
+                                      />
+                                    </svg>
+                                    <div className="flex-1">
+                                      {dokter.pengalaman} Tahun
+                                    </div>
+                                  </div>
+                                  <div className="flex  gap-2 justify-center bg-emerald-100 text-emerald-500 rounded-md p-1 text-xs">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="18"
+                                      height="18"
+                                      viewBox="0 0 1024 1024"
+                                    >
+                                      <path
+                                        fill="#10B981"
+                                        d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311H144c-17.7 0-32 14.3-32 32v364c0 17.7 14.3 32 32 32h601.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1M184 852V568h81v284zm636.4-353l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 22.4-13.2 42.6-33.6 51.8H329V564.8l99.5-360.5a44.1 44.1 0 0 1 42.2-32.3c7.6 0 15.1 2.2 21.1 6.7c9.9 7.4 15.2 18.6 14.6 30.5l-9.6 198.4h314.4C829 418.5 840 436.9 840 456c0 16.5-7.2 32.1-19.6 43"
+                                      />
+                                    </svg>
+                                    <div className="flex-1">4.8</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex flex-col flex-1 justify-end w-full mt-2 text-sm">
+                              <div className="flex  gap-2 justify-center bg-emerald-500 text-white border border-solid font-semibold border-emerald-500 rounded-md p-1 text-xs">
+                                {dokter.jenis_kelamin}
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      : this.state.jenisKelamin === "Perempuan"
+                      ? this.state.dokterHadirPerempuan.map((dokter) => (
+                          <div className="flex flex-col justify-center px-4 py-3  text-xs bg-white rounded-xl shadow-sm w-full">
+                            <div className="flex gap-2.5 text-black">
+                              <img
+                                loading="lazy"
+                                srcSet={dokter.foto}
+                                className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
+                              />
+                              <div className="flex flex-col flex-1 justify-center">
+                                <div className="text-sm font-medium">
+                                  {dokter.nama}
+                                </div>
+                                <div className="text-gray-400 mt-1">
+                                  Umur : {dokter.umur} Tahun
+                                </div>
+                                <div className="flex gap-2 mt-2.5">
+                                  <div className="flex  gap-2 justify-center bg-emerald-100 text-emerald-500 rounded-md p-1 text-xs">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="18"
+                                      height="18"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        fill="#10B981"
+                                        d="M19 6h-3V5c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1H5C3.3 6 2 7.3 2 9v9c0 1.7 1.3 3 3 3h14c1.7 0 3-1.3 3-3V9c0-1.7-1.3-3-3-3m-9-1h4v1h-4zm10 13c0 .6-.4 1-1 1H5c-.6 0-1-.4-1-1v-5.6L8.7 14H15c.1 0 .2 0 .3-.1l4.7-1.6z"
+                                      />
+                                    </svg>
+                                    <div className="flex-1">
+                                      {dokter.pengalaman} Tahun
+                                    </div>
+                                  </div>
+                                  <div className="flex  gap-2 justify-center bg-emerald-100 text-emerald-500 rounded-md p-1 text-xs">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="18"
+                                      height="18"
+                                      viewBox="0 0 1024 1024"
+                                    >
+                                      <path
+                                        fill="#10B981"
+                                        d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311H144c-17.7 0-32 14.3-32 32v364c0 17.7 14.3 32 32 32h601.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1M184 852V568h81v284zm636.4-353l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 22.4-13.2 42.6-33.6 51.8H329V564.8l99.5-360.5a44.1 44.1 0 0 1 42.2-32.3c7.6 0 15.1 2.2 21.1 6.7c9.9 7.4 15.2 18.6 14.6 30.5l-9.6 198.4h314.4C829 418.5 840 436.9 840 456c0 16.5-7.2 32.1-19.6 43"
+                                      />
+                                    </svg>
+                                    <div className="flex-1">4.8</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex flex-col flex-1 justify-end w-full mt-2 text-sm">
+                              <div className="flex  gap-2 justify-center bg-emerald-500 text-white border border-solid font-semibold border-emerald-500 rounded-md p-1 text-xs">
+                                {dokter.jenis_kelamin}
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      : this.state.dokterHadir.map((dokter) => (
+                          <div className="flex flex-col justify-center px-4 py-3  text-xs bg-white rounded-xl shadow-sm w-full">
+                            <div className="flex gap-2.5 text-black">
+                              <img
+                                loading="lazy"
+                                srcSet={dokter.foto}
+                                className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
+                              />
+                              <div className="flex flex-col flex-1 justify-center">
+                                <div className="text-sm font-medium">
+                                  {dokter.nama}
+                                </div>
+                                <div className="text-gray-400 mt-1">
+                                  Umur : {dokter.umur} Tahun
+                                </div>
+                                <div className="flex gap-2 mt-2.5">
+                                  <div className="flex  gap-2 justify-center bg-emerald-100 text-emerald-500 rounded-md p-1 text-xs">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="18"
+                                      height="18"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        fill="#10B981"
+                                        d="M19 6h-3V5c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1H5C3.3 6 2 7.3 2 9v9c0 1.7 1.3 3 3 3h14c1.7 0 3-1.3 3-3V9c0-1.7-1.3-3-3-3m-9-1h4v1h-4zm10 13c0 .6-.4 1-1 1H5c-.6 0-1-.4-1-1v-5.6L8.7 14H15c.1 0 .2 0 .3-.1l4.7-1.6z"
+                                      />
+                                    </svg>
+                                    <div className="flex-1">
+                                      {dokter.pengalaman} Tahun
+                                    </div>
+                                  </div>
+                                  <div className="flex  gap-2 justify-center bg-emerald-100 text-emerald-500 rounded-md p-1 text-xs">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="18"
+                                      height="18"
+                                      viewBox="0 0 1024 1024"
+                                    >
+                                      <path
+                                        fill="#10B981"
+                                        d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311H144c-17.7 0-32 14.3-32 32v364c0 17.7 14.3 32 32 32h601.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1M184 852V568h81v284zm636.4-353l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 22.4-13.2 42.6-33.6 51.8H329V564.8l99.5-360.5a44.1 44.1 0 0 1 42.2-32.3c7.6 0 15.1 2.2 21.1 6.7c9.9 7.4 15.2 18.6 14.6 30.5l-9.6 198.4h314.4C829 418.5 840 436.9 840 456c0 16.5-7.2 32.1-19.6 43"
+                                      />
+                                    </svg>
+                                    <div className="flex-1">4.8</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex flex-col flex-1 justify-end w-full mt-2 text-sm">
+                              <div className="flex  gap-2 justify-center bg-emerald-500 text-white border border-solid font-semibold border-emerald-500 rounded-md p-1 text-xs">
+                                {dokter.jenis_kelamin}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                  </Slider>
+                </>
+              )}
 
-              <Slider {...settings}>
-                {/* Card Dokter */}
-                {this.state.jenisKelamin === "Laki-laki"
-                  ? this.state.dokterHadirLakilaki.map((dokter) => (
-                      <div className="flex flex-col justify-center px-4 py-3  text-xs bg-white rounded-xl shadow-md w-full">
-                        <div className="flex gap-2.5 text-black">
-                          <img
-                            loading="lazy"
-                            srcSet={dokter.foto}
-                            className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
-                          />
-                          <div className="flex flex-col flex-1 justify-center">
-                            <div className="text-sm font-medium">
-                              {dokter.nama}
-                            </div>
-                            <div className="text-gray-400 mt-1">
-                              Umur : {dokter.umur} Tahun
-                            </div>
-                            <div className="flex gap-2 mt-2.5">
-                              <div className="flex  gap-2 justify-center bg-blue-100 text-blue-500 rounded-md p-1 text-xs">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="18"
-                                  height="18"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    fill="#3B82F6"
-                                    d="M19 6h-3V5c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1H5C3.3 6 2 7.3 2 9v9c0 1.7 1.3 3 3 3h14c1.7 0 3-1.3 3-3V9c0-1.7-1.3-3-3-3m-9-1h4v1h-4zm10 13c0 .6-.4 1-1 1H5c-.6 0-1-.4-1-1v-5.6L8.7 14H15c.1 0 .2 0 .3-.1l4.7-1.6z"
-                                  />
-                                </svg>
-                                <div className="flex-1">
-                                  {dokter.pengalaman} Tahun
-                                </div>
-                              </div>
-                              <div className="flex  gap-2 justify-center bg-blue-100 text-blue-500 rounded-md p-1 text-xs">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="18"
-                                  height="18"
-                                  viewBox="0 0 1024 1024"
-                                >
-                                  <path
-                                    fill="#3B82F6"
-                                    d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311H144c-17.7 0-32 14.3-32 32v364c0 17.7 14.3 32 32 32h601.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1M184 852V568h81v284zm636.4-353l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 22.4-13.2 42.6-33.6 51.8H329V564.8l99.5-360.5a44.1 44.1 0 0 1 42.2-32.3c7.6 0 15.1 2.2 21.1 6.7c9.9 7.4 15.2 18.6 14.6 30.5l-9.6 198.4h314.4C829 418.5 840 436.9 840 456c0 16.5-7.2 32.1-19.6 43"
-                                  />
-                                </svg>
-                                <div className="flex-1">4.8</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-col flex-1 justify-end w-full mt-2 text-sm">
-                          <div className="flex  gap-2 justify-center bg-blue-500 text-white border border-solid font-semibold border-blue-500 rounded-md p-1 text-xs">
-                            {dokter.jenis_kelamin}
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  : this.state.jenisKelamin === "Perempuan"
-                  ? this.state.dokterHadirPerempuan.map((dokter) => (
-                      <div className="flex flex-col justify-center px-4 py-3  text-xs bg-white rounded-xl shadow-sm w-full">
-                        <div className="flex gap-2.5 text-black">
-                          <img
-                            loading="lazy"
-                            srcSet={dokter.foto}
-                            className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
-                          />
-                          <div className="flex flex-col flex-1 justify-center">
-                            <div className="text-sm font-medium">
-                              {dokter.nama}
-                            </div>
-                            <div className="text-gray-400 mt-1">
-                              Umur : {dokter.umur} Tahun
-                            </div>
-                            <div className="flex gap-2 mt-2.5">
-                              <div className="flex  gap-2 justify-center bg-blue-100 text-blue-500 rounded-md p-1 text-xs">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="18"
-                                  height="18"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    fill="#3B82F6"
-                                    d="M19 6h-3V5c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1H5C3.3 6 2 7.3 2 9v9c0 1.7 1.3 3 3 3h14c1.7 0 3-1.3 3-3V9c0-1.7-1.3-3-3-3m-9-1h4v1h-4zm10 13c0 .6-.4 1-1 1H5c-.6 0-1-.4-1-1v-5.6L8.7 14H15c.1 0 .2 0 .3-.1l4.7-1.6z"
-                                  />
-                                </svg>
-                                <div className="flex-1">
-                                  {dokter.pengalaman} Tahun
-                                </div>
-                              </div>
-                              <div className="flex  gap-2 justify-center bg-blue-100 text-blue-500 rounded-md p-1 text-xs">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="18"
-                                  height="18"
-                                  viewBox="0 0 1024 1024"
-                                >
-                                  <path
-                                    fill="#3B82F6"
-                                    d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311H144c-17.7 0-32 14.3-32 32v364c0 17.7 14.3 32 32 32h601.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1M184 852V568h81v284zm636.4-353l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 22.4-13.2 42.6-33.6 51.8H329V564.8l99.5-360.5a44.1 44.1 0 0 1 42.2-32.3c7.6 0 15.1 2.2 21.1 6.7c9.9 7.4 15.2 18.6 14.6 30.5l-9.6 198.4h314.4C829 418.5 840 436.9 840 456c0 16.5-7.2 32.1-19.6 43"
-                                  />
-                                </svg>
-                                <div className="flex-1">4.8</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-col flex-1 justify-end w-full mt-2 text-sm">
-                          <div className="flex  gap-2 justify-center bg-blue-500 text-white border border-solid font-semibold border-blue-500 rounded-md p-1 text-xs">
-                            {dokter.jenis_kelamin}
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  : this.state.dokterHadir.map((dokter) => (
-                      <div className="flex flex-col justify-center px-4 py-3  text-xs bg-white rounded-xl shadow-sm w-full">
-                        <div className="flex gap-2.5 text-black">
-                          <img
-                            loading="lazy"
-                            srcSet={dokter.foto}
-                            className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
-                          />
-                          <div className="flex flex-col flex-1 justify-center">
-                            <div className="text-sm font-medium">
-                              {dokter.nama}
-                            </div>
-                            <div className="text-gray-400 mt-1">
-                              Umur : {dokter.umur} Tahun
-                            </div>
-                            <div className="flex gap-2 mt-2.5">
-                              <div className="flex  gap-2 justify-center bg-blue-100 text-blue-500 rounded-md p-1 text-xs">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="18"
-                                  height="18"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    fill="#3B82F6"
-                                    d="M19 6h-3V5c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1H5C3.3 6 2 7.3 2 9v9c0 1.7 1.3 3 3 3h14c1.7 0 3-1.3 3-3V9c0-1.7-1.3-3-3-3m-9-1h4v1h-4zm10 13c0 .6-.4 1-1 1H5c-.6 0-1-.4-1-1v-5.6L8.7 14H15c.1 0 .2 0 .3-.1l4.7-1.6z"
-                                  />
-                                </svg>
-                                <div className="flex-1">
-                                  {dokter.pengalaman} Tahun
-                                </div>
-                              </div>
-                              <div className="flex  gap-2 justify-center bg-blue-100 text-blue-500 rounded-md p-1 text-xs">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="18"
-                                  height="18"
-                                  viewBox="0 0 1024 1024"
-                                >
-                                  <path
-                                    fill="#3B82F6"
-                                    d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311H144c-17.7 0-32 14.3-32 32v364c0 17.7 14.3 32 32 32h601.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1M184 852V568h81v284zm636.4-353l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 16.5-7.2 32.2-19.6 43l-21.9 19l13.9 25.4a56.2 56.2 0 0 1 6.9 27.3c0 22.4-13.2 42.6-33.6 51.8H329V564.8l99.5-360.5a44.1 44.1 0 0 1 42.2-32.3c7.6 0 15.1 2.2 21.1 6.7c9.9 7.4 15.2 18.6 14.6 30.5l-9.6 198.4h314.4C829 418.5 840 436.9 840 456c0 16.5-7.2 32.1-19.6 43"
-                                  />
-                                </svg>
-                                <div className="flex-1">4.8</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-col flex-1 justify-end w-full mt-2 text-sm">
-                          <div className="flex  gap-2 justify-center bg-blue-500 text-white border border-solid font-semibold border-blue-500 rounded-md p-1 text-xs">
-                            {dokter.jenis_kelamin}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-              </Slider>
               {/* end card dokter */}
             </div>
 
@@ -776,7 +844,7 @@ class HomePage extends Component {
               </Tabs>
               {this.state.value == "tab1" && (
                 <>
-                  <div className="flex flex-col w-full h-[19rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
+                  <div className="flex flex-col w-full h-[22.2rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
                     {this.state.janjiSaatIni.length > 0 ? (
                       <>
                         {this.state.janjiSaatIni.map((dokter) => (
@@ -788,8 +856,8 @@ class HomePage extends Component {
                                 className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md"
                               />
                               <div className="flex flex-col flex-1">
-                                <div className="flex gap-2 text-center text-blue-500 whitespace-nowrap">
-                                  <div className="justify-center px-2 py-1 rounded-lg border border-blue-500 border-solid px-16">
+                                <div className="flex gap-2 text-center text-emerald-500 whitespace-nowrap">
+                                  <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
                                     {dokter.namaTindakan}
                                   </div>
                                 </div>
@@ -822,8 +890,8 @@ class HomePage extends Component {
                                   </div>
                                 </div>
                               </div>
-                              <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-green-500 whitespace-nowrap rounded-2xl bg-green-500 bg-opacity-10">
-                                <div className="shrink-0 my-auto w-2 h-2 bg-green-500 rounded-full" />
+                              <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-yellow-500 whitespace-nowrap rounded-2xl bg-yellow-500 bg-opacity-10">
+                                <div className="shrink-0 my-auto w-2 h-2 bg-yellow-500 rounded-full" />
                                 <div>Berlangsung</div>
                               </div>
                             </div>
@@ -852,10 +920,10 @@ class HomePage extends Component {
               )}
               {this.state.value == "tab2" && (
                 <>
-                  <div className="flex flex-col w-full h-[19rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
+                  <div className="flex flex-col w-full h-[22.2rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
                     {this.state.dataKosong.map((item) => (
-                      <div className="flex w-[300px]  h-auto p-4 items-center rounded-xl bg-white shadow-md  justify-between   gap-7 text-blue-500">
-                        <div className="w-[30px] h-[30px] flex justify-center items-center p-0">
+                      <div className="flex w-[300px]  h-auto p-4 items-center rounded-xl bg-white shadow-md  justify-between   gap-7 text-emerald-500">
+                        <div className="w-[50px] h-[50px] flex justify-center items-center p-0 bg-emerald-100 p-3 rounded-md">
                           <img
                             loading="lazy"
                             src={TimeImage}
@@ -866,7 +934,7 @@ class HomePage extends Component {
                           <div className="text-black font-medium text[14px]">
                             Pukul {item.jam_mulai} - {item.jam_selesai}
                           </div>
-                          <p className="text-[12px] text-blue-500 mt-1">
+                          <p className="text-[12px] text-emerald-500 mt-1">
                             Tidak Ada Pasien
                           </p>
                         </div>
@@ -877,7 +945,7 @@ class HomePage extends Component {
               )}
               {this.state.value == "tab3" && (
                 <>
-                  <div className="flex flex-col w-100 h-[19rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
+                  <div className="flex flex-col w-100 h-[22.2rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
                     {this.state.dataSelesai.length === 0 ? (
                       <div className="flex flex-col text-center max-w-[360px]">
                         <img
@@ -902,8 +970,8 @@ class HomePage extends Component {
                               className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md"
                             />
                             <div className="flex flex-col flex-1">
-                              <div className="flex gap-2 text-center text-blue-500 whitespace-nowrap">
-                                <div className="justify-center px-2 py-1 rounded-lg border border-blue-500 border-solid px-16">
+                              <div className="flex gap-2 text-center text-emerald-500 whitespace-nowrap">
+                                <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
                                   {dokter.namaTindakan}
                                 </div>
                               </div>
@@ -936,8 +1004,8 @@ class HomePage extends Component {
                                 </div>
                               </div>
                             </div>
-                            <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-blue-500 whitespace-nowrap rounded-2xl bg-blue-500 bg-opacity-10">
-                              <div className="shrink-0 my-auto w-2 h-2 bg-blue-500 rounded-full" />
+                            <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
+                              <div className="shrink-0 my-auto w-2 h-2 bg-emerald-500 rounded-full" />
                               <div>Selesai</div>
                             </div>
                           </div>

@@ -1,210 +1,90 @@
-import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import Terapis from "./pages/Terapis";
+import HomePage from "./pages/Home";
 
-import withRouter from "../withRouter";
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "../config/firebase";
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import Sidebar from "./components/menu";
+import InputTerapis from "./pages/InputTerapis";
+import InputJanjiTemu from "./pages/InputjanjiTemu";
+import InputTindakan from "./pages/InputTindakan";
+import ListTindakan from "./pages/ListTindakan";
+import JanjiTemu from "./pages/ListJanjiTemu";
+import ListDetailTindakan from "./pages/ListDetailTindakan";
+import InputDetailTindakan from "./pages/InputDetailTindakan";
+import Loading from "./components/loading";
+import EditTindakan from "./pages/EditTindakan";
+import EditDetailTindakan from "./pages/EditDetailTindakan";
+import Login from "./pages/Login";
+import UpdateTerapis from "./pages/UpdateTerapis";
+import DashboardAdmin from "./pages/DashboardAdmin";
+import JanjiTemuBulan from "./pages/ListJanjiTemuBulan";
+import BotBar from "./components/botBar";
+import Welcome from "./pages/Welcome";
 
-import { db } from "../config/firebase";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
-import Swal from "sweetalert2";
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    const idTindakan = this.props.params.id;
-    console.log(props);
-    this.state = {
-      email: "",
-      password: "",
-      username: "",
-      isSignUpActive: false,
-    };
-  }
+function App() {
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn");
 
-  handleMethodChange = () => {
-    this.setState((prevState) => ({
-      isSignUpActive: !prevState.isSignUpActive,
-    }));
-  };
-
-  handleSignUp = () => {
-    const { email, password } = this.state;
-    if (!email || !password) return;
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
-        this.handleSubmit();
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      });
-  };
-
-  handleSignIn = () => {
-    const { email, password } = this.state;
-    if (!email || !password) return;
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      });
-  };
-
-  handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    // Update the state with the new value
-    this.setState({ [name]: value }, () => {
-      // Callback to ensure state is updated before calling getRegistrasi
-    });
-  };
-
-  handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const newUser = {
-        username: this.state.username,
-        email: this.state.email,
-        password: this.state.password,
-      };
-      await addDoc(collection(db, "users"), newUser);
-      this.setState({
-        nama: "",
-        deskripsi: "",
-        gambar: "",
-      });
-      Swal.fire("Berhasil", "Berhasil Membuat Akun Baru", "success");
-    } catch (error) {
-      Swal.fire("Gagal", "Gagal menyimpan", "error");
-      console.error("Error menambahkan data:", error);
-    }
-  };
-
-  render() {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: "100%",
-          overflowX: "hidden",
-        }}
-      >
-        <div className="flex flex-col gap-0 items-start h-[100%] overflow-y-scroll pb-4 font-medium bg-slate-50 w-[100%]">
-          <div className="flex gap-5 self-stretch p-4 w-full  text-center text-stone-900">
-            <button
-              onClick={() => {
-                window.location.href = `/tindakan/detail-tindakan/${this.state.idTindakan}`;
-              }}
-              className="w-auto h-auto "
-            >
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/8b2d02e05b773c962fdd4341539effdff4e46139a4745b83f97d7e9cb10455ed?"
-                className="shrink-0 gap-0 w-6 aspect-square"
-              />
-            </button>
-            <div className="flex-auto gap-0 text-xl font-medium">Masuk</div>
+  return (
+    <div className="relative h-[100vh]">
+      <Router>
+        <div className="flex gap-2 mb-3 absolute z-[9999] p-4 w-full justify-start rounded-md items-center text-white bg-gradient-to-r from-emerald-500 to-emerald-500 h-[10%]">
+          <div className="flex-auto gap-0 text-lg font-medium">
+            Griya Terapi Sehat Kosasih
           </div>
-          <div className="flex flex-col gap-2.5 p-2 w-[100%] h-auto justify-center items-center">
-            <div className="flex flex-col items-center p-4 mx-auto w-full bg-white w-full">
-              {this.state.isSignUpActive == true && (
-                <>
-                  <div className="text-sm text-stone-900 w-full flex justify-start px-2">
-                    Username
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Username"
-                    required
-                    onChange={this.handleInputChange}
-                    name="username"
-                    className=" w-full text-[14px] justify-center px-4 py-4 mt-2.5  whitespace-nowrap rounded border border-solid border-neutral-600 text-neutral-400"
-                  />
-                </>
-              )}
-              <div className="text-sm mt-3 text-stone-900 w-full flex justify-start px-2">
-                Email
-              </div>
-              <input
-                type="text"
-                placeholder="Email"
-                required
-                onChange={this.handleInputChange}
-                name="email"
-                className=" w-full text-[14px] justify-center px-4 py-4 mt-2.5  whitespace-nowrap rounded border border-solid border-neutral-600 text-neutral-400"
-              />
-              <div className="text-sm text-stone-900 w-full flex justify-start px-2 mt-3">
-                Password
-              </div>
-              <input
-                type="password"
-                placeholder="Password"
-                required
-                onChange={this.handlePasswordChange}
-                name="password"
-                className=" w-full text-[14px] justify-center px-4 py-4 mt-2.5  whitespace-nowrap rounded border border-solid border-neutral-600 text-neutral-400"
-              />
-              <div className="flex gap-5 px-5 mt-9 w-full text-sm text-blue-500 capitalize max-w-[349px]">
-                <div className="flex-auto font-medium">Lupa Password</div>
-                <div className="flex-auto font-semibold">
-                  <span className="font-medium text-black">User</span>{" "}
-                  <span className="font-medium text-black">Baru ?</span>{" "}
-                  <button
-                    className="text-blue-500"
-                    onClick={this.handleMethodChange}
-                  >
-                    Daftar
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {this.state.isSignUpActive == true ? (
-              <>
-                <button
-                  onClick={this.handleSignUp}
-                  className="justify-center p-2 w-full text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
-                >
-                  Daftar
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={this.handleSignIn}
-                  className="justify-center p-2 w-full text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
-                >
-                  Masuk
-                </button>
-              </>
-            )}
-          </div>
+          {isLoggedIn && <BotBar />}
         </div>
-      </div>
-    );
-  }
+        <div className="h-[90vh] w-[100%] overflow-y-scroll m-0 pt-20">
+          <Routes>
+            <Route path="/welcome" element={<Welcome />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/masuk/" element={<Login />} />
+
+            {isLoggedIn ? (
+              <>
+                <Route path="/terapis" element={<Terapis />} />
+                <Route path="/dashboard" element={<DashboardAdmin />} />
+                <Route
+                  path="/tindakan/detail-tindakan/:id"
+                  element={<ListDetailTindakan />}
+                />
+                <Route
+                  path="/tindakan/detail-tindakan/update/:idTindakan/:id"
+                  element={<EditDetailTindakan />}
+                />
+                <Route path="/tindakan/update/:id" element={<EditTindakan />} />
+                <Route
+                  path="/tindakan/detail-tindakan/tambah-data/:id"
+                  element={<InputDetailTindakan />}
+                />
+                <Route path="/tindakan" element={<ListTindakan />} />
+                <Route
+                  path="/tindakan/tambah-data/"
+                  element={<InputTindakan />}
+                />
+                <Route
+                  path="/janji-temu/tambah-data/"
+                  element={<InputJanjiTemu />}
+                />
+                <Route path="/janji-temu/" element={<JanjiTemu />} />
+                <Route path="/janji-temu/bulan" element={<JanjiTemuBulan />} />
+                <Route path="/terapis/:id/" element={<UpdateTerapis />} />
+                <Route
+                  path="/terapis/tambah-data/"
+                  element={<InputTerapis />}
+                />
+              </>
+            ) : null}
+          </Routes>
+        </div>
+      </Router>
+    </div>
+  );
 }
 
-export default withRouter(Login);
+export default App;

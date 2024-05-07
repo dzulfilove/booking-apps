@@ -315,280 +315,278 @@ class JanjiTemu extends React.Component {
               </Tab>
             </Tabs>
           </div>
-          <div className="flex flex-col w-[100%] h-[100%] justify-start items-center mb-4 overflow-y-scroll p-3 ">
-            {this.state.value == "tab1" && (
-              <>
-                <div className="flex flex-col w-full h-[100%] justify-start items-center p-3 gap-3 overflow-y-scroll">
-                  {this.state.dataSaatIni.length > 0 ? (
-                    <>
-                      {this.state.dataSaatIni.map((item) => (
-                        <>
-                          <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
-                            <div className="flex gap-2.5 justify-center text-xs font-medium">
-                              <img
-                                loading="lazy"
-                                srcSet={item.foto}
-                                className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
-                              />
-                              <div className="flex flex-col flex-1">
-                                <div className="flex gap-2 text-center text-blue-500 whitespace-nowrap">
-                                  <div className="justify-center px-2 py-1 rounded-lg border border-blue-500 border-solid px-16">
-                                    {item.tindakan}
-                                  </div>
-                                </div>
-                                <div className="mt-1 text-sm text-black">
-                                  {item.dokter}
-                                </div>
-                                <div className="mt-1 text-gray-400">
-                                  Pasien : {item.nama_pasien}
+          {this.state.value == "tab1" && (
+            <>
+              <div className="flex flex-col w-full h-[27rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
+                {this.state.dataSaatIni.length > 0 ? (
+                  <>
+                    {this.state.dataSaatIni.map((item) => (
+                      <>
+                        <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
+                          <div className="flex gap-2.5 justify-center text-xs font-medium">
+                            <img
+                              loading="lazy"
+                              srcSet={item.foto}
+                              className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
+                            />
+                            <div className="flex flex-col flex-1">
+                              <div className="flex gap-2 text-center text-emerald-500 whitespace-nowrap">
+                                <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
+                                  {item.tindakan}
                                 </div>
                               </div>
+                              <div className="mt-1 text-sm text-black">
+                                {item.dokter}
+                              </div>
+                              <div className="mt-1 text-gray-400">
+                                Pasien : {item.nama_pasien}
+                              </div>
                             </div>
-                            <div className="flex gap-0 justify-center mt-4 rounded-xl">
-                              <div className="flex flex-col flex-1 text-xs text-black">
-                                <div className="flex gap-4">
+                          </div>
+                          <div className="flex gap-0 justify-center mt-4 rounded-xl">
+                            <div className="flex flex-col flex-1 text-xs text-black">
+                              <div className="flex gap-4">
+                                <img
+                                  loading="lazy"
+                                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/da0895661014f504f1582d9801e90433fdd0e20311169c3e19d61080d6e7ac6c?"
+                                  className="shrink-0 aspect-square w-[18px]"
+                                />
+                                <div>{item.tanggal}</div>
+                              </div>
+                              <div className="flex gap-4 mt-2.5 justify-between">
+                                <div className="flex gap-4 mt-2.5">
                                   <img
                                     loading="lazy"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/da0895661014f504f1582d9801e90433fdd0e20311169c3e19d61080d6e7ac6c?"
+                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/51f302d9064442e1b1b7d2c592ac690e6da9fc8c29a6a2149936dfdc19d77f6a?"
                                     className="shrink-0 aspect-square w-[18px]"
                                   />
-                                  <div>{item.tanggal}</div>
+                                  <div>
+                                    {item.jam_mulai} - {item.jam_selesai}
+                                  </div>
                                 </div>
-                                <div className="flex gap-4 mt-2.5 justify-between">
-                                  <div className="flex gap-4 mt-2.5">
-                                    <img
-                                      loading="lazy"
-                                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/51f302d9064442e1b1b7d2c592ac690e6da9fc8c29a6a2149936dfdc19d77f6a?"
-                                      className="shrink-0 aspect-square w-[18px]"
-                                    />
-                                    <div>
-                                      {item.jam_mulai} - {item.jam_selesai}
-                                    </div>
-                                  </div>
-                                  <div className="flex gap-2.5 justify-center self-end px-2 py-1 text-xs font-medium text-center text-green-500 whitespace-nowrap rounded-2xl bg-green-500 bg-opacity-10">
-                                    <div className="shrink-0 my-auto w-2 h-2 bg-green-500 rounded-full" />
-                                    <div>Berlangsung</div>
-                                  </div>
+                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 text-xs font-medium text-center text-yellow-500 whitespace-nowrap rounded-2xl bg-yellow-500 bg-opacity-10">
+                                  <div className="shrink-0 my-auto w-2 h-2 bg-yellow-500 rounded-full" />
+                                  <div>Berlangsung</div>
                                 </div>
                               </div>
                             </div>
+                          </div>
 
-                            <div className="flex gap-4 mt-4 text-sm text-center whitespace-nowrap">
-                              <button
-                                className="flex-1 w-12 p-2 justify-center text-white bg-blue-500 rounded-lg items-center"
-                                onClick={() => this.handleStatus(item)}
-                              >
-                                Selesai
-                              </button>
+                          <div className="flex gap-4 mt-4 text-sm text-center whitespace-nowrap">
+                            <button
+                              className="flex-1 w-12 p-2 justify-center text-white bg-emerald-500 rounded-lg items-center"
+                              onClick={() => this.handleStatus(item)}
+                            >
+                              Selesai
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex flex-col text-center max-w-[360px]">
+                      <img
+                        loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/0c65606ebee1b6385716d2b992b9da1ce85e7d156aec662e98ee133e4645beff?"
+                        className="self-center w-full aspect-[1.37] max-w-[250px]"
+                      />
+                      <div className="mt-4 w-full text-base font-medium text-slate-700">
+                        Aktifitas masih kosong
+                      </div>
+                      <div className="w-full text-xs text-gray-400">
+                        Yuk Terapi Sekarang !!!
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </>
+          )}
+          {this.state.value == "tab2" && (
+            <>
+              <div className="flex flex-col w-full h-[27rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
+                {this.state.dataJanji.length > 0 ? (
+                  <>
+                    {this.state.dataJanji.map((item) => (
+                      <>
+                        <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
+                          <div className="flex gap-2.5 justify-center text-xs font-medium">
+                            <img
+                              loading="lazy"
+                              srcSet={item.foto}
+                              className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
+                            />
+                            <div className="flex flex-col flex-1">
+                              <div className="flex gap-2 text-center text-emerald-500 whitespace-nowrap">
+                                <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
+                                  {item.tindakan}
+                                </div>
+                              </div>
+                              <div className="mt-1 text-sm text-black">
+                                {item.dokter}
+                              </div>
+                              <div className="mt-1 text-gray-400">
+                                Pasien : {item.nama_pasien}
+                              </div>
                             </div>
                           </div>
-                        </>
-                      ))}
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex flex-col text-center max-w-[360px]">
-                        <img
-                          loading="lazy"
-                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/0c65606ebee1b6385716d2b992b9da1ce85e7d156aec662e98ee133e4645beff?"
-                          className="self-center w-full aspect-[1.37] max-w-[250px]"
-                        />
-                        <div className="mt-4 w-full text-base font-medium text-slate-700">
-                          Aktifitas masih kosong
-                        </div>
-                        <div className="w-full text-xs text-gray-400">
-                          Yuk Terapi Sekarang !!!
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
-            {this.state.value == "tab2" && (
-              <>
-                <div className="flex flex-col w-full h-[100%] justify-start items-center p-3 gap-3 overflow-y-scroll">
-                  {this.state.dataJanji.length > 0 ? (
-                    <>
-                      {this.state.dataJanji.map((item) => (
-                        <>
-                          <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
-                            <div className="flex gap-2.5 justify-center text-xs font-medium">
-                              <img
-                                loading="lazy"
-                                srcSet={item.foto}
-                                className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
-                              />
-                              <div className="flex flex-col flex-1">
-                                <div className="flex gap-2 text-center text-blue-500 whitespace-nowrap">
-                                  <div className="justify-center px-2 py-1 rounded-lg border border-blue-500 border-solid px-16">
-                                    {item.tindakan}
-                                  </div>
-                                </div>
-                                <div className="mt-1 text-sm text-black">
-                                  {item.dokter}
-                                </div>
-                                <div className="mt-1 text-gray-400">
-                                  Pasien : {item.nama_pasien}
+                          <div className="flex gap-0 justify-center mt-4 rounded-xl">
+                            <div className="flex flex-col flex-1 text-xs text-black">
+                              <div className="flex gap-4">
+                                <img
+                                  loading="lazy"
+                                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/da0895661014f504f1582d9801e90433fdd0e20311169c3e19d61080d6e7ac6c?"
+                                  className="shrink-0 aspect-square w-[18px]"
+                                />
+                                <div>{item.tanggal}</div>
+                              </div>
+                              <div className="flex gap-4 mt-2.5">
+                                <img
+                                  loading="lazy"
+                                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/51f302d9064442e1b1b7d2c592ac690e6da9fc8c29a6a2149936dfdc19d77f6a?"
+                                  className="shrink-0 aspect-square w-[18px]"
+                                />
+                                <div>
+                                  {item.jam_mulai} - {item.jam_selesai}
                                 </div>
                               </div>
                             </div>
-                            <div className="flex gap-0 justify-center mt-4 rounded-xl">
-                              <div className="flex flex-col flex-1 text-xs text-black">
-                                <div className="flex gap-4">
-                                  <img
-                                    loading="lazy"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/da0895661014f504f1582d9801e90433fdd0e20311169c3e19d61080d6e7ac6c?"
-                                    className="shrink-0 aspect-square w-[18px]"
-                                  />
-                                  <div>{item.tanggal}</div>
+                            {item.status == "berlangsung" ? (
+                              <>
+                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
+                                  <div className="shrink-0 my-auto w-2 h-2 bg-emerald-500 rounded-full" />
+                                  <div>Berlangsung</div>
                                 </div>
-                                <div className="flex gap-4 mt-2.5">
-                                  <img
-                                    loading="lazy"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/51f302d9064442e1b1b7d2c592ac690e6da9fc8c29a6a2149936dfdc19d77f6a?"
-                                    className="shrink-0 aspect-square w-[18px]"
-                                  />
-                                  <div>
-                                    {item.jam_mulai} - {item.jam_selesai}
-                                  </div>
+                              </>
+                            ) : (
+                              <>
+                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
+                                  <div className="shrink-0 my-auto w-2 h-2 bg-emerald-500 rounded-full" />
+                                  <div>Selesai</div>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex flex-col text-center max-w-[360px]">
+                      <img
+                        loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/0c65606ebee1b6385716d2b992b9da1ce85e7d156aec662e98ee133e4645beff?"
+                        className="self-center w-full aspect-[1.37] max-w-[250px]"
+                      />
+                      <div className="mt-4 w-full text-base font-medium text-slate-700">
+                        Aktifitas masih kosong
+                      </div>
+                      <div className="w-full text-xs text-gray-400">
+                        Yuk Terapi Sekarang !!!
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </>
+          )}
+          {this.state.value == "tab3" && (
+            <>
+              <div className="flex flex-col w-full h-[27rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
+                {this.state.dataSelesai.length > 0 ? (
+                  <>
+                    {this.state.dataSelesai.map((item) => (
+                      <>
+                        <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
+                          <div className="flex gap-2.5 justify-center text-xs font-medium">
+                            <img
+                              loading="lazy"
+                              srcSet={item.foto}
+                              className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
+                            />
+                            <div className="flex flex-col flex-1">
+                              <div className="flex gap-2 text-center text-emerald-500 whitespace-nowrap">
+                                <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
+                                  {item.tindakan}
                                 </div>
                               </div>
-                              {item.status == "berlangsung" ? (
-                                <>
-                                  <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-green-500 whitespace-nowrap rounded-2xl bg-green-500 bg-opacity-10">
-                                    <div className="shrink-0 my-auto w-2 h-2 bg-green-500 rounded-full" />
-                                    <div>Berlangsung</div>
-                                  </div>
-                                </>
-                              ) : (
-                                <>
-                                  <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-blue-500 whitespace-nowrap rounded-2xl bg-blue-500 bg-opacity-10">
-                                    <div className="shrink-0 my-auto w-2 h-2 bg-blue-500 rounded-full" />
-                                    <div>Selesai</div>
-                                  </div>
-                                </>
-                              )}
+                              <div className="mt-1 text-sm text-black">
+                                {item.dokter}
+                              </div>
+                              <div className="mt-1 text-gray-400">
+                                Pasien : {item.nama_pasien}
+                              </div>
                             </div>
                           </div>
-                        </>
-                      ))}
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex flex-col text-center max-w-[360px]">
-                        <img
-                          loading="lazy"
-                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/0c65606ebee1b6385716d2b992b9da1ce85e7d156aec662e98ee133e4645beff?"
-                          className="self-center w-full aspect-[1.37] max-w-[250px]"
-                        />
-                        <div className="mt-4 w-full text-base font-medium text-slate-700">
-                          Aktifitas masih kosong
-                        </div>
-                        <div className="w-full text-xs text-gray-400">
-                          Yuk Terapi Sekarang !!!
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
-            {this.state.value == "tab3" && (
-              <>
-                <div className="flex flex-col w-full h-[100%] justify-start items-center p-3 gap-3 overflow-y-scroll">
-                  {this.state.dataSelesai.length > 0 ? (
-                    <>
-                      {this.state.dataSelesai.map((item) => (
-                        <>
-                          <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
-                            <div className="flex gap-2.5 justify-center text-xs font-medium">
-                              <img
-                                loading="lazy"
-                                srcSet={item.foto}
-                                className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
-                              />
-                              <div className="flex flex-col flex-1">
-                                <div className="flex gap-2 text-center text-blue-500 whitespace-nowrap">
-                                  <div className="justify-center px-2 py-1 rounded-lg border border-blue-500 border-solid px-16">
-                                    {item.tindakan}
-                                  </div>
-                                </div>
-                                <div className="mt-1 text-sm text-black">
-                                  {item.dokter}
-                                </div>
-                                <div className="mt-1 text-gray-400">
-                                  Pasien : {item.nama_pasien}
+                          <div className="flex gap-0 justify-center mt-4 rounded-xl">
+                            <div className="flex flex-col flex-1 text-xs text-black">
+                              <div className="flex gap-4">
+                                <img
+                                  loading="lazy"
+                                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/da0895661014f504f1582d9801e90433fdd0e20311169c3e19d61080d6e7ac6c?"
+                                  className="shrink-0 aspect-square w-[18px]"
+                                />
+                                <div>{item.tanggal}</div>
+                              </div>
+                              <div className="flex gap-4 mt-2.5">
+                                <img
+                                  loading="lazy"
+                                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/51f302d9064442e1b1b7d2c592ac690e6da9fc8c29a6a2149936dfdc19d77f6a?"
+                                  className="shrink-0 aspect-square w-[18px]"
+                                />
+                                <div>
+                                  {item.jam_mulai} - {item.jam_selesai}
                                 </div>
                               </div>
                             </div>
-                            <div className="flex gap-0 justify-center mt-4 rounded-xl">
-                              <div className="flex flex-col flex-1 text-xs text-black">
-                                <div className="flex gap-4">
-                                  <img
-                                    loading="lazy"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/da0895661014f504f1582d9801e90433fdd0e20311169c3e19d61080d6e7ac6c?"
-                                    className="shrink-0 aspect-square w-[18px]"
-                                  />
-                                  <div>{item.tanggal}</div>
+                            {item.status == "berlangsung" ? (
+                              <>
+                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
+                                  <div className="shrink-0 my-auto w-2 h-2 bg-emerald-500 rounded-full" />
+                                  <div>Berlangsung</div>
                                 </div>
-                                <div className="flex gap-4 mt-2.5">
-                                  <img
-                                    loading="lazy"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/51f302d9064442e1b1b7d2c592ac690e6da9fc8c29a6a2149936dfdc19d77f6a?"
-                                    className="shrink-0 aspect-square w-[18px]"
-                                  />
-                                  <div>
-                                    {item.jam_mulai} - {item.jam_selesai}
-                                  </div>
+                              </>
+                            ) : (
+                              <>
+                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
+                                  <div className="shrink-0 my-auto w-2 h-2 bg-emerald-500 rounded-full" />
+                                  <div>Selesai</div>
                                 </div>
-                              </div>
-                              {item.status == "berlangsung" ? (
-                                <>
-                                  <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-green-500 whitespace-nowrap rounded-2xl bg-green-500 bg-opacity-10">
-                                    <div className="shrink-0 my-auto w-2 h-2 bg-green-500 rounded-full" />
-                                    <div>Berlangsung</div>
-                                  </div>
-                                </>
-                              ) : (
-                                <>
-                                  <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-blue-500 whitespace-nowrap rounded-2xl bg-blue-500 bg-opacity-10">
-                                    <div className="shrink-0 my-auto w-2 h-2 bg-blue-500 rounded-full" />
-                                    <div>Selesai</div>
-                                  </div>
-                                </>
-                              )}
-                            </div>
+                              </>
+                            )}
                           </div>
-                        </>
-                      ))}
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex flex-col text-center max-w-[360px]">
-                        <img
-                          loading="lazy"
-                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/0c65606ebee1b6385716d2b992b9da1ce85e7d156aec662e98ee133e4645beff?"
-                          className="self-center w-full aspect-[1.37] max-w-[250px]"
-                        />
-                        <div className="mt-4 w-full text-base font-medium text-slate-700">
-                          Aktifitas masih kosong
                         </div>
-                        <div className="w-full text-xs text-gray-400">
-                          Yuk Terapi Sekarang !!!
-                        </div>
+                      </>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex flex-col text-center max-w-[360px]">
+                      <img
+                        loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/0c65606ebee1b6385716d2b992b9da1ce85e7d156aec662e98ee133e4645beff?"
+                        className="self-center w-full aspect-[1.37] max-w-[250px]"
+                      />
+                      <div className="mt-4 w-full text-base font-medium text-slate-700">
+                        Aktifitas masih kosong
                       </div>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
+                      <div className="w-full text-xs text-gray-400">
+                        Yuk Terapi Sekarang !!!
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </>
+          )}
           <button
             onClick={() => {
               window.location.href = "/janji-temu/tambah-data";
             }}
-            className="justify-center p-2 w-full text-sm text-center text-white bg-blue-500 rounded-lg max-w-[320px]"
+            className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
           >
             Tambah
           </button>

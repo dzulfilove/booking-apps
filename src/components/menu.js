@@ -16,8 +16,8 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="w-100 h-24 bg-blue-500 flex justify-center items-center z-999 sticky fixed-bottom">
-        <nav className="flex gap-7 mb-3 justify-center px-1 py-3 text-sm font-medium capitalize whitespace-nowrap bg-blue-500 text-white ">
+      <div className="w-100 h-24 bg-emerald-500 flex justify-center items-center z-999 sticky fixed-bottom">
+        <nav className="flex gap-7 mb-3 justify-center px-1 py-3 text-sm font-medium capitalize whitespace-nowrap bg-emerald-500 text-white ">
           <Link loading="lazy" to="/" className="flex flex-col">
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/fde68c5ea5a5a6ca217a2facf4454ee962ca5e98122ca0e9f776f58c5dfed744?"
