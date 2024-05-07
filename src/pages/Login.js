@@ -84,6 +84,7 @@ class Login extends React.Component {
         sessionStorage.setItem("isLoggedIn", true, () => {
           window.location.href = "/dashboard";
         });
+        window.location.href = "/dashboard";
       })
       .catch((error) => {
         const errorCode = error.code;
