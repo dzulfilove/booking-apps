@@ -19,6 +19,7 @@ import {
 } from "firebase/firestore";
 import Swal from "sweetalert2";
 import Loading from "../components/loading";
+import { Link } from "react-router-dom";
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -128,7 +129,7 @@ class Login extends React.Component {
 
   render() {
     if (this.state.login == true) {
-      return <Navigate to="/dashboard" />;
+      return <Link to="/dashboard" />;
     }
     return (
       <div
