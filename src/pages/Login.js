@@ -71,20 +71,19 @@ class Login extends React.Component {
       .then((userCredential) => {
         const user = userCredential.user;
         console.log(user);
-        Swal.fire(
-          {
-            icon: "success",
-            title: "Berhasil",
-            text: "Selamat, Anda Berhasil Masuk ",
-            showConfirmButton: false,
-            timer: 1500,
-          },
-          () => {}
-        );
-        sessionStorage.setItem("isLoggedIn", true, () => {
-          window.location.href = "/dashboard";
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil",
+          text: "Selamat, Anda Berhasil Masuk ",
+          showConfirmButton: false,
+          timer: 1500,
         });
-        window.location.href = "/dashboard";
+        // Setelah berhasil masuk, set sessionStorage dan arahkan ke dashboard
+        sessionStorage.setItem("isLoggedIn", true);
+        sessionStorage.setItem("user", JSON.stringify(user)); // Jika perlu menyimpan info pengguna
+        // Redirect setelah sessionStorage diset
+        sessionStorage.getItem("isLoggedIn") &&
+          (window.location.href = "/dashboard");
       })
       .catch((error) => {
         const errorCode = error.code;
