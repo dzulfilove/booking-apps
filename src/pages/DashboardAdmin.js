@@ -307,7 +307,7 @@ class DashboardAdmin extends React.Component {
               <div className="flex    p-1 items-center text-lg font-medium  rounded-md justify-center  text-white">
                 Hari Ini
               </div>
-              <div className="flex    p-1 items-center text-xs  rounded-md  text-white justify-center">
+              <div className="flex    p-1 items-center text-sm  rounded-md  text-white justify-center">
                 Pasien Aktif
               </div>
               <div className="flex    p-1 items-center text-4xl  rounded-md  text-white justify-center">
@@ -321,20 +321,20 @@ class DashboardAdmin extends React.Component {
               <div className="flex    p-1 items-center text-sm  rounded-md  text-white justify-center">
                 Berlangsung
               </div>
-              <div className="flex    p-1 items-center text-xs  rounded-md  text-white justify-center">
+              <div className="flex    p-1 items-center text-sm  rounded-md  text-white justify-center">
                 {this.state.jumlahNow}
               </div>
               <div className="flex    p-1 items-center text-sm  rounded-md  text-white justify-center">
                 Selesai
               </div>
-              <div className="flex    p-1 items-center text-xs  rounded-md  text-white justify-center">
+              <div className="flex    p-1 items-center text-sm  rounded-md  text-white justify-center">
                 {this.state.jumlahSelesai}
               </div>
             </div>
           </div>
           <div className="w-full px-3 flex h-auto   py-3">
             <div className="flex gap-2h- p-2 w-full justify-center rounded-md items-center text-center mb-2 text-white bg-emerald-600 h-[100%]">
-              <div className="flex-auto gap-0 text-lg font-medium flex-col items-start justify-start  p-1  w-[45%]">
+              <div className="flex-auto gap-0 text-lg font-medium flex-col items-start justify-start  p-1  w-[30%]">
                 <div className="flex    p-1 items-center text-lg font-medium  rounded-md justify-start  text-white">
                   Bulan {this.state.bulan}
                 </div>
@@ -342,7 +342,7 @@ class DashboardAdmin extends React.Component {
                   Capaian
                 </div>
               </div>
-              <div className="flex gap-1 text-lg font-medium  items-center justify-between  p-1 w-[55%] ">
+              <div className="flex gap-1 text-lg font-medium  items-center justify-between  p-1 w-[70%] ">
                 <div className="flex flex-col items-center justify-start gap-1">
                   <div className="flex    p-1 items-center text-sm  rounded-md  text-white justify-center">
                     Pasien
