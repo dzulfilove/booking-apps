@@ -73,17 +73,29 @@ class Login extends React.Component {
       .then((userCredential) => {
         const user = userCredential.user;
         console.log(user);
+        // Swal.fire({
+        //   icon: "success",
+        //   title: "Berhasil",
+        //   text: "Selamat, Anda Berhasil Masuk ",
+        //   showConfirmButton: false,
+        //   timer: 1500,
+        // });
+
         Swal.fire({
           icon: "success",
-          title: "Berhasil",
           text: "Selamat, Anda Berhasil Masuk ",
-          showConfirmButton: false,
-          timer: 1500,
+
+          confirmButtonColor: "#10B981",
+          confirmButtonText: "Ya",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            return <Navigate to="/home" />;
+          }
         });
         // Setelah berhasil masuk, set sessionStorage dan arahkan ke dashboard
         sessionStorage.setItem("isLoggedIn", true);
         sessionStorage.setItem("user", JSON.stringify(user));
-        this.setState({ login: true }); // Jika perlu menyimpan info pengguna
+        // this.setState({ login: true }); // Jika perlu menyimpan info pengguna
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -119,6 +131,7 @@ class Login extends React.Component {
         "Berhasil Membuat Akun Baru, Silakan Masuk Ke Akun Anda",
         "success"
       );
+
       this.handleMethodChange();
       this.setState({ load: false });
     } catch (error) {
@@ -128,9 +141,6 @@ class Login extends React.Component {
   };
 
   render() {
-    if (this.state.login == true) {
-      return redirect("/dashboard");
-    }
     return (
       <div
         style={{
