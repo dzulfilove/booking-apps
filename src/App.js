@@ -37,7 +37,7 @@ function App() {
           <div className="flex-auto gap-0 text-lg font-medium">
             Griya Terapi Sehat Kosasih
           </div>
-          .
+
           <BotBar />
         </div>
         <div className="h-[90vh] w-[100%] overflow-y-scroll m-0 pt-20">
