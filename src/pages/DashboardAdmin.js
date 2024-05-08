@@ -336,7 +336,7 @@ class DashboardAdmin extends React.Component {
             <div className="flex gap-2h- p-2 w-full justify-center rounded-md items-center text-center mb-2 text-white bg-emerald-600 h-[100%]">
               <div className="flex-auto gap-0 text-lg font-medium flex-col items-start justify-start  p-1  w-[30%]">
                 <div className="flex    p-1 items-center text-lg font-medium  rounded-md justify-start  text-white">
-                  Bulan {this.state.bulan}
+                  {this.state.bulan}
                 </div>
                 <div className="flex   font-normal p-1 items-center text-sm  rounded-md  text-slate-200 justify-start">
                   Capaian
