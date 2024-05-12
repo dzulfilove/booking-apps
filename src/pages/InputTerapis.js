@@ -27,6 +27,8 @@ class InputTerapis extends React.Component {
       // tanggal: dayjs().locale("id"),
       isProses: false,
       imgSementara: "",
+      lokasi: null,
+      pasien: 0,
     };
   }
   componentDidMount() {}
@@ -95,61 +97,91 @@ class InputTerapis extends React.Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    this.setState({ isProses: true });
-    // buat nama file foto
-    const nama = this.state.nama;
-    const imageUrl = nama.toLowerCase().replace(/\s+/g, "-");
 
-    try {
-      const imgRef = ref(dbImage, `dokters/${imageUrl}`);
-      await uploadBytes(imgRef, this.state.foto);
-
-      const urlFoto = await getDownloadURL(imgRef);
-
-      const newDoctor = {
-        nama: this.state.nama,
-        tanggal_lahir: this.state.tanggalLahir,
-        jenis_kelamin: this.state.jenis_kelamin,
-        pengalaman: this.state.pengalaman,
-        // pengalaman: "10 Tahun",
-        umur: this.state.umur,
-        kontak: this.state.kontak,
-        foto: urlFoto,
-      };
-      await addDoc(collection(db, "dokters"), newDoctor);
-
+    if (
+      this.state.nama == "" &&
+      this.state.pengalaman == "" &&
+      this.state.jenisKelamin == "" &&
+      this.state.umur == "" &&
+      this.state.kontak == "" &&
+      this.state.pasien == "" &&
+      this.state.tanggalLahir == "" &&
+      this.state.alamat == "" &&
+      this.state.foto == null &&
+      this.state.fotoDisplay == "" &&
+      this.state.lokasi == null
+    ) {
       Swal.fire({
         icon: "success",
-        text: "Data dokter berhasil ditambah",
-        confirmButtonColor: "#10B981",
-        confirmButtonText: "Ya",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = "/terapis";
-        }
+        title: "Gagal",
+        text: "Lengkapi Semua Data",
+        timer: 3000,
       });
+    } else {
+      this.setState({ isProses: true });
+      // buat nama file foto
+      const nama = this.state.nama;
+      const imageUrl = nama.toLowerCase().replace(/\s+/g, "-");
 
-      this.setState({
-        nama: "",
-        pengalaman: "",
-        jenisKelamin: "",
-        umur: "",
-        kontak: "",
-        tanggalLahir: "",
-        foto: null,
-        fotoDisplay: "",
-        alamat: "",
-        isProses: false,
-      });
-    } catch (error) {
-      Swal.fire("Error", "Gagal menambah data", "error");
-      console.error("Error menambahkan data:", error);
+      try {
+        const imgRef = ref(dbImage, `dokters/${imageUrl}`);
+        await uploadBytes(imgRef, this.state.foto);
+
+        const urlFoto = await getDownloadURL(imgRef);
+
+        const newDoctor = {
+          nama: this.state.nama,
+          tanggal_lahir: this.state.tanggalLahir,
+          jenis_kelamin: this.state.jenis_kelamin,
+          pengalaman: this.state.pengalaman,
+          // pengalaman: "10 Tahun",
+          umur: this.state.umur,
+          kontak: this.state.kontak,
+          lokasi: this.state.lokasi,
+          foto: urlFoto,
+          jml_pasien: this.state.pasien,
+        };
+        await addDoc(collection(db, "dokters"), newDoctor);
+
+        Swal.fire({
+          icon: "success",
+          text: "Data dokter berhasil ditambah",
+          confirmButtonColor: "#10B981",
+          confirmButtonText: "Ya",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/terapis";
+          }
+        });
+
+        this.setState({
+          nama: "",
+          pengalaman: "",
+          jenisKelamin: "",
+          umur: "",
+          kontak: "",
+          tanggalLahir: "",
+          foto: null,
+          fotoDisplay: "",
+          alamat: "",
+          lokasi: null,
+          isProses: false,
+          pasien: 0,
+        });
+      } catch (error) {
+        Swal.fire("Error", "Gagal menambah data", "error");
+        console.error("Error menambahkan data:", error);
+      }
     }
   };
   render() {
     const options = [
       { value: "Laki-laki", label: "Laki-laki" },
       { value: "Perempuan", label: "Perempuan" },
+    ];
+    const optionsLokasi = [
+      { value: "GTS Tirtayasa", label: "GTS Tirta" },
+      { value: "GTS Kemiling", label: "GTS Kemiling" },
     ];
     return (
       <div
@@ -193,14 +225,17 @@ class InputTerapis extends React.Component {
                 <input
                   type="file"
                   accept="image/*"
+                  required
                   className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
                   onChange={this.handleFileChange}
                 />
-                <span className="mr-2">Pilih berkas</span>
+                <div className=" flex justify-center items-center p-2 text-emerald-50 bg-emerald-500 h-full w-full rounded-lg">
+                  <span className="text-sm">Pilih berkas</span>
+                </div>
               </div>
             </div>
             <div className="flex flex-col gap-1 justify-center w-[100%] h-auto p-4 text-[14px]">
-              <div className="gap-0 w-full text-xs text-stone-900">Nama</div>
+              <div className="gap-0 w-full text-sm text-stone-900">Nama</div>
               <input
                 type="text"
                 placeholder="Nama"
@@ -208,9 +243,9 @@ class InputTerapis extends React.Component {
                 value={this.state.nama}
                 onChange={(e) => this.setState({ nama: e.target.value })}
                 name="nama"
-                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
                 No. Telepon
               </div>
               <input
@@ -220,31 +255,32 @@ class InputTerapis extends React.Component {
                 onChange={(e) => this.setState({ kontak: e.target.value })}
                 required
                 name="no_hp"
-                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs rounded border border-solid border-neutral-400 text-neutral-400"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
                 Tanggal Lahir
               </div>
               <div className="w-[100%] p-0 mt-4">
                 <LocalizationProvider
                   dateAdapter={AdapterDayjs}
-                  className="text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                  className="text-[14px] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
                   adapterLocale="en-gb"
                 >
                   <DatePicker
-                    className="text-[14px] border-solid border-neutral-400 bg-white w-[100%] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                    className="text-[14px] border-solid border-neutral-400 bg-white w-[100%] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
                     locale="id"
                     value={this.state.tanggalLahir}
+                    required
                     onChange={this.hitungUmur}
                     inputFormat="DD/MM/YYYY"
                   />
                 </LocalizationProvider>{" "}
               </div>
-              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
                 Jenis Kelamin
               </div>
               <div className="select-container relative w-[100%]">
-                <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize border border-solid border-neutral-400 bg-white text-neutral-950 rounded-lg">
+                <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-sm leading-4 capitalize border border-solid border-neutral-400 bg-white text-neutral-950 rounded-lg">
                   <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-white border-solid border-neutral-400 rounded-lg  gap-2 ">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -292,7 +328,7 @@ class InputTerapis extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className="gap-0 mt-5 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-5 w-full text-sm text-stone-900 text-[14px]">
                 Umur
               </div>
               <input
@@ -302,9 +338,9 @@ class InputTerapis extends React.Component {
                 value={this.state.umur}
                 onChange={(e) => this.setState({ umur: e.target.value })}
                 readOnly
-                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
                 Pengalaman
               </div>
               <input
@@ -314,9 +350,21 @@ class InputTerapis extends React.Component {
                 onChange={(e) => this.setState({ pengalaman: e.target.value })}
                 required
                 name="no_hp"
-                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs rounded border border-solid border-neutral-400 text-neutral-400"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-5 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
+                Jumlah Pasien Ditangani
+              </div>
+              <input
+                type="number"
+                placeholder="Pengalaman"
+                value={this.state.pasien}
+                onChange={(e) => this.setState({ pasien: e.target.value })}
+                required
+                name="no_hp"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm rounded border border-solid border-neutral-400 text-neutral-400"
+              />
+              <div className="gap-0 mt-5 w-full text-sm text-stone-900 text-[14px]">
                 Alamat Lengkap
               </div>
               <input
@@ -326,12 +374,63 @@ class InputTerapis extends React.Component {
                 onChange={(e) => this.setState({ alamat: e.target.value })}
                 required
                 name="alamat"
-                className="justify-center text-[14px] px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className="justify-center text-[14px] px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-1 w-full text-xs italic text-right text-zinc-400">
+              <div className="gap-0 mt-1 w-full text-sm italic text-right text-zinc-400">
                 Maks 100 Karaketer
               </div>
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
+                Lokasi Kantor
+              </div>
+              <div className="select-container relative w-[100%]">
+                <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-sm leading-4 capitalize border border-solid border-neutral-400 bg-white text-neutral-950 rounded-lg">
+                  <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-white border-solid border-neutral-400 rounded-lg  gap-2 ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="#29a7d1"
+                        d="M18.39 14.56C16.71 13.7 14.53 13 12 13s-4.71.7-6.39 1.56A2.97 2.97 0 0 0 4 17.22V20h16v-2.78c0-1.12-.61-2.15-1.61-2.66M12 12c2.21 0 4-1.79 4-4V4.5c0-.83-.67-1.5-1.5-1.5c-.52 0-.98.27-1.25.67c-.27-.4-.73-.67-1.25-.67s-.98.27-1.25.67c-.27-.4-.73-.67-1.25-.67C8.67 3 8 3.67 8 4.5V8c0 2.21 1.79 4 4 4"
+                      />
+                    </svg>
+                    <Select
+                      options={optionsLokasi}
+                      name="lokasi"
+                      placeholder={`Pilih Lokasi GTS ${
+                        this.state.lokasi ? `- ${this.state.lokasi}` : ""
+                      }`}
+                      onChange={async (selectedOption) => {
+                        await new Promise((resolve) => {
+                          this.setState(
+                            { lokasi: selectedOption.value },
+                            resolve
+                          );
+                        });
+                      }}
+                      classNames={{
+                        menuButton: ({ isDisabled }) =>
+                          `text-[15px] flex text-sm text-slate-400 w-[100%] bg-white rounded shadow-sm transition-all duration-300 focus:outline-none ${
+                            isDisabled
+                              ? "bg-white "
+                              : "bg-white focus:ring focus:ring-blue-500/20"
+                          }`,
+                        menu: "absolute z-10 w-full bg-white shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
+                        listItem: ({ isSelected }) =>
+                          `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
+                            isSelected
+                              ? `text-gray-700 bg-white`
+                              : `text-gray-700 hover:bg-emerald-500 hover:text-white`
+                          }`,
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
+
             <button
               className="justify-center p-2 w-full text-base text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
               disabled={this.state.isProses}

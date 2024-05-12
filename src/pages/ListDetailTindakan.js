@@ -251,7 +251,7 @@ class ListDetailTindakan extends React.Component {
                 <div className="flex flex-col justify-center bg-white px-4 pt-2 mt-0 w-full rounded-2xl z-[9] ">
                   <div className="flex gap-4 mt-4">
                     <div className="flex flex-col flex-1 justify-center">
-                      <div className="text-xs text-zinc-400">
+                      <div className="text-sm text-zinc-400">
                         Layanan Tindakan
                       </div>
                       <div className="mt-2 text-sm font-semibold text-black">
@@ -279,17 +279,17 @@ class ListDetailTindakan extends React.Component {
                       </svg>
                     </button>
                   </div>
-                  <div className="flex flex-col mt-4 w-full text-xs text-justify text-black bg-white rounded-2xl">
-                    <div className="text-xs text-zinc-400 mb-2">
+                  <div className="flex flex-col mt-4 w-full text-sm text-justify text-black bg-white rounded-2xl">
+                    <div className="text-sm text-zinc-400 mb-2">
                       Deskripsi Tindakan
                     </div>
                     <div className="text-[14px]">
                       {this.state.tindakan.deskripsi_tindakan}
                     </div>
                   </div>
-                  <div className="flex flex-col mt-4 w-full text-xs text-justify text-black bg-white rounded-2xl">
-                    <div className="text-xs text-zinc-400">Durasi Tindakan</div>
-                    <div className="mt-4 flex flex-col justify-start gap-4 text-[12px]">
+                  <div className="flex flex-col mt-4 w-full text-sm text-justify text-black bg-white rounded-2xl">
+                    <div className="text-sm text-zinc-400">Durasi Tindakan</div>
+                    <div className="mt-4 flex flex-col justify-start gap-4 text-sm">
                       {this.state.detailtindakan.map((item, index) => (
                         <div className="flex justify-between">
                           <div className="w-auto h-auto flex flex-col justify-start items-start gap-2">
@@ -300,8 +300,12 @@ class ListDetailTindakan extends React.Component {
                               {" "}
                               <span className="font-semibold">Lama</span> :{" "}
                               {item.lama},{" "}
-                              <span className="font-semibold">Biaya</span> :{" "}
-                              {item.biaya}
+                            </p>
+                            <p className="text-emerald-500 ml-3 mt-2">
+                              {" "}
+                              <span className="font-semibold">
+                                Biaya
+                              </span> : {item.biaya}
                             </p>
                           </div>
                           <div className="w-auto h-auto flex justify-end gap-4 items-end">
@@ -355,7 +359,7 @@ class ListDetailTindakan extends React.Component {
               onClick={() => {
                 window.location.href = `/tindakan/detail-tindakan/tambah-data/${this.state.idTindakan}`;
               }}
-              className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
+              className="justify-center p-2 w-full text-base text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
             >
               Tambah Waktu Tindakan
             </button>

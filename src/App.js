@@ -31,7 +31,7 @@ function App() {
   const isLoggedIn = sessionStorage.getItem("isLoggedIn");
 
   return (
-    <div className="relative h-[100vh] flex flex-col justify-start items-start">
+    <div className="relative h-[100vh] flex flex-col justify-start items-start ">
       <Router>
         <div className="flex gap-2 absolute z-[9999] p-4 w-full justify-start rounded-md items-center text-white bg-gradient-to-r from-emerald-500 to-emerald-500 h-[10%]">
           <div className="flex-auto gap-0 text-lg font-medium">
@@ -40,7 +40,7 @@ function App() {
 
           <BotBar />
         </div>
-        <div className="h-[90vh] w-[100%] overflow-y-scroll m-0 pt-20">
+        <div className="h-[90vh] w-[100%] overflow-y-scroll m-0 pt-20 ">
           <Routes>
             <Route path="/" element={<Welcome />} />
             <Route path="/home" element={<HomePage />} />

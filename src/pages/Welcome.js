@@ -45,15 +45,9 @@ class Welcome extends React.Component {
           />
           <Link
             to="/masuk"
-            className="flex justify-center items-center self-stretch p-2.5 mt-6 text-base text-white capitalize whitespace-nowrap rounded-lg bg-emerald-500 border border-solid border-white "
-          >
-            Masuk Sebagai Admin
-          </Link>
-          <Link
-            to="/home"
             className="flex justify-center items-center self-stretch p-2.5 mt-2 text-base text-emerald-600 capitalize whitespace-nowrap rounded-lg bg-slate-50"
           >
-            Masuk Sebagai Pasien
+            Masuk
           </Link>
         </div>
       </div>

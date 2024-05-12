@@ -250,7 +250,7 @@ class EditTindakan extends React.Component {
           </div>
           <div className="flex flex-col gap-2.5 p-2 w-[100%] h-auto justify-center items-center">
             <div className="flex flex-col gap-1 justify-center w-[100%] p-4 text-[14px]">
-              <div className="gap-0 w-full text-xs text-stone-900">
+              <div className="gap-0 w-full text-sm text-stone-900">
                 Nama Tindakan
               </div>
               <input
@@ -259,9 +259,9 @@ class EditTindakan extends React.Component {
                 value={this.state.nama}
                 onChange={this.handleInputChange}
                 name="nama"
-                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
                 Deskripsi Tindakan
               </div>
               <input
@@ -270,14 +270,14 @@ class EditTindakan extends React.Component {
                 value={this.state.deskripsi}
                 name="deskripsi"
                 onChange={this.handleInputChange}
-                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
                 Foto Tindakan
               </div>
               <div
                 id="fileUpload"
-                className="text-[12px] justify-center px-4 py-3 bg-white mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className="text-[12px] justify-center px-4 py-3 bg-white mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               >
                 <input type="file" onChange={this.handleImageChange} />
               </div>
@@ -291,7 +291,7 @@ class EditTindakan extends React.Component {
             </div>
             <button
               onClick={this.handleUpdate}
-              className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
+              className="justify-center p-2 w-full text-base text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
             >
               Simpan
             </button>

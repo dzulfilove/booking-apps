@@ -39,6 +39,8 @@ class UpdateTerapis extends React.Component {
       alamat: "",
       fotoDisplay: null,
       gambar: null,
+      lokasi: null,
+      pasien: 0,
     };
   }
 
@@ -120,6 +122,7 @@ class UpdateTerapis extends React.Component {
       const dokterDoc = await getDoc(dokterRef);
       const dokterData = await dokterDoc.data();
 
+      console.log(dokterData);
       await new Promise((resolve) => {
         this.setState(
           { dokter: dokterData, fotoDisplay: dokterData.foto },
@@ -142,74 +145,103 @@ class UpdateTerapis extends React.Component {
       umur: dokter.umur,
       pengalaman: dokter.pengalaman,
       alamat: dokter.alamat,
+      lokasi: dokter.lokasi,
+      pasien: dokter.jml_pasien,
     });
   };
   handleSubmit = async (e) => {
     e.preventDefault();
-    this.setState({ isProses: true });
-    const {
-      id,
-      nama,
-      kontak,
-      tanggalLahir,
-      jenis_kelamin,
-      umur,
-      pengalaman,
-      alamat,
-      gambar,
-    } = this.state;
-    const updateData = {};
-
-    console.log("sebelum", gambar);
-    try {
-      // Upload gambar baru (jika ada)
-      if (gambar) {
-        const imageUrl = nama.toLowerCase().replace(/\s+/g, "-");
-        const imgRef = ref(dbImage, `dokters/${imageUrl}`);
-        console.log("proses sebelum upload", imgRef);
-
-        await uploadBytes(imgRef, gambar);
-        const foto_tindakan = await getDownloadURL(imgRef);
-        console.log("proses sesudah upload", foto_tindakan);
-
-        // Update properti foto_tindakan pada dokumen tindakan yang sesuai
-        await updateDoc(doc(db, "dokters", id), {
-          nama: nama,
-          kontak: kontak,
-          tanggal_lahir: tanggalLahir,
-          jenis_kelamin: jenis_kelamin,
-          umur: umur,
-          pengalaman: pengalaman,
-          alamat: alamat,
-          foto: foto_tindakan,
-        });
-      } else {
-        // Jika tidak ada gambar baru, hanya perbarui properti nama_tindakan dan deskripsi_tindakan
-        await updateDoc(doc(db, "dokters", id), {
-          nama: nama,
-          kontak: kontak,
-          tanggal_lahir: tanggalLahir,
-          jenis_kelamin: jenis_kelamin,
-          umur: umur,
-          pengalaman: pengalaman,
-          alamat: alamat,
-        });
-      }
-
+    if (
+      this.state.nama == "" &&
+      this.state.pengalaman == "" &&
+      this.state.jenisKelamin == "" &&
+      this.state.umur == "" &&
+      this.state.kontak == "" &&
+      this.state.tanggalLahir == "" &&
+      this.state.alamat == "" &&
+      this.state.pasien == 0 &&
+      this.state.foto == null &&
+      this.state.fotoDisplay == "" &&
+      this.state.lokasi == null
+    ) {
       Swal.fire({
-        icon: "success",
-        text: "Data Dokter Berhasil Diperbarui",
-        confirmButtonColor: "#10B981",
-        confirmButtonText: "Ya",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = "/terapis";
-        }
+        icon: "warning",
+        title: "Gagal",
+        text: "Lengkapi Semua Data",
+        timer: 3000,
       });
-    } catch (error) {
-      console.error("Error updating data:", error);
-      Swal.fire("Error", "Gagal Memperbarui Data Dokter", "error");
-      this.setState({ isProses: false });
+    } else {
+      this.setState({ isProses: true });
+      const {
+        id,
+        nama,
+        kontak,
+        tanggalLahir,
+        jenis_kelamin,
+        umur,
+        pengalaman,
+        alamat,
+        gambar,
+        lokasi,
+        pasien,
+      } = this.state;
+      const updateData = {};
+
+      console.log("sebelum", gambar);
+      try {
+        // Upload gambar baru (jika ada)
+        if (gambar) {
+          const imageUrl = nama.toLowerCase().replace(/\s+/g, "-");
+          const imgRef = ref(dbImage, `dokters/${imageUrl}`);
+          console.log("proses sebelum upload", imgRef);
+
+          await uploadBytes(imgRef, gambar);
+          const foto_tindakan = await getDownloadURL(imgRef);
+          console.log("proses sesudah upload", foto_tindakan);
+
+          // Update properti foto_tindakan pada dokumen tindakan yang sesuai
+          await updateDoc(doc(db, "dokters", id), {
+            nama: nama,
+            kontak: kontak,
+            tanggal_lahir: tanggalLahir,
+            jenis_kelamin: jenis_kelamin,
+            umur: umur,
+            pengalaman: pengalaman,
+            alamat: alamat,
+            foto: foto_tindakan,
+            lokasi: lokasi,
+            jml_pasien: pasien,
+          });
+        } else {
+          // Jika tidak ada gambar baru, hanya perbarui properti nama_tindakan dan deskripsi_tindakan
+          await updateDoc(doc(db, "dokters", id), {
+            nama: nama,
+            kontak: kontak,
+            tanggal_lahir: tanggalLahir,
+            jenis_kelamin: jenis_kelamin,
+            umur: umur,
+            pengalaman: pengalaman,
+            alamat: alamat,
+            lokasi: lokasi,
+            jml_pasien: pasien,
+          });
+        }
+
+        Swal.fire({
+          icon: "success",
+          text: "Data Dokter Berhasil Diperbarui",
+          confirmButtonColor: "#10B981",
+          confirmButtonText: "Ya",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/terapis";
+          }
+        });
+      } catch (error) {
+        console.error("Error updating data:", error);
+        Swal.fire("Error", "Gagal Memperbarui Data Dokter", "error");
+        this.setState({ isProses: false });
+      }
     }
   };
 
@@ -274,7 +306,11 @@ class UpdateTerapis extends React.Component {
       { value: "Laki-laki", label: "Laki-laki" },
       { value: "Perempuan", label: "Perempuan" },
     ];
-
+    const optionsLokasi = [
+      { value: "GTS Tirtayasa", label: "GTS Tirta" },
+      { value: "GTS Palapa", label: "GTS Palapa" },
+      { value: "GTS Kemiling", label: "GTS Kemiling" },
+    ];
     const { dokter } = this.state;
     return (
       <div
@@ -321,11 +357,13 @@ class UpdateTerapis extends React.Component {
                   className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
                   onChange={this.handleFileChange}
                 />
-                <span className="mr-2">Pilih berkas</span>
+                <div className=" flex justify-center items-center p-2 text-emerald-50 bg-emerald-500 h-full w-full rounded-lg">
+                  <span className="text-sm">Pilih berkas</span>
+                </div>
               </div>
             </div>
             <div className="flex flex-col gap-1 justify-center w-[100%] h-auto p-4 text-[14px]">
-              <div className="gap-0 w-full text-xs text-stone-900">Nama</div>
+              <div className="gap-0 w-full text-sm text-stone-900">Nama</div>
               <input
                 type="text"
                 placeholder="Nama"
@@ -335,9 +373,9 @@ class UpdateTerapis extends React.Component {
                   this.setState({ nama: e.target.value });
                 }}
                 name="nama"
-                className="text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className="text-[14px] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
                 No. Telepon
               </div>
               <input
@@ -349,19 +387,19 @@ class UpdateTerapis extends React.Component {
                 }}
                 required
                 name="no_hp"
-                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs rounded border border-solid border-neutral-400 text-neutral-400"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
                 Tanggal Lahir
               </div>
               <div className="w-[100%] p-0 mt-4">
                 <LocalizationProvider
                   dateAdapter={AdapterDayjs}
-                  className="text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                  className="text-[14px] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
                   adapterLocale="en-gb"
                 >
                   <DatePicker
-                    className="text-[14px] border-solid border-neutral-400 bg-white w-[100%] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                    className="text-[14px] border-solid border-neutral-400 bg-white w-[100%] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
                     locale="id"
                     value={this.state.tanggalLahir}
                     onChange={this.hitungUmur}
@@ -369,11 +407,11 @@ class UpdateTerapis extends React.Component {
                   />
                 </LocalizationProvider>{" "}
               </div>
-              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
                 Jenis Kelamin
               </div>
               <div className="select-container relative w-[100%]">
-                <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize border border-solid border-neutral-400 bg-white text-neutral-950 rounded-lg">
+                <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-sm leading-4 capitalize border border-solid border-neutral-400 bg-white text-neutral-950 rounded-lg">
                   <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-white border-solid border-neutral-400 rounded-lg  gap-2 ">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -421,7 +459,7 @@ class UpdateTerapis extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className="gap-0 mt-5 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-5 w-full text-sm text-stone-900 text-[14px]">
                 Umur
               </div>
               <input
@@ -431,13 +469,13 @@ class UpdateTerapis extends React.Component {
                 value={this.state.umur}
                 onChange={(e) => this.setState({ umur: e.target.value })}
                 readOnly
-                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
-                Pengalaman
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
+                Pengalaman ( Dalam tahun )
               </div>
               <input
-                type="text"
+                type="number"
                 placeholder="Pengalaman"
                 value={this.state.pengalaman}
                 onChange={(e) => {
@@ -445,9 +483,21 @@ class UpdateTerapis extends React.Component {
                 }}
                 required
                 name="no_hp"
-                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs rounded border border-solid border-neutral-400 text-neutral-400"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-5 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
+                Jumlah Pasien Ditangani
+              </div>
+              <input
+                type="number"
+                placeholder="Pengalaman"
+                value={this.state.pasien}
+                onChange={(e) => this.setState({ pasien: e.target.value })}
+                required
+                name="no_hp"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm rounded border border-solid border-neutral-400 text-neutral-400"
+              />
+              <div className="gap-0 mt-5 w-full text-sm text-stone-900 text-[14px]">
                 Alamat Lengkap
               </div>
               <input
@@ -459,14 +509,64 @@ class UpdateTerapis extends React.Component {
                 }}
                 required
                 name="alamat"
-                className="justify-center text-[14px] px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className="justify-center text-[14px] px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-1 w-full text-xs italic text-right text-zinc-400">
+              <div className="gap-0 mt-1 w-full text-sm italic text-right text-zinc-400">
                 Maks 100 Karaketer
+              </div>
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
+                Lokasi Kantor
+              </div>
+              <div className="select-container relative w-[100%]">
+                <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-sm leading-4 capitalize border border-solid border-neutral-400 bg-white text-neutral-950 rounded-lg">
+                  <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-white border-solid border-neutral-400 rounded-lg  gap-2 ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="#29a7d1"
+                        d="M18.39 14.56C16.71 13.7 14.53 13 12 13s-4.71.7-6.39 1.56A2.97 2.97 0 0 0 4 17.22V20h16v-2.78c0-1.12-.61-2.15-1.61-2.66M12 12c2.21 0 4-1.79 4-4V4.5c0-.83-.67-1.5-1.5-1.5c-.52 0-.98.27-1.25.67c-.27-.4-.73-.67-1.25-.67s-.98.27-1.25.67c-.27-.4-.73-.67-1.25-.67C8.67 3 8 3.67 8 4.5V8c0 2.21 1.79 4 4 4"
+                      />
+                    </svg>
+                    <Select
+                      options={optionsLokasi}
+                      name="lokasi"
+                      placeholder={`Pilih Lokasi GTS ${
+                        this.state.lokasi ? `- ${this.state.lokasi}` : ""
+                      }`}
+                      onChange={async (selectedOption) => {
+                        await new Promise((resolve) => {
+                          this.setState(
+                            { lokasi: selectedOption.value },
+                            resolve
+                          );
+                        });
+                      }}
+                      classNames={{
+                        menuButton: ({ isDisabled }) =>
+                          `text-[15px] flex text-sm text-slate-400 w-[100%] bg-white rounded shadow-sm transition-all duration-300 focus:outline-none ${
+                            isDisabled
+                              ? "bg-white "
+                              : "bg-white focus:ring focus:ring-blue-500/20"
+                          }`,
+                        menu: "absolute z-10 w-full bg-white shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
+                        listItem: ({ isSelected }) =>
+                          `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
+                            isSelected
+                              ? `text-gray-700 bg-white`
+                              : `text-gray-700 hover:bg-emerald-500 hover:text-white`
+                          }`,
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             <button
-              className="justify-center p-2 w-full text-[0.9rem] text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
+              className="justify-center p-2 w-full text-base text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
               disabled={this.state.isProses}
               type="submit"
               onClick={this.handleSubmit}
@@ -475,7 +575,7 @@ class UpdateTerapis extends React.Component {
             </button>
 
             <button
-              className="justify-center p-2 mt-3 w-full text-[0.9rem] text-center text-white bg-red-500 rounded-lg max-w-[320px]"
+              className="justify-center p-2 mt-3 w-full text-base text-center text-white bg-red-500 rounded-lg max-w-[320px]"
               disabled={this.state.isProses}
               type="submit"
               onClick={this.handleDelete}

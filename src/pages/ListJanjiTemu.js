@@ -323,7 +323,7 @@ class JanjiTemu extends React.Component {
                     {this.state.dataSaatIni.map((item) => (
                       <>
                         <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
-                          <div className="flex gap-2.5 justify-center text-xs font-medium">
+                          <div className="flex gap-2.5 justify-center text-sm font-medium">
                             <img
                               loading="lazy"
                               srcSet={item.foto}
@@ -344,7 +344,7 @@ class JanjiTemu extends React.Component {
                             </div>
                           </div>
                           <div className="flex gap-0 justify-center mt-4 rounded-xl">
-                            <div className="flex flex-col flex-1 text-xs text-black">
+                            <div className="flex flex-col flex-1 text-sm text-black">
                               <div className="flex gap-4">
                                 <img
                                   loading="lazy"
@@ -364,7 +364,7 @@ class JanjiTemu extends React.Component {
                                     {item.jam_mulai} - {item.jam_selesai}
                                   </div>
                                 </div>
-                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 text-xs font-medium text-center text-yellow-500 whitespace-nowrap rounded-2xl bg-yellow-500 bg-opacity-10">
+                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 text-sm font-medium text-center text-yellow-500 whitespace-nowrap rounded-2xl bg-yellow-500 bg-opacity-10">
                                   <div className="shrink-0 my-auto w-2 h-2 bg-yellow-500 rounded-full" />
                                   <div>Berlangsung</div>
                                 </div>
@@ -395,7 +395,7 @@ class JanjiTemu extends React.Component {
                       <div className="mt-4 w-full text-base font-medium text-slate-700">
                         Aktifitas masih kosong
                       </div>
-                      <div className="w-full text-xs text-gray-400">
+                      <div className="w-full text-sm text-gray-400">
                         Yuk Terapi Sekarang !!!
                       </div>
                     </div>
@@ -412,7 +412,7 @@ class JanjiTemu extends React.Component {
                     {this.state.dataJanji.map((item) => (
                       <>
                         <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
-                          <div className="flex gap-2.5 justify-center text-xs font-medium">
+                          <div className="flex gap-2.5 justify-center text-sm font-medium">
                             <img
                               loading="lazy"
                               srcSet={item.foto}
@@ -433,7 +433,7 @@ class JanjiTemu extends React.Component {
                             </div>
                           </div>
                           <div className="flex gap-0 justify-center mt-4 rounded-xl">
-                            <div className="flex flex-col flex-1 text-xs text-black">
+                            <div className="flex flex-col flex-1 text-sm text-black">
                               <div className="flex gap-4">
                                 <img
                                   loading="lazy"
@@ -455,14 +455,14 @@ class JanjiTemu extends React.Component {
                             </div>
                             {item.status == "berlangsung" ? (
                               <>
-                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
-                                  <div className="shrink-0 my-auto w-2 h-2 bg-emerald-500 rounded-full" />
+                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 text-sm font-medium text-center text-yellow-500 whitespace-nowrap rounded-2xl bg-yellow-500 bg-opacity-10">
+                                  <div className="shrink-0 my-auto w-2 h-2 bg-yellow-500 rounded-full" />
                                   <div>Berlangsung</div>
                                 </div>
                               </>
                             ) : (
                               <>
-                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
+                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-sm font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
                                   <div className="shrink-0 my-auto w-2 h-2 bg-emerald-500 rounded-full" />
                                   <div>Selesai</div>
                                 </div>
@@ -484,7 +484,7 @@ class JanjiTemu extends React.Component {
                       <div className="mt-4 w-full text-base font-medium text-slate-700">
                         Aktifitas masih kosong
                       </div>
-                      <div className="w-full text-xs text-gray-400">
+                      <div className="w-full text-sm text-gray-400">
                         Yuk Terapi Sekarang !!!
                       </div>
                     </div>
@@ -501,7 +501,7 @@ class JanjiTemu extends React.Component {
                     {this.state.dataSelesai.map((item) => (
                       <>
                         <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
-                          <div className="flex gap-2.5 justify-center text-xs font-medium">
+                          <div className="flex gap-2.5 justify-center text-sm font-medium">
                             <img
                               loading="lazy"
                               srcSet={item.foto}
@@ -522,7 +522,7 @@ class JanjiTemu extends React.Component {
                             </div>
                           </div>
                           <div className="flex gap-0 justify-center mt-4 rounded-xl">
-                            <div className="flex flex-col flex-1 text-xs text-black">
+                            <div className="flex flex-col flex-1 text-sm text-black">
                               <div className="flex gap-4">
                                 <img
                                   loading="lazy"
@@ -544,14 +544,14 @@ class JanjiTemu extends React.Component {
                             </div>
                             {item.status == "berlangsung" ? (
                               <>
-                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
+                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-sm font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
                                   <div className="shrink-0 my-auto w-2 h-2 bg-emerald-500 rounded-full" />
                                   <div>Berlangsung</div>
                                 </div>
                               </>
                             ) : (
                               <>
-                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-xs font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
+                                <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-sm font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
                                   <div className="shrink-0 my-auto w-2 h-2 bg-emerald-500 rounded-full" />
                                   <div>Selesai</div>
                                 </div>
@@ -573,7 +573,7 @@ class JanjiTemu extends React.Component {
                       <div className="mt-4 w-full text-base font-medium text-slate-700">
                         Aktifitas masih kosong
                       </div>
-                      <div className="w-full text-xs text-gray-400">
+                      <div className="w-full text-sm text-gray-400">
                         Yuk Terapi Sekarang !!!
                       </div>
                     </div>
@@ -586,7 +586,7 @@ class JanjiTemu extends React.Component {
             onClick={() => {
               window.location.href = "/janji-temu/tambah-data";
             }}
-            className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
+            className="justify-center p-2 w-full text-base text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
           >
             Tambah
           </button>

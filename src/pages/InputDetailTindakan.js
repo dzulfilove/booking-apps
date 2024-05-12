@@ -136,8 +136,8 @@ class InputDetailTindakan extends React.Component {
           </div>
           <div className="flex flex-col gap-2.5 p-2 w-[100%] h-auto justify-center items-center">
             <div className="flex flex-col gap-1 justify-center w-[100%] p-4 text-[14px]">
-              <div className="gap-0 w-full text-xs text-stone-900">
-                Lama Tindakan
+              <div className="gap-0 w-full text-sm text-stone-900">
+                Lama Tindakan ( Dalam Menit )
               </div>
               <input
                 type="text"
@@ -145,9 +145,9 @@ class InputDetailTindakan extends React.Component {
                 required
                 onChange={this.handleInputChange}
                 name="durasi"
-                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
-              <div className="gap-0 mt-4 w-full text-xs text-stone-900 text-[14px]">
+              <div className="gap-0 mt-4 w-full text-sm text-stone-900 text-[14px]">
                 Biaya Tindakan
               </div>
               <input
@@ -156,12 +156,12 @@ class InputDetailTindakan extends React.Component {
                 required
                 name="biaya"
                 onChange={this.handleInputChange}
-                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-xs whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
+                className=" text-[14px] justify-center px-4 py-4 mt-2.5 text-sm whitespace-nowrap rounded border border-solid border-neutral-400 text-neutral-400"
               />
             </div>
             <button
               onClick={this.handleSubmit}
-              className="justify-center p-2 w-full text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
+              className="justify-center p-2 w-full text-base text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
             >
               Simpan
             </button>

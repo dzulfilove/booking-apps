@@ -48,7 +48,10 @@ class InputJanjiTemu extends React.Component {
       tindakanRef: null,
       biaya: 0,
       jam_selesai: "",
+      dataTerapis: [],
       bulan: dayjs().locale("id").format("MMMM"),
+      lokasi: null,
+      setLokasi: false,
     };
   }
   componentDidMount() {
@@ -75,7 +78,10 @@ class InputJanjiTemu extends React.Component {
       });
 
       await new Promise((resolve) => {
-        this.setState({ dataDokter: dokterList }, resolve);
+        this.setState(
+          { dataDokter: dokterList, dataTerapis: dokterList },
+          resolve
+        );
       });
     } catch (error) {
       console.error("Error fetching dokter data:", error);
@@ -245,6 +251,23 @@ class InputJanjiTemu extends React.Component {
         });
       }
       console.log(waktuTindakanOptions);
+    } else if (name == "lokasi") {
+      this.setState({ lokasi: selectedOption });
+      console.log("id", selectedOption.value);
+      const selectedLokasi = this.state.dataTerapis.filter(
+        (objek) => objek.lokasi === selectedOption.value
+      );
+      const data = [];
+      let newData = [...data];
+      // Menambahkan objek baru ke dalam array newData
+      newData.push(selectedLokasi);
+      const panjang = selectedLokasi.length;
+
+      if (panjang > 0) {
+        console.log("find", selectedLokasi);
+
+        this.setState({ dataDokter: selectedLokasi, setLokasi: true });
+      }
     } else if (name == "lama") {
       const tindakan = this.state.dataTindakan.find(
         (item) => item.id === this.state.tindakanRef.value
@@ -289,8 +312,36 @@ class InputJanjiTemu extends React.Component {
       currency: "IDR",
     }).format(biaya);
   }
-  handleSubmit = async (e) => {
-    e.preventDefault();
+  handleUpdate = async () => {
+    const { dokterRef } = this.state;
+
+    try {
+      const dokterDocRef = doc(db, "dokters", dokterRef.value);
+      const dokterDoc = await getDoc(dokterDocRef);
+
+      if (dokterDoc.exists()) {
+        const dokter = dokterDoc.data();
+        let pasien = dokter.jml_pasien || 0; // Default ke 0 jika jml_pasien tidak ada
+
+        let jumlah = parseInt(pasien) + 1;
+        const id = dokterRef.value;
+        console.log(dokter);
+
+        // Update data dokter
+        await updateDoc(doc(db, "dokters", id), {
+          jml_pasien: jumlah,
+        });
+      } else {
+        alert("Dokter tidak ditemukan");
+      }
+    } catch (error) {
+      console.error("Error updating data:", error);
+      Swal.fire("Error", "Gagal Memperbarui Data Dokter", "error");
+      this.setState({ isProses: false });
+    }
+  };
+
+  handleAdd = async () => {
     this.setState({ isProses: true });
 
     try {
@@ -304,6 +355,7 @@ class InputJanjiTemu extends React.Component {
         tanggalString,
         biaya,
         bulan,
+        lokasi,
       } = this.state;
 
       // Membuat objek referensi Firestore untuk dokterRef, tindakanRef, dan waktuTindakanRef
@@ -316,7 +368,8 @@ class InputJanjiTemu extends React.Component {
         "waktu_tindakan",
         lama.value
       );
-
+      const dokterDoc = await getDoc(dokterDocRef);
+      const dokterData = await dokterDoc.data();
       try {
         const waktuTindakanDocSnap = await getDoc(waktuTindakanDocRef);
         if (waktuTindakanDocSnap.exists()) {
@@ -342,6 +395,7 @@ class InputJanjiTemu extends React.Component {
         tanggal: tanggalString,
         bulan: bulanString,
         biaya: biaya,
+        lokasi: lokasi.value,
       };
 
       // Menambahkan data baru ke koleksi "janji_temu"
@@ -360,6 +414,7 @@ class InputJanjiTemu extends React.Component {
           window.location.href = "/janji-temu";
         }
       });
+      // Mendapatkan dokumen dokter berdasarkan referensi
 
       // Reset nilai state setelah data berhasil ditambahkan
       this.setState({
@@ -379,12 +434,21 @@ class InputJanjiTemu extends React.Component {
       Swal.fire("Error", "Gagal menambah data janji temu", "error");
     }
   };
+
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    const tambah = await this.handleAdd();
+    const update = await this.handleUpdate();
+  };
   render() {
     const optionsTerapis = this.state.dataDokter.map((data) => ({
       value: data.id,
       label: data.nama,
     }));
-
+    const optionsLokasi = [
+      { value: "GTS Tirta", label: "GTS Tirta" },
+      { value: "GTS Kemiling", label: "GTS Kemiling" },
+    ];
     const optionsTindakan = this.state.dataTindakan.map((data) => ({
       value: data.id,
       label: data.nama_tindakan,
@@ -424,7 +488,7 @@ class InputJanjiTemu extends React.Component {
             <div className="flex-auto">Input Janji Temu</div>
           </div>
           <div className="flex flex-col p-4 w-[100%] h-auto justify-between items-center text-[14px] ">
-            <div className="mt-9 text-xs text-stone-900 w-[100%] text-[14px]">
+            <div className="mt-9 text-sm text-stone-900 w-[100%] text-[14px]">
               Nama Pasien
             </div>
 
@@ -436,7 +500,7 @@ class InputJanjiTemu extends React.Component {
               name="nama"
               className="date text-black"
             />
-            <div className="mt-6 text-xs text-stone-900 w-[100%] mb-2.5 text-[14px]">
+            <div className="mt-6 text-sm text-stone-900 w-[100%] mb-2.5 text-[14px]">
               Pukul
             </div>
 
@@ -447,11 +511,11 @@ class InputJanjiTemu extends React.Component {
                 onChange={this.handleDateChange}
               />
             </LocalizationProvider>
-            <div className="mt-3 text-xs text-stone-900 w-[100%] text-[14px]">
-              Pilih Terapis
+            <div className="mt-3 text-sm text-stone-900 w-[100%] text-[14px]">
+              Pilih Lokasi GTS
             </div>
             <div className="select-container relative w-[100%]">
-              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
+              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-sm leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
                 <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-emerald-100 rounded-lg  gap-2 ">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -465,13 +529,13 @@ class InputJanjiTemu extends React.Component {
                     />
                   </svg>
                   <Select
-                    options={optionsTerapis}
-                    name="terapis"
+                    options={optionsLokasi}
+                    name="lokasi"
                     onChange={(selectedOption) =>
-                      this.handleDropdown("dokter", selectedOption)
+                      this.handleDropdown("lokasi", selectedOption)
                     }
-                    placeholder="Pilih Terapis"
-                    value={this.state.dokterRef}
+                    placeholder="Pilih Lokasi"
+                    value={this.state.lokasi}
                     classNames={{
                       menuButton: ({ isDisabled }) =>
                         `text-[15px] flex text-sm text-emerald-500 w-[100%] bg-emerald-100 rounded shadow-sm transition-all duration-300 focus:outline-none ${
@@ -491,11 +555,59 @@ class InputJanjiTemu extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="mt-3 text-xs text-stone-900 w-[100%] text-[14px]">
+            {this.state.setLokasi == true && (
+              <>
+                <div className="mt-3 text-sm text-stone-900 w-[100%] text-[14px]">
+                  Pilih Terapis
+                </div>
+                <div className="select-container relative w-[100%]">
+                  <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-sm leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
+                    <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-emerald-100 rounded-lg  gap-2 ">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="#29a7d1"
+                          d="M18.39 14.56C16.71 13.7 14.53 13 12 13s-4.71.7-6.39 1.56A2.97 2.97 0 0 0 4 17.22V20h16v-2.78c0-1.12-.61-2.15-1.61-2.66M12 12c2.21 0 4-1.79 4-4V4.5c0-.83-.67-1.5-1.5-1.5c-.52 0-.98.27-1.25.67c-.27-.4-.73-.67-1.25-.67s-.98.27-1.25.67c-.27-.4-.73-.67-1.25-.67C8.67 3 8 3.67 8 4.5V8c0 2.21 1.79 4 4 4"
+                        />
+                      </svg>
+                      <Select
+                        options={optionsTerapis}
+                        name="terapis"
+                        onChange={(selectedOption) =>
+                          this.handleDropdown("dokter", selectedOption)
+                        }
+                        placeholder="Pilih Terapis"
+                        value={this.state.dokterRef}
+                        classNames={{
+                          menuButton: ({ isDisabled }) =>
+                            `text-[15px] flex text-sm text-emerald-500 w-[100%] bg-emerald-100 rounded shadow-sm transition-all duration-300 focus:outline-none ${
+                              isDisabled
+                                ? "bg-emerald-100 "
+                                : "bg-emerald-100 focus:ring focus:ring-blue-500/20"
+                            }`,
+                          menu: "absolute z-10 w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
+                          listItem: ({ isSelected }) =>
+                            `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
+                              isSelected
+                                ? `text-emerald-500 bg-slate-50`
+                                : `text-emerald-500 hover:bg-emerald-100 hover:text-emerald-500`
+                            }`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+            <div className="mt-3 text-sm text-stone-900 w-[100%] text-[14px]">
               Pilih Tindakan
             </div>
             <div className="select-container relative w-[100%]">
-              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
+              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-sm leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
                 <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-emerald-100 rounded-lg  gap-2 ">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -537,11 +649,11 @@ class InputJanjiTemu extends React.Component {
             </div>
             {this.state.tindakanRef !== null && (
               <>
-                <div className="mt-3 text-xs text-stone-900 w-[100%] text-[14px]">
+                <div className="mt-3 text-sm text-stone-900 w-[100%] text-[14px]">
                   Pilih Durasi Tindakan
                 </div>
                 <div className="select-container relative w-[100%]">
-                  <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
+                  <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-sm leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
                     <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-emerald-100 rounded-lg  gap-2 ">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -584,11 +696,11 @@ class InputJanjiTemu extends React.Component {
               </>
             )}
 
-            <div className="mt-3 text-xs text-stone-900 w-[100%] text-[14px]">
+            <div className="mt-3 text-sm text-stone-900 w-[100%] text-[14px]">
               Pilih Status
             </div>
             <div className="select-container relative w-[100%]">
-              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-xs leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
+              <div className="flex flex-col justify-center px-0 mt-3 w-[100%] text-[14px] text-sm leading-4 capitalize bg-emerald-100 text-neutral-950 rounded-lg">
                 <div className="flex items-center px-2.5 h-12 text-lg  w-[100%] bg-emerald-100 rounded-lg  gap-2 ">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -628,7 +740,7 @@ class InputJanjiTemu extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="mt-4 text-xs text-stone-900 w-[100%] text-[14px]">
+            <div className="mt-4 text-sm text-stone-900 w-[100%] text-[14px]">
               Waktu Selesai
             </div>
 
@@ -645,7 +757,7 @@ class InputJanjiTemu extends React.Component {
             <div className="flex  justify-center self-stretch h-12 mt-14 w-[100%] text-sm font-medium text-center text-white whitespace-nowrap bg-white">
               <button
                 onClick={this.handleSubmit}
-                className=" flex justify-center p-6 items-center w-full h-9 text-sm text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
+                className=" flex justify-center p-6 items-center w-full h-9 text-base text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
               >
                 Simpan
               </button>

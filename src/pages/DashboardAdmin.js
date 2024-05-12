@@ -281,7 +281,7 @@ class DashboardAdmin extends React.Component {
           overflowX: "hidden",
         }}
       >
-        <div className="flex flex-col gap-0 h-[100%] items-center pb-3 font-medium bg-slate-50 w-[100%] mt-6">
+        <div className="flex flex-col gap-0 h-auto items-center pb-2 font-medium bg-slate-50 w-[100%] mt-16">
           <div className="flex gap-2 self-stretch p-4 w-full justify-between rounded-md items-center flex-col text-center text-white bg-gradient-to-r from-emerald-500 to-emerald-800 h-[27%]">
             <div className="flex-auto gap-0 text-lg font-medium">
               Dashboard Admin
@@ -333,16 +333,13 @@ class DashboardAdmin extends React.Component {
             </div>
           </div>
           <div className="w-full px-3 flex h-auto   py-3">
-            <div className="flex gap-2h- p-2 w-full justify-center rounded-md items-center text-center mb-2 text-white bg-emerald-600 h-[100%]">
-              <div className="flex-auto gap-0 text-lg font-medium flex-col items-start justify-start  p-1  w-[30%]">
+            <div className="flex flex-col gap-2 p-2 w-full justify-center rounded-md items-center text-center mb-2 text-white bg-emerald-600 h-[100%]">
+              <div className="flex-auto gap-0 text-lg font-medium flex-col items-start justify-start  p-1  w-[100%] border-b border-b-white ">
                 <div className="flex    p-1 items-center text-lg font-medium  rounded-md justify-start  text-white">
-                  {this.state.bulan}
-                </div>
-                <div className="flex   font-normal p-1 items-center text-sm  rounded-md  text-slate-200 justify-start">
-                  Capaian
+                  Capaian Bulan {this.state.bulan}
                 </div>
               </div>
-              <div className="flex gap-1 text-lg font-medium  items-center justify-between  p-1 w-[70%] ">
+              <div className="flex gap-1 text-lg font-medium  items-center justify-between  p-1 w-[100%] ">
                 <div className="flex flex-col items-center justify-start gap-1">
                   <div className="flex    p-1 items-center text-sm  rounded-md  text-white justify-center">
                     Pasien
@@ -370,7 +367,7 @@ class DashboardAdmin extends React.Component {
               </div>
             </div>
           </div>
-          <div className="flex flex-col w-[100%] h-[100%] mt-3 gap-4 justify-start items-center mb-4 overflow-y-scroll rounded-md ">
+          <div className="flex flex-col w-[100%]   mt-3 gap-4 justify-start items-center mb-10 rounded-md  ">
             <div className="flex gap-4 justify-center p-4 bg-white w-[90%] rounded-lg cursor-pointer shadow-md">
               <div className="flex justify-center items-center p-3.5 bg-emerald-100 rounded-lg h-[50px] w-[50px]">
                 <svg

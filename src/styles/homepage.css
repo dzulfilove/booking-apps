@@ -12,7 +12,7 @@
   background-color: white;
   border-radius: 8px;
   border-color: #10b981; /* kode warna biru-nya */
-  font-size: 14px;
+  font-size: 16px;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 .custom-tab-bar .nav-link.active {
@@ -34,11 +34,58 @@
   background-color: transparent; /* Warna latar belakang tab aktif */
   border-radius: 8px;
   border-radius: 30px; /* untuk membuat sudut bulat */
-  color: #10b981;
+  color: #0a885e;
   height: 2.5rem;
 }
 
 .custom-tab-bar .nav-link:hover {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  white-space: nowrap;
+  background-color: #10b981; /* kode warna biru-nya */
+  border-radius: 30px; /* untuk membuat sudut bulat */
+}
+
+.custom-tab-bar-2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  height: auto;
+  padding: 8px;
+  background-color: white;
+  border-radius: 8px;
+  border-color: #10b981; /* kode warna biru-nya */
+  font-size: 13px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.custom-tab-bar-2 .nav-link.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  white-space: nowrap;
+  background-color: #10b981; /* kode warna biru-nya */
+  border-radius: 30px; /* untuk membuat sudut bulat */
+}
+
+.custom-tab-bar-2 .nav-link {
+  display: flex;
+  width: 6rem;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background-color: transparent; /* Warna latar belakang tab aktif */
+  border-radius: 8px;
+  border-radius: 30px; /* untuk membuat sudut bulat */
+  color: #0a885e;
+  height: 2.5rem;
+}
+
+.custom-tab-bar-2 .nav-link:hover {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -88,4 +135,26 @@
   border-style: solid; /* Setara dengan border-solid */
   border-color: #cbd5e1; /* Setara dengan border-neutral-400 */
   color: #222222; /* Setara dengan text-neutral-400 */
+}
+.floating-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 130px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.floating-btn:hover {
+  background-color: #0056b3;
 }
