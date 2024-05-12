@@ -42,8 +42,8 @@ function App() {
         </div>
         <div className="h-[90vh] w-[100%] overflow-y-scroll m-0 pt-20 ">
           <Routes>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/home" element={<HomePage />} />
+            <Route path="/welcome" element={<Welcome />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/masuk/" element={<Login />} />
 
             {isLoggedIn ? (
