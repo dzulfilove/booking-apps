@@ -44,7 +44,7 @@ function App() {
           <Routes>
             <Route path="/welcome" element={<Welcome />} />
             <Route path="/" element={<HomePage />} />
-            <Route path="/masuk/" element={<Login />} />
+            <Route path="/admin/" element={<Login />} />
 
             {isLoggedIn ? (
               <>

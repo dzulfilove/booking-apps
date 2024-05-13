@@ -44,7 +44,7 @@ class Welcome extends React.Component {
             className="mt-12 w-full aspect-square max-w-[280px]"
           />
           <Link
-            to="/masuk"
+            to="/admin"
             className="flex justify-center items-center self-stretch p-2.5 mt-2 text-base text-emerald-600 capitalize whitespace-nowrap rounded-lg bg-slate-50"
           >
             Masuk
