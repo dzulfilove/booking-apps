@@ -312,9 +312,9 @@ class Terapis extends React.Component {
                       <img
                         loading="lazy"
                         src={dokter.foto}
-                        className="shrink-0 my-auto aspect-[0.79] w-[40%] h-[100%] bg-cover rounded-md object-cover"
+                        className="shrink-0 my-auto aspect-[0.79] w-[30%] h-[100%] bg-cover rounded-md object-cover"
                       />
-                      <div className="flex flex-col my-auto items-start w-[60%] ">
+                      <div className="flex flex-col my-auto items-start w-[70%] ">
                         <div className="text-base font-medium text-black flex w-100 justify-start items-center gap-1">
                           {dokter.nama}
                         </div>
@@ -348,7 +348,7 @@ class Terapis extends React.Component {
                                 d="M19 6h-3V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1H5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3m-9-1h4v1h-4Zm10 13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-5.61L8.68 14A1.19 1.19 0 0 0 9 14h6a1.19 1.19 0 0 0 .32-.05L20 12.39Zm0-7.72L14.84 12H9.16L4 10.28V9a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1Z"
                               />
                             </svg>
-                            <div className="text-grey-600">
+                            <div className="text-grey-600 ">
                               {" "}
                               {dokter.pengalaman} Tahun Pengalaman
                             </div>
@@ -407,9 +407,9 @@ class Terapis extends React.Component {
                           <img
                             loading="lazy"
                             srcSet={item.foto}
-                            className="shrink-0 my-auto aspect-[0.79] w-[40%] h-[100%] bg-cover rounded-md object-cover"
+                            className="shrink-0 my-auto aspect-[0.79] w-[30%] h-[100%] bg-cover rounded-md object-cover"
                           />
-                          <div className="flex flex-col text-lg my-auto items-start w-[60%] ">
+                          <div className="flex flex-col text-lg my-auto items-start w-[70%] ">
                             <div className="text-base font-medium text-black flex w-100 justify-start items-center gap-1">
                               {item.nama}
                             </div>
@@ -507,9 +507,9 @@ class Terapis extends React.Component {
                           <img
                             loading="lazy"
                             srcSet={item.foto}
-                            className="shrink-0 my-auto aspect-[0.79] w-[40%] h-[100%] bg-cover rounded-md object-cover"
+                            className="shrink-0 my-auto aspect-[0.79] w-[30%] h-[100%] bg-cover rounded-md object-cover"
                           />
-                          <div className="flex flex-col my-auto items-start w-[60%] ">
+                          <div className="flex flex-col my-auto items-start w-[70%] ">
                             <div className="text-base font-medium text-black flex w-100 justify-start items-center gap-1">
                               {item.nama}
                             </div>

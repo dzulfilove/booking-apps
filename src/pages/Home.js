@@ -747,7 +747,7 @@ class HomePage extends Component {
                             <img
                               loading="lazy"
                               srcSet={dokter.foto}
-                              className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
+                              className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                             />
                             <div className="flex flex-col flex-1 justify-center">
                               <div className="text-sm font-medium">
@@ -755,7 +755,7 @@ class HomePage extends Component {
                               </div>
 
                               <div className="flex gap-2 mt-2.5">
-                                <div className="flex  gap-2 w-[11rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                                <div className="flex  gap-2 w-[11rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-s">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="18"
@@ -820,7 +820,7 @@ class HomePage extends Component {
                             <img
                               loading="lazy"
                               srcSet={dokter.foto}
-                              className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
+                              className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                             />
                             <div className="flex flex-col flex-1 justify-center">
                               <div className="text-sm font-medium">
@@ -880,7 +880,7 @@ class HomePage extends Component {
                 <>
                   {this.state.dokterLokasi.length == 0 && (
                     <>
-                      <div className="flex flex-col justify-center items-center h=[6rem] px-4 py-3  text-sm bg-white rounded-xl shadow-sm w-full">
+                      <div className="flex flex-col justify-center items-center h-[6rem] px-4 py-3  text-sm bg-white rounded-xl shadow-sm w-full">
                         <h5>Belum Ada Terapis</h5>
                       </div>
                     </>
@@ -896,7 +896,7 @@ class HomePage extends Component {
                         <img
                           loading="lazy"
                           srcSet={dokter.foto}
-                          className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
+                          className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                         />
                         <div className="flex flex-col flex-1 justify-center">
                           <div className="text-sm font-medium">
@@ -962,7 +962,7 @@ class HomePage extends Component {
                                   <img
                                     loading="lazy"
                                     srcSet={dokter.foto}
-                                    className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
+                                    className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                                   />
                                   <div className="flex flex-col flex-1 justify-center">
                                     <div className="text-sm font-medium">
@@ -1025,7 +1025,7 @@ class HomePage extends Component {
                                   <img
                                     loading="lazy"
                                     srcSet={dokter.foto}
-                                    className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
+                                    className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                                   />
                                   <div className="flex flex-col flex-1 justify-center">
                                     <div className="text-sm font-medium">
@@ -1085,7 +1085,7 @@ class HomePage extends Component {
                               <img
                                 loading="lazy"
                                 srcSet={dokter.foto}
-                                className="shrink-0 aspect-[0.79] w-[90px] h-full rounded-md object-cover bg-cover"
+                                className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                               />
                               <div className="flex flex-col flex-1 justify-center">
                                 <div className="text-sm font-medium">
