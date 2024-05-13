@@ -36,7 +36,7 @@ function BotBar() {
           <>
             <Link
               loading="lazy"
-              to="/home"
+              to="/"
               onClick={showNavbar}
               className="flex justify-start items-center gap-4 w-[8rem]"
             >
