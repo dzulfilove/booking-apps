@@ -635,16 +635,16 @@ class HomePage extends Component {
             </div>
             <div className="flex justify-start gap-4  mt-3 w-full text-sm leading-4 capitalize bg-white h-auto text-neutral-950">
               <button
-                className="w-[10rem] h-auto p-2 flex justify-center items-center bg-emerald-500 text-white rounded-md"
+                className="w-[10rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white shadow-md rounded-md"
                 style={{
                   backgroundColor:
-                    this.state.lokasi == "GTS Kemiling" ? "white" : "#10B981",
-                  color:
                     this.state.lokasi == "GTS Kemiling" ? "#10B981" : "white",
+                  color:
+                    this.state.lokasi == "GTS Kemiling" ? "white" : "#10B981",
                   border:
                     this.state.lokasi == "GTS Kemiling"
-                      ? " 1px solid #10B981"
-                      : "",
+                      ? " "
+                      : "1px solid #10B981",
                 }}
                 onClick={() => {
                   this.handleFilterLokasi("GTS Kemiling");
@@ -653,19 +653,19 @@ class HomePage extends Component {
                 GTS Kemiling
               </button>
               <button
-                className="w-[10rem] h-auto p-2 flex justify-center items-center bg-emerald-500 text-white rounded-md"
+                className="w-[10rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white shadow-md rounded-md"
                 onClick={() => {
                   this.handleFilterLokasi("GTS Tirtayasa");
                 }}
                 style={{
                   backgroundColor:
-                    this.state.lokasi == "GTS Tirtayasa" ? "white" : "#10B981",
-                  color:
                     this.state.lokasi == "GTS Tirtayasa" ? "#10B981" : "white",
+                  color:
+                    this.state.lokasi == "GTS Tirtayasa" ? "white" : "#10B981",
                   border:
                     this.state.lokasi == "GTS Tirtayasa"
-                      ? " 1px solid #10B981"
-                      : "",
+                      ? ""
+                      : " 1px solid #10B981",
                 }}
               >
                 GTS Tirtayasa
@@ -679,45 +679,45 @@ class HomePage extends Component {
 
             <div className="flex justify-start gap-4 mt-3 w-full text-sm leading-4 capitalize bg-white h-auto text-neutral-950">
               <button
-                className="w-[6rem] h-auto p-2 flex justify-center items-center bg-emerald-500 text-white rounded-md"
+                className="w-[6rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white rounded-md shadow-md"
                 onClick={() => {
                   this.handleFilter("Laki-laki");
                 }}
                 style={{
                   backgroundColor:
                     this.state.jenisKelamin == "Laki-laki"
-                      ? "white"
-                      : "#10B981",
-                  color:
-                    this.state.jenisKelamin == "Laki-laki"
                       ? "#10B981"
                       : "white",
+                  color:
+                    this.state.jenisKelamin == "Laki-laki"
+                      ? "white"
+                      : "#10B981",
                   border:
                     this.state.jenisKelamin == "Laki-laki"
-                      ? " 1px solid #10B981"
-                      : "",
+                      ? ""
+                      : "1px solid #10B981",
                 }}
               >
                 Laki - Laki
               </button>
               <button
-                className="w-[6rem] h-auto p-2 flex justify-center items-center bg-emerald-500 text-white rounded-md"
+                className="w-[6rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white shadow-md rounded-md"
                 onClick={() => {
                   this.handleFilter("Perempuan");
                 }}
                 style={{
                   backgroundColor:
                     this.state.jenisKelamin == "Perempuan"
-                      ? "white"
-                      : "#10B981",
-                  color:
-                    this.state.jenisKelamin == "Perempuan"
                       ? "#10B981"
                       : "white",
+                  color:
+                    this.state.jenisKelamin == "Perempuan"
+                      ? "white"
+                      : "#10B981",
                   border:
                     this.state.jenisKelamin == "Perempuan"
-                      ? " 1px solid #10B981"
-                      : "",
+                      ? " "
+                      : "1px solid #10B981",
                 }}
               >
                 Perempuan

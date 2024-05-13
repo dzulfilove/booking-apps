@@ -85,7 +85,7 @@ class Login extends React.Component {
         sessionStorage.setItem("user", JSON.stringify(user));
         this.setState({ login: true }); // Jika perlu menyimpan info pengguna
 
-        window.location.href = "/home";
+        window.location.href = "/";
       })
       .catch((error) => {
         const errorCode = error.code;
