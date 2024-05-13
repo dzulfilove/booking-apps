@@ -153,13 +153,23 @@ class Login extends React.Component {
         )}
         <div className="flex flex-col gap-0 items-start mt-3 h-[100%] overflow-y-scroll pb-4 font-medium bg-slate-50 w-[100%]">
           <div className="flex gap-5 self-stretch p-4 w-full  text-center text-stone-900">
-            <div className="flex-auto gap-0 text-xl font-medium">Masuk</div>
+            {this.state.isSignUpActive == true ? (
+              <>
+                <div className="flex-auto gap-0 text-xl font-medium">
+                  Daftar
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex-auto gap-0 text-xl font-medium">Masuk</div>
+              </>
+            )}
           </div>
           <div className="flex flex-col gap-2.5 p-2 w-[100%] h-auto justify-center items-center">
             <div className="flex flex-col items-center p-4 mx-auto w-full bg-white w-full">
               {this.state.isSignUpActive == true && (
                 <>
-                  <div className="text-sm text-stone-900 w-full flex justify-start px-2">
+                  <div className="text-sm text-stone-900 w-full flex just ify-start px-2">
                     Username
                   </div>
                   <input
@@ -194,17 +204,32 @@ class Login extends React.Component {
                 name="password"
                 className=" w-full text-[14px] justify-center px-4 py-4 mt-2.5  whitespace-nowrap rounded border border-solid border-neutral-600 text-neutral-400"
               />
-              <div className="flex gap-5 px-5 mt-9 w-full text-sm text-emerald-500 capitalize max-w-[349px]">
-                <div className="flex-auto font-medium">Lupa Password</div>
+              <div className="flex gap-5 px-3 mt-9 w-full text-sm text-emerald-500 capitalize max-w-[349px]">
                 <div className="flex-auto font-semibold">
-                  <span className="font-medium text-black">User</span>{" "}
-                  <span className="font-medium text-black">Baru ?</span>{" "}
-                  <button
-                    className="text-emerald-500"
-                    onClick={this.handleMethodChange}
-                  >
-                    Daftar
-                  </button>
+                  {this.state.isSignUpActive == false ? (
+                    <>
+                      <span className="font-medium text-black">User</span>{" "}
+                      <span className="font-medium text-black">Baru ?</span>{" "}
+                      <button
+                        className="text-emerald-500"
+                        onClick={this.handleMethodChange}
+                      >
+                        Daftar
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-medium text-black">
+                        Sudah Mendaftar ?
+                      </span>{" "}
+                      <button
+                        className="text-emerald-500"
+                        onClick={this.handleMethodChange}
+                      >
+                        Masuk
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
