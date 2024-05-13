@@ -578,7 +578,7 @@ class HomePage extends Component {
           height: "100%",
           overflowX: "hidden",
           position: "relative",
-          marginBottom: "2rem",
+          marginBottom: "1rem",
         }}
       >
         {this.state.guide == true && (
@@ -623,14 +623,14 @@ class HomePage extends Component {
           ref={this.sectionRef}
         >
           <div className="w-full h-auto flex justify-center px-3">
-            <div className="flex gap-5 justify-between w-full ">
+            <div className="flex gap-5 justify-between w-full border-b border-b-emerald-500 pb-4">
               <div className="my-auto text-base font-medium leading-6 text-black capitalize">
                 Jadwal {this.state.tanggalTampil}, {this.state.lokasi}
               </div>
             </div>
           </div>
           <div className="w-full h-auto flex flex-col justify-start items-start px-3  mt-4">
-            <div className=" my-auto text-sm font-medium leading-6 text-black capitalize">
+            <div className=" my-auto text-base font-medium leading-6 text-black capitalize">
               Lokasi GTS
             </div>
             <div className="flex justify-start gap-4  mt-3 w-full text-sm leading-4 capitalize bg-white h-auto text-neutral-950">
@@ -673,7 +673,7 @@ class HomePage extends Component {
             </div>
           </div>
           <div className="w-full h-auto flex flex-col justify-start items-start px-3  mt-4">
-            <div className=" my-auto text-sm font-medium leading-6 text-black capitalize ">
+            <div className=" my-auto text-base font-medium leading-6 text-black capitalize ">
               Jenis Kelamin Terapis
             </div>
 
@@ -725,7 +725,7 @@ class HomePage extends Component {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 px-4 py-3.5 mt-1.5 w-full bg-slate-50 leading-[120%] ">
+          <div className="flex flex-col gap-4 px-4 pt-3.5 mt-1.5 w-full bg-slate-50 leading-[120%] ">
             <div className="w-100 h-auto py-4 px-2 flex flex-col justify-between gap-4  bg-gradient-to-r from-emerald-400 to-emerald-700 rounded-lg">
               <div className="w-full text-base leading-5 capitalize text-white font-medium flex justify-start px-3">
                 Terapis Yang Tersedia
