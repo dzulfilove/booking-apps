@@ -819,7 +819,7 @@ class HomePage extends Component {
                                 srcSet={dokter.foto}
                                 className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                               />
-                              <div className="flex flex-col flex-1 justify-center pr-12 ">
+                              <div className="flex flex-col flex-1 justify-center ">
                                 <div className="text-sm font-medium">
                                   {dokter.nama}
                                 </div>
@@ -956,7 +956,7 @@ class HomePage extends Component {
                                 srcSet={dokter.foto}
                                 className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                               />
-                              <div className="flex flex-col flex-1 justify-center px-2">
+                              <div className="flex flex-col flex-1 justify-center">
                                 <div className="text-sm font-medium">
                                   {dokter.nama}
                                 </div>
@@ -1093,7 +1093,7 @@ class HomePage extends Component {
                                 srcSet={dokter.foto}
                                 className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                               />
-                              <div className="flex flex-col flex-1 justify-center px-3 ">
+                              <div className="flex flex-col flex-1 justify-center ">
                                 <div className="text-sm font-medium">
                                   {dokter.nama}
                                 </div>
