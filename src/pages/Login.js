@@ -55,9 +55,8 @@ class Login extends React.Component {
       .then((userCredential) => {
         const user = userCredential.user;
         console.log(user);
-        this.setState({ load: true }, () => {
-          this.handleSubmit();
-        });
+        this.setState({ load: true });
+        this.handleSubmit();
       })
       .catch((error) => {
         const errorCode = error.code;

@@ -21,6 +21,7 @@ import {
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import Loading from "../components/loading";
 class DashboardAdmin extends React.Component {
   constructor(props) {
     super(props);
@@ -36,6 +37,7 @@ class DashboardAdmin extends React.Component {
       totalBiaya: 0,
       jumlahBulan: 0,
       durasi: "",
+      loading: true,
       tanggalString: dayjs().locale("id").format("YYYY-MM-DD"),
     };
   }
@@ -242,6 +244,7 @@ class DashboardAdmin extends React.Component {
             jumlahBulan: jumlahAll,
             totalBiaya: totalBiaya,
             durasi: durasi,
+            loading: false,
           },
           resolve
         );
@@ -281,6 +284,13 @@ class DashboardAdmin extends React.Component {
           overflowX: "hidden",
         }}
       >
+        {this.state.loading == true && (
+          <>
+            <div className="w-[100%] h-[100%] absolute z-[999999] bg-white">
+              <Loading />
+            </div>
+          </>
+        )}
         <div className="flex flex-col gap-0 h-auto items-center pb-2 font-medium bg-slate-50 w-[100%] mt-16">
           <div className="flex gap-2 self-stretch p-4 w-full justify-between rounded-md items-center flex-col text-center text-white bg-gradient-to-r from-emerald-500 to-emerald-800 h-[27%]">
             <div className="flex-auto gap-0 text-lg font-medium">

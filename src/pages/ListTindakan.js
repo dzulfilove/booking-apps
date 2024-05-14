@@ -18,6 +18,7 @@ import {
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import Loading from "../components/loading";
 class ListTindakan extends React.Component {
   constructor(props) {
     super(props);
@@ -25,6 +26,7 @@ class ListTindakan extends React.Component {
     this.state = {
       dataList: [],
       tanggal: dayjs().locale("id"),
+      loading: true,
     };
   }
 
@@ -48,7 +50,7 @@ class ListTindakan extends React.Component {
       }
 
       console.log(tindakanList);
-      this.setState({ dataList: tindakanList });
+      this.setState({ dataList: tindakanList, loading: false });
     } catch (error) {
       console.error("Error fetching dokter data:", error);
       throw error;
@@ -245,6 +247,13 @@ class ListTindakan extends React.Component {
           overflowX: "hidden",
         }}
       >
+        {this.state.loading == true && (
+          <>
+            <div className="w-[100%] h-[100%] absolute z-[999999] bg-white">
+              <Loading />
+            </div>
+          </>
+        )}
         <div className="flex flex-col gap-0 h-[100%] items-center pb-4 font-medium bg-slate-50 w-[100%]">
           <div className="flex gap-5 self-stretch p-4 w-full  text-center text-stone-900">
             <div className="flex-auto gap-0 text-xl font-medium">

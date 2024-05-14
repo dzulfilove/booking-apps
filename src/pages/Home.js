@@ -59,7 +59,7 @@ class HomePage extends Component {
       no_rkm: "",
       isBayar: false,
       value: "tab2",
-      loading: false,
+      loading: true,
       dataSelesai: [],
       dataJanji: [],
       dataKosong: [],
@@ -96,7 +96,7 @@ class HomePage extends Component {
     this.getAllJanjiSaatIni();
     this.getAllJanjiSudahSelesai();
     this.formatTanggal();
-    AOS.init({ duration: 1000 });
+    AOS.init({ duration: 700 });
   }
 
   formatTanggal = () => {
@@ -282,6 +282,7 @@ class HomePage extends Component {
             dokterHadir: filteredArray,
             dokterLokasi: selectedLokasi,
             lokasi: "GTS Tirtayasa",
+            loading: false,
           },
           resolve
         );
