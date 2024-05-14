@@ -151,7 +151,10 @@ class Login extends React.Component {
             </div>
           </>
         )}
-        <div className="flex flex-col gap-0 items-start mt-3 h-[100%] overflow-y-scroll pb-4 font-medium bg-slate-50 w-[100%]">
+        <div
+          className="flex flex-col gap-0 items-start mt-3 h-[100%] overflow-y-scroll pb-4 font-medium bg-slate-50 w-[100%]"
+          style={{ backgroundColor: this.state.load == true ? "#10b981" : "" }}
+        >
           <div className="flex gap-5 self-stretch p-4 w-full  text-center text-stone-900">
             {this.state.isSignUpActive == true ? (
               <>

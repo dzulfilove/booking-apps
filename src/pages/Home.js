@@ -20,6 +20,9 @@ import Paper from "@mui/material/Paper";
 import Fade from "@mui/material/Fade";
 import Guide from "../components/guide";
 import GuideUmum from "../components/guide";
+import AOS from "aos";
+
+import "aos/dist/aos.css";
 class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -93,6 +96,7 @@ class HomePage extends Component {
     this.getAllJanjiSaatIni();
     this.getAllJanjiSudahSelesai();
     this.formatTanggal();
+    AOS.init({ duration: 1000 });
   }
 
   formatTanggal = () => {
@@ -592,6 +596,7 @@ class HomePage extends Component {
             </div>
           </>
         )}
+
         <button className="floating-btn" onClick={this.handleClick}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -755,12 +760,12 @@ class HomePage extends Component {
                                 {dokter.nama}
                               </div>
 
-                              <div className="flex gap-2 mt-2.5">
-                                <div className="flex  gap-2 w-[11rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                              <div className="flex gap-2 mt-2.5 ">
+                                <div className="flex  gap-2 w-[10.4rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-[13px]">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="18"
-                                    height="18"
+                                    width="16"
+                                    height="16"
                                     viewBox="0 0 24 24"
                                   >
                                     <path
@@ -774,11 +779,11 @@ class HomePage extends Component {
                                 </div>
                               </div>
                               <div className="flex gap-2 mt-1">
-                                <div className="flex  gap-2 justify-center items-center w-[11rem]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                                <div className="flex  gap-2 justify-center items-center w-[10.4rem]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-[13px]">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
+                                    width="16"
+                                    height="16"
                                     viewBox="0 0 28 28"
                                   >
                                     <path
@@ -813,17 +818,17 @@ class HomePage extends Component {
                                 srcSet={dokter.foto}
                                 className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                               />
-                              <div className="flex flex-col flex-1 justify-center">
+                              <div className="flex flex-col flex-1 justify-center pr-12 ">
                                 <div className="text-sm font-medium">
                                   {dokter.nama}
                                 </div>
 
-                                <div className="flex gap-2 mt-2.5">
-                                  <div className="flex  gap-2 w-[11rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                                <div className="flex gap-2 mt-2.5 ">
+                                  <div className="flex  gap-2 w-[10.4rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-[13px]">
                                     <svg
                                       xmlns="http://www.w3.org/2000/svg"
-                                      width="18"
-                                      height="18"
+                                      width="16"
+                                      height="16"
                                       viewBox="0 0 24 24"
                                     >
                                       <path
@@ -837,11 +842,11 @@ class HomePage extends Component {
                                   </div>
                                 </div>
                                 <div className="flex gap-2 mt-1">
-                                  <div className="flex  gap-2 justify-center items-center w-[11rem]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                                  <div className="flex  gap-2 justify-center items-center w-[10.4rem]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-[13px]">
                                     <svg
                                       xmlns="http://www.w3.org/2000/svg"
-                                      width="24"
-                                      height="24"
+                                      width="16"
+                                      height="16"
                                       viewBox="0 0 28 28"
                                     >
                                       <path
@@ -892,12 +897,12 @@ class HomePage extends Component {
                                 {dokter.nama}
                               </div>
 
-                              <div className="flex gap-2 mt-2.5">
-                                <div className="flex  gap-2 w-[11rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-s">
+                              <div className="flex gap-2 mt-2.5 ">
+                                <div className="flex  gap-2 w-[10.4rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-s">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="18"
-                                    height="18"
+                                    width="16"
+                                    height="16"
                                     viewBox="0 0 24 24"
                                   >
                                     <path
@@ -911,11 +916,11 @@ class HomePage extends Component {
                                 </div>
                               </div>
                               <div className="flex gap-2 mt-1">
-                                <div className="flex  gap-2 justify-center items-center w-[11rem]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                                <div className="flex  gap-2 justify-center items-center w-[10.4rem]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-[13px]">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
+                                    width="16"
+                                    height="16"
                                     viewBox="0 0 28 28"
                                   >
                                     <path
@@ -950,17 +955,17 @@ class HomePage extends Component {
                                 srcSet={dokter.foto}
                                 className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                               />
-                              <div className="flex flex-col flex-1 justify-center">
+                              <div className="flex flex-col flex-1 justify-center px-2">
                                 <div className="text-sm font-medium">
                                   {dokter.nama}
                                 </div>
 
-                                <div className="flex gap-2 mt-2.5">
-                                  <div className="flex  gap-2 w-[100%] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                                <div className="flex gap-2 mt-2.5 ">
+                                  <div className="flex  gap-2 w-[10.4rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-[13px]">
                                     <svg
                                       xmlns="http://www.w3.org/2000/svg"
-                                      width="18"
-                                      height="18"
+                                      width="16"
+                                      height="16"
                                       viewBox="0 0 24 24"
                                     >
                                       <path
@@ -974,11 +979,11 @@ class HomePage extends Component {
                                   </div>
                                 </div>
                                 <div className="flex gap-2 mt-1">
-                                  <div className="flex  gap-2 justify-center items-center w-[100%]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                                  <div className="flex  gap-2 justify-center items-center w-[10.4rem]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-[13px]">
                                     <svg
                                       xmlns="http://www.w3.org/2000/svg"
-                                      width="24"
-                                      height="24"
+                                      width="16"
+                                      height="16"
                                       viewBox="0 0 28 28"
                                     >
                                       <path
@@ -1029,12 +1034,12 @@ class HomePage extends Component {
                                 {dokter.nama}
                               </div>
 
-                              <div className="flex gap-2 mt-2.5">
-                                <div className="flex  gap-2 w-[11rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                              <div className="flex gap-2 mt-2.5 ">
+                                <div className="flex  gap-2 w-[10.4rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-[13px]">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="18"
-                                    height="18"
+                                    width="16"
+                                    height="16"
                                     viewBox="0 0 24 24"
                                   >
                                     <path
@@ -1048,11 +1053,11 @@ class HomePage extends Component {
                                 </div>
                               </div>
                               <div className="flex gap-2 mt-1">
-                                <div className="flex  gap-2 justify-center items-center w-[11rem]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                                <div className="flex  gap-2 justify-center items-center w-[10.4rem]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-[13px]">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
+                                    width="16"
+                                    height="16"
                                     viewBox="0 0 28 28"
                                   >
                                     <path
@@ -1087,17 +1092,17 @@ class HomePage extends Component {
                                 srcSet={dokter.foto}
                                 className="shrink-0 aspect-[0.79] w-[90px] h-[8rem] rounded-md object-cover bg-cover"
                               />
-                              <div className="flex flex-col flex-1 justify-center">
+                              <div className="flex flex-col flex-1 justify-center px-3 bg-red-400">
                                 <div className="text-sm font-medium">
                                   {dokter.nama}
                                 </div>
 
-                                <div className="flex gap-2 mt-2.5">
-                                  <div className="flex  gap-2 w-[11rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                                <div className="flex gap-2 mt-2.5 ">
+                                  <div className="flex  gap-2 w-[10.4rem] justify-center items-center bg-emerald-100 text-emerald-600 rounded-md p-1 text-[13px]">
                                     <svg
                                       xmlns="http://www.w3.org/2000/svg"
-                                      width="18"
-                                      height="18"
+                                      width="16"
+                                      height="16"
                                       viewBox="0 0 24 24"
                                     >
                                       <path
@@ -1111,11 +1116,11 @@ class HomePage extends Component {
                                   </div>
                                 </div>
                                 <div className="flex gap-2 mt-1">
-                                  <div className="flex  gap-2 justify-center items-center w-[11rem]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-sm">
+                                  <div className="flex  gap-2 justify-center items-center w-[10.4rem]  bg-emerald-100 text-emerald-600 rounded-md p-1 text-[13px]">
                                     <svg
                                       xmlns="http://www.w3.org/2000/svg"
-                                      width="24"
-                                      height="24"
+                                      width="16"
+                                      height="16"
                                       viewBox="0 0 28 28"
                                     >
                                       <path
@@ -1165,7 +1170,10 @@ class HomePage extends Component {
                     {this.state.janjiSaatIni.length > 0 ? (
                       <>
                         {this.state.janjiSaatIni.map((dokter) => (
-                          <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
+                          <div
+                            data-aos="fade-up"
+                            className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full"
+                          >
                             <div className="flex gap-2.5 justify-center text-sm font-medium">
                               <img
                                 loading="lazy"
@@ -1241,7 +1249,10 @@ class HomePage extends Component {
                 <>
                   <div className="flex flex-col w-full h-[auto] justify-start items-center p-3 gap-3 ">
                     {this.state.dataKosong.map((item) => (
-                      <div className="flex w-[300px]  h-auto p-4 items-center rounded-xl bg-white shadow-md  justify-between   gap-7 text-emerald-600">
+                      <div
+                        data-aos="fade-up"
+                        className="flex w-[300px]  h-auto p-4 items-center rounded-xl bg-white shadow-md  justify-between   gap-7 text-emerald-600"
+                      >
                         <div className="w-[50px] h-[50px] flex justify-center items-center p-0 bg-emerald-100 p-3 rounded-md">
                           <img
                             loading="lazy"
@@ -1264,7 +1275,10 @@ class HomePage extends Component {
               )}
               {this.state.value == "tab3" && (
                 <>
-                  <div className="flex flex-col w-100 h-[auto] justify-start items-center p-3 gap-3 ">
+                  <div
+                    data-aos="fade-up"
+                    className="flex flex-col w-100 h-[auto] justify-start items-center p-3 gap-3 "
+                  >
                     {this.state.dataSelesai.length === 0 ? (
                       <div className="flex flex-col text-center max-w-[360px]">
                         <img

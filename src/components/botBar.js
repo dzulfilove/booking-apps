@@ -27,7 +27,7 @@ function BotBar() {
       },
       () => {}
     );
-    window.location.href = "/home";
+    window.location.href = "/welcome";
   };
   return (
     <header className="w-6 h-6 p-3 flex justify-center items-center rounded-md ">
