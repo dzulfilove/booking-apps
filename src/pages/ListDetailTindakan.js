@@ -223,13 +223,6 @@ class ListDetailTindakan extends React.Component {
           overflowX: "hidden",
         }}
       >
-        {this.state.loading == true && (
-          <>
-            <div className="w-[100%] h-[100%] absolute z-[999999] bg-white">
-              <Loading />
-            </div>
-          </>
-        )}
         <div className="flex flex-col mt-3 gap-0 h-[100%] items-center font-medium bg-white w-[100%]">
           <div className="flex gap-5 self-stretch p-4 w-full text-xl font-medium text-center  text-stone-900">
             <button
