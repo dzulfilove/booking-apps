@@ -284,13 +284,6 @@ class DashboardAdmin extends React.Component {
           overflowX: "hidden",
         }}
       >
-        {this.state.loading == true && (
-          <>
-            <div className="w-[100%] h-[100%] absolute z-[999999] bg-white">
-              <Loading />
-            </div>
-          </>
-        )}
         <div className="flex flex-col gap-0 h-auto items-center pb-2 font-medium bg-slate-50 w-[100%] mt-16">
           <div className="flex gap-2 self-stretch p-4 w-full justify-between rounded-md items-center flex-col text-center text-white bg-gradient-to-r from-emerald-500 to-emerald-800 h-[27%]">
             <div className="flex-auto gap-0 text-lg font-medium">
