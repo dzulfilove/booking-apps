@@ -87,6 +87,11 @@ class Login extends React.Component {
         window.location.href = "/";
       })
       .catch((error) => {
+        Swal.fire(
+          "Gagal",
+          "Gagal Masuk, Cek Kembali Email dan Password Anda",
+          "error"
+        );
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
