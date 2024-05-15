@@ -446,7 +446,7 @@ class InputJanjiTemu extends React.Component {
       label: data.nama,
     }));
     const optionsLokasi = [
-      { value: "GTS Tirta", label: "GTS Tirta" },
+      { value: "GTS Tirtayasa", label: "GTS Tirta" },
       { value: "GTS Kemiling", label: "GTS Kemiling" },
     ];
     const optionsTindakan = this.state.dataTindakan.map((data) => ({
