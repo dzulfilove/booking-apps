@@ -301,7 +301,11 @@ class HomePage extends Component {
 
   cekJamKosong = (array) => {
     const waktuRentang = this.generateWaktuRentang();
-    const arrayAwal = [{ id: "1", jam_mulai: "07:00", jam_selesai: "07:55" }];
+    const waktuRentangSejam = this.generateWaktuRentangSejam();
+
+    const combinedArray = [...waktuRentang, ...waktuRentangSejam];
+
+    const arrayAwal = [{ id: "1", jam_mulai: "07:00", jam_selesai: "08:00" }];
     let arrayObjekAwal = [];
 
     if (array.length == 0) {
@@ -316,20 +320,20 @@ class HomePage extends Component {
     let currentEnd = 0;
     for (let i = 0; i < arrayObjekAwal.length; i++) {
       const obj = arrayObjekAwal[i];
-      const startIndex = waktuRentang.indexOf(obj.jam_masuk);
-      const endIndex = waktuRentang.indexOf(obj.jam_keluar);
+      const startIndex = combinedArray.indexOf(obj.jam_masuk);
+      const endIndex = combinedArray.indexOf(obj.jam_keluar);
       if (startIndex !== -1 && endIndex !== -1) {
         arrayObjekBaru.push({
           id: obj.id,
           jam_masuk: obj.jam_mulai,
           jam_keluar: obj.jam_selesai,
         });
-        sisajam.push(...waktuRentang.slice(currentEnd, startIndex));
+        sisajam.push(...combinedArray.slice(currentEnd, startIndex));
         currentStart = startIndex;
         currentEnd = endIndex + 1;
       }
     }
-    sisajam.push(...waktuRentang.slice(currentEnd));
+    sisajam.push(...combinedArray.slice(currentEnd));
     const sortedSisaJam = sisajam.sort(
       (a, b) => new Date(`1970-01-01T${a}:00`) - new Date(`1970-01-01T${b}:00`)
     );
@@ -349,7 +353,7 @@ class HomePage extends Component {
     }
 
     let hasil = [];
-
+    console.log(index, "indexxxxx");
     for (index; index < sisajam.length; index++) {
       console.log("index", index);
       let jamMasuk = jamTerakhir;
@@ -405,17 +409,44 @@ class HomePage extends Component {
       waktuRentang.push(`${jamStr}:${menitStr}`);
       currentDate.setMinutes(currentDate.getMinutes() + intervalMenit);
     }
-
+    this.generateWaktuRentangSejam(waktuRentang);
     return waktuRentang;
   }
 
+  generateWaktuRentangSejam(array) {
+    const waktuRentang = [];
+    const startJam = 20;
+    const endJam = 21;
+    const intervalMenit = 5;
+
+    const startDate = new Date();
+    startDate.setHours(startJam, 0, 0, 0);
+
+    const endDate = new Date();
+    endDate.setHours(endJam, 0, 0, 0);
+
+    let currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      const jamStr = String(currentDate.getHours()).padStart(2, "0");
+      const menitStr = String(currentDate.getMinutes()).padStart(2, "0");
+      waktuRentang.push(`${jamStr}:${menitStr}`);
+      currentDate.setMinutes(currentDate.getMinutes() + intervalMenit);
+    }
+
+    return waktuRentang;
+  }
   cekJamLebihBesar(jamA, jamB) {
     // Memisahkan jam dan menit dari string jamA dan jamB
     let [jamAInt, menitAInt] = jamA.split(":").map(Number);
     let [jamBInt, menitBInt] = jamB.split(":").map(Number);
 
     // Memeriksa apakah jam A lebih besar dari jam B
-    if (jamAInt > jamBInt || (jamAInt === jamBInt && menitAInt > menitBInt)) {
+    if (
+      jamAInt > jamBInt ||
+      jamAInt == jamBInt ||
+      (jamAInt === jamBInt && menitAInt > menitBInt)
+    ) {
       return true;
     } else {
       return false;
