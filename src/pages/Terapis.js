@@ -35,8 +35,10 @@ class Terapis extends React.Component {
       dataAbsen: [],
       isHadir: true,
       search: "",
+      lokasi: "GTS Tirtayasa",
       dataSemua: [],
     };
+    this.sectionRef = React.createRef();
   }
 
   componentDidMount = async () => {
@@ -55,8 +57,12 @@ class Terapis extends React.Component {
         dokterList.push({ id: doc.id, ...doc.data() });
       });
 
+      const objekLokasi = dokterList.filter(
+        (objek) => objek.lokasi == "GTS Tirtayasa"
+      );
+
       await new Promise((resolve) => {
-        this.setState({ dokters: dokterList, dataSemua: dokterList }, resolve);
+        this.setState({ dokters: objekLokasi, dataSemua: dokterList }, resolve);
       });
     } catch (error) {
       console.error("Error fetching dokter data:", error);
@@ -72,7 +78,7 @@ class Terapis extends React.Component {
 
   // Menjalankan pencarian
   handleSearch = (search) => {
-    const { dataHadir, dataAbsen, dataSemua } = this.state;
+    const { dataHadir, dataAbsen, dataSemua, dokters } = this.state;
     // Lakukan pencarian di sini
     console.log(dataAbsen);
     console.log(dataHadir);
@@ -93,7 +99,7 @@ class Terapis extends React.Component {
       this.setState({ hadir: results3 });
     }
 
-    const results = dataSemua.filter((item) =>
+    const results = dokters.filter((item) =>
       item.nama.toLowerCase().includes(search.toLowerCase())
     );
 
@@ -147,12 +153,12 @@ class Terapis extends React.Component {
     }
   };
   getAllHadir = async () => {
-    const filteredArray = this.state.kehadirans.filter(
-      (item) => item.is_hadir == true
+    const objekLokasi = this.state.kehadirans.filter(
+      (objek) => objek.lokasi == "GTS Tirtayasa"
     );
-    const filteredArray2 = this.state.kehadirans.filter(
-      (item) => item.is_hadir == false
-    );
+
+    const filteredArray = objekLokasi.filter((item) => item.is_hadir == true);
+    const filteredArray2 = objekLokasi.filter((item) => item.is_hadir == false);
     await new Promise((resolve) => {
       this.setState(
         {
@@ -238,10 +244,39 @@ class Terapis extends React.Component {
     }
   };
 
+  handleClick = () => {
+    // Pastikan sectionRef sudah terinisialisasi sebelum mencoba mengaksesnya
+    if (this.sectionRef.current) {
+      this.sectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   handleEdit = () => {
     console.log("Hello World");
   };
+  handleFilterLokasi = (selectedOption) => {
+    const objekLokasi = this.state.dataSemua.filter(
+      (objek) => objek.lokasi == selectedOption
+    );
 
+    const objekLokasi2 = this.state.kehadirans.filter(
+      (objek) => objek.lokasi === selectedOption
+    );
+
+    const filteredArray = objekLokasi2.filter((item) => item.is_hadir == true);
+    const filteredArray2 = objekLokasi2.filter(
+      (item) => item.is_hadir == false
+    );
+
+    this.setState({
+      hadir: filteredArray,
+      absen: filteredArray2,
+      dataHadir: filteredArray,
+      dataAbsen: filteredArray2,
+      dokters: objekLokasi,
+      lokasi: selectedOption,
+    });
+  };
   render() {
     return (
       <div
@@ -253,7 +288,33 @@ class Terapis extends React.Component {
           height: "100%",
           overflowX: "hidden",
         }}
+        ref={this.sectionRef}
       >
+        <button className="floating-btn" onClick={this.handleClick}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="none"
+              stroke="white"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              d="m17 14l-5-5m0 0l-5 5"
+            />
+          </svg>
+        </button>
+        <button
+          onClick={() => {
+            window.location.href = "/terapis/tambah-data/";
+          }}
+          className="justify-center p-2 w-full text-base text-center text-white bg-emerald-500 rounded-lg max-w-[320px] floating-btn-add shadow-lg"
+        >
+          Tambah Terapis
+        </button>
         <div className="flex flex-col gap-0 h-[100%] items-center font-medium pb-4 w-[100%]">
           <div className="flex flex-col items-center justify-start w-full h-[40%]  gap-5">
             <div className="flex gap-5 self-stretch p-4 w-full  text-center text-stone-900 ">
@@ -278,6 +339,49 @@ class Terapis extends React.Component {
                   className="flex-1 gap-0 my-auto h-8 border-none"
                   onChange={this.handleSearchChange}
                 />
+              </div>
+
+              <div className="flex justify-start gap-4  mt-3 w-full text-sm leading-4 capitalize  h-auto text-neutral-950">
+                <button
+                  className="w-[10rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white shadow-md rounded-md"
+                  style={{
+                    backgroundColor:
+                      this.state.lokasi == "GTS Kemiling" ? "#10B981" : "white",
+                    color:
+                      this.state.lokasi == "GTS Kemiling" ? "white" : "#10B981",
+                    border:
+                      this.state.lokasi == "GTS Kemiling"
+                        ? " "
+                        : "1px solid #10B981",
+                  }}
+                  onClick={() => {
+                    this.handleFilterLokasi("GTS Kemiling");
+                  }}
+                >
+                  GTS Kemiling
+                </button>
+                <button
+                  className="w-[10rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white shadow-md rounded-md"
+                  onClick={() => {
+                    this.handleFilterLokasi("GTS Tirtayasa");
+                  }}
+                  style={{
+                    backgroundColor:
+                      this.state.lokasi == "GTS Tirtayasa"
+                        ? "#10B981"
+                        : "white",
+                    color:
+                      this.state.lokasi == "GTS Tirtayasa"
+                        ? "white"
+                        : "#10B981",
+                    border:
+                      this.state.lokasi == "GTS Tirtayasa"
+                        ? ""
+                        : " 1px solid #10B981",
+                  }}
+                >
+                  GTS Tirtayasa
+                </button>
               </div>
             </div>
             <div className="w-[100%] h-auto pl-3 pr-3">
@@ -598,15 +702,6 @@ class Terapis extends React.Component {
               </>
             )}
           </div>
-
-          <button
-            onClick={() => {
-              window.location.href = "/terapis/tambah-data/";
-            }}
-            className="justify-center p-2 w-full text-base text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
-          >
-            Tambah
-          </button>
         </div>
       </div>
     );

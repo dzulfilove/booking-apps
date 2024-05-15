@@ -40,7 +40,7 @@ function App() {
 
           <BotBar />
         </div>
-        <div className="h-[97.5%] w-[100%] overflow-y-scroll m-0 pt-20 ">
+        <div className="h-[100%] w-[100%] overflow-y-scroll m-0 pt-20 ">
           <Routes>
             <Route path="/welcome" element={<Welcome />} />
             <Route path="/" element={<HomePage />} />

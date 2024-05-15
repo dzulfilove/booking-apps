@@ -32,7 +32,9 @@ class JanjiTemu extends React.Component {
       dataJanji: [],
       dataSelesai: [],
       dataSaatIni: [],
+      lokasi: "GTS Tirtayasa",
       loading: true,
+      dataJanjiLokasi: [],
     };
   }
   handleTab = (newValue) => {
@@ -155,6 +157,7 @@ class JanjiTemu extends React.Component {
           durasi: durasi,
           biaya: biaya,
           foto: fotoDokter,
+          lokasi: janjiData.lokasi,
         });
       }
 
@@ -180,10 +183,13 @@ class JanjiTemu extends React.Component {
         };
       });
       console.log("Trans", hasilTransformasi);
-      const objekSelesai = hasilTransformasi.filter(
+      const objekLokasi = hasilTransformasi.filter(
+        (objek) => objek.lokasi === "GTS Tirtayasa"
+      );
+      const objekSelesai = objekLokasi.filter(
         (objek) => objek.status === "selesai"
       );
-      const objekBerlangsung = hasilTransformasi.filter(
+      const objekBerlangsung = objekLokasi.filter(
         (objek) => objek.status === "berlangsung"
       );
       // Setelah semua data diproses, atur state janjis dan kembalikan processedJanjiList
@@ -191,6 +197,8 @@ class JanjiTemu extends React.Component {
         this.setState(
           {
             dataJanji: hasilTransformasi,
+            dataJanjiLokasi: objekLokasi,
+
             dataSaatIni: objekBerlangsung,
             dataSelesai: objekSelesai,
             loading: false,
@@ -282,6 +290,26 @@ class JanjiTemu extends React.Component {
   handleTab = (newValue) => {
     this.setState({ value: newValue });
   };
+
+  handleFilterLokasi = (selectedOption) => {
+    const objekLokasi = this.state.dataJanji.filter(
+      (objek) => objek.lokasi == selectedOption
+    );
+    const objekSelesai = objekLokasi.filter(
+      (objek) => objek.status === "selesai"
+    );
+    const objekBerlangsung = objekLokasi.filter(
+      (objek) => objek.status === "berlangsung"
+    );
+
+    this.setState({
+      dataJanjiLokasi: objekLokasi,
+      dataSaatIni: objekBerlangsung,
+      dataSelesai: objekSelesai,
+      loading: false,
+      lokasi: selectedOption,
+    });
+  };
   render() {
     return (
       <div
@@ -307,7 +335,46 @@ class JanjiTemu extends React.Component {
               Data Janji Temu Pasien
             </div>
           </div>
+
           <div className="w-full h-auto px-3">
+            <div className="flex justify-start gap-4  mt-3 w-full text-sm leading-4 capitalize  h-auto text-neutral-950 mb-4">
+              <button
+                className="w-[10rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white shadow-md rounded-md"
+                style={{
+                  backgroundColor:
+                    this.state.lokasi == "GTS Kemiling" ? "#10B981" : "white",
+                  color:
+                    this.state.lokasi == "GTS Kemiling" ? "white" : "#10B981",
+                  border:
+                    this.state.lokasi == "GTS Kemiling"
+                      ? " "
+                      : "1px solid #10B981",
+                }}
+                onClick={() => {
+                  this.handleFilterLokasi("GTS Kemiling");
+                }}
+              >
+                GTS Kemiling
+              </button>
+              <button
+                className="w-[10rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white shadow-md rounded-md"
+                onClick={() => {
+                  this.handleFilterLokasi("GTS Tirtayasa");
+                }}
+                style={{
+                  backgroundColor:
+                    this.state.lokasi == "GTS Tirtayasa" ? "#10B981" : "white",
+                  color:
+                    this.state.lokasi == "GTS Tirtayasa" ? "white" : "#10B981",
+                  border:
+                    this.state.lokasi == "GTS Tirtayasa"
+                      ? ""
+                      : " 1px solid #10B981",
+                }}
+              >
+                GTS Tirtayasa
+              </button>
+            </div>
             <Tabs
               id="controlled-tab-example"
               activeKey={this.state.value}

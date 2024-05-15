@@ -386,21 +386,29 @@ class HomePage extends Component {
     console.log(hasil);
   };
   generateWaktuRentang() {
-    const jam = parseInt(this.state.jam.split(":")[0]);
     const waktuRentang = [];
-    let startJam = 8;
-    let endJam = 20;
+    const startJam = 8;
+    const endJam = 20;
+    const intervalMenit = 5;
 
-    for (let jam = startJam; jam <= endJam; jam++) {
-      for (let menit = 0; menit < 60; menit += 5) {
-        const jamStr = String(jam).padStart(2, "0");
-        const menitStr = String(menit).padStart(2, "0");
-        waktuRentang.push(`${jamStr}:${menitStr}`);
-      }
+    const startDate = new Date();
+    startDate.setHours(startJam, 0, 0, 0);
+
+    const endDate = new Date();
+    endDate.setHours(endJam, 0, 0, 0);
+
+    let currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      const jamStr = String(currentDate.getHours()).padStart(2, "0");
+      const menitStr = String(currentDate.getMinutes()).padStart(2, "0");
+      waktuRentang.push(`${jamStr}:${menitStr}`);
+      currentDate.setMinutes(currentDate.getMinutes() + intervalMenit);
     }
 
     return waktuRentang;
   }
+
   cekJamLebihBesar(jamA, jamB) {
     // Memisahkan jam dan menit dari string jamA dan jamB
     let [jamAInt, menitAInt] = jamA.split(":").map(Number);
@@ -1272,7 +1280,7 @@ class HomePage extends Component {
               )}
               {this.state.value == "tab2" && (
                 <>
-                  <div className="flex flex-col w-full h-[auto] justify-start items-center p-3 gap-3 ">
+                  <div className="flex flex-col w-full h-[auto] justify-start items-center p-3 gap-3 pb-10 ">
                     {this.state.dataKosong.map((item) => (
                       <div
                         data-aos="fade-up"

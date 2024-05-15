@@ -36,10 +36,14 @@ class DashboardAdmin extends React.Component {
       bulan: "",
       totalBiaya: 0,
       jumlahBulan: 0,
-      durasi: "",
+      durasi: "0",
       loading: true,
+      lokasi: "GTS Tirtayasa",
       tanggalString: dayjs().locale("id").format("YYYY-MM-DD"),
+      dataJanjiLokasi: [],
+      dataJanjiLokasiBulan: [],
     };
+    this.sectionRef = React.createRef();
   }
 
   componentDidMount() {
@@ -132,24 +136,28 @@ class DashboardAdmin extends React.Component {
           biaya: biaya,
           foto: fotoDokter,
           bulan: janjiData.bulan,
+          lokasi: janjiData.lokasi,
         });
       }
+      const objekLokasi = processedJanjiList.filter(
+        (objek) => objek.lokasi === "GTS Tirtayasa"
+      );
 
       console.log("Trans", processedJanjiList);
-      const objekSelesai = processedJanjiList.filter(
+      const objekSelesai = objekLokasi.filter(
         (objek) => objek.status === "selesai"
       );
-      const objekBerlangsung = processedJanjiList.filter(
+      const objekBerlangsung = objekLokasi.filter(
         (objek) => objek.status === "berlangsung"
       );
-      const totalBiaya = processedJanjiList.reduce(
+      const totalBiaya = objekLokasi.reduce(
         (total, item) => total + item.biaya,
         0
       );
-      const jumlahAll = processedJanjiList.length;
+      const jumlahAll = objekLokasi.length;
       const jumlahSelesai = objekSelesai.length;
       const jumlahNow = objekBerlangsung.length;
-      console.log(processedJanjiList);
+      console.log(objekLokasi);
       console.log("jumlah", jumlahAll);
       // Setelah semua data diproses, atur state janjis dan kembalikan processedJanjiList
       await new Promise((resolve) => {
@@ -214,28 +222,27 @@ class DashboardAdmin extends React.Component {
           biaya: biaya,
           foto: fotoDokter,
           bulan: janjiData.bulan,
+          lokasi: janjiData.lokasi,
         });
       }
 
       console.log("Trans", processedJanjiList);
-      const objekSelesai = processedJanjiList.filter(
-        (objek) => objek.status === "selesai"
+      const objekLokasi = processedJanjiList.filter(
+        (objek) => objek.lokasi === "GTS Tirtayasa"
       );
-      const objekBerlangsung = processedJanjiList.filter(
-        (objek) => objek.status === "berlangsung"
-      );
-      const totalBiaya = processedJanjiList.reduce(
+
+      const totalBiaya = objekLokasi.reduce(
         (total, item) => total + item.biaya,
         0
       );
 
-      const totalDurasi = processedJanjiList.reduce(
+      const totalDurasi = objekLokasi.reduce(
         (total, item) => total + item.durasi,
         0
       );
       const durasi = this.formatDurasi(totalDurasi);
-      const jumlahAll = processedJanjiList.length;
-      console.log(processedJanjiList);
+      const jumlahAll = objekLokasi.length;
+      console.log(objekLokasi);
       console.log("jumlah bulan", jumlahAll);
       // Setelah semua data diproses, atur state janjis dan kembalikan processedJanjiList
       await new Promise((resolve) => {
@@ -245,6 +252,7 @@ class DashboardAdmin extends React.Component {
             totalBiaya: totalBiaya,
             durasi: durasi,
             loading: false,
+            dataJanjiLokasi: processedJanjiList,
           },
           resolve
         );
@@ -272,6 +280,49 @@ class DashboardAdmin extends React.Component {
       }
     }
   }
+
+  handleFilterLokasi = (selectedOption) => {
+    const objekLokasi = this.state.dataJanjiLokasi.filter(
+      (objek) => objek.lokasi == selectedOption
+    );
+
+    const totalBiaya = objekLokasi.reduce(
+      (total, item) => total + item.biaya,
+      0
+    );
+
+    const totalDurasi = objekLokasi.reduce(
+      (total, item) => total + item.durasi,
+      0
+    );
+    const durasi = this.formatDurasi(totalDurasi);
+    const jumlahAll = objekLokasi.length;
+
+    const objekLokasi2 = this.state.dataJanji.filter(
+      (objek) => objek.lokasi == selectedOption
+    );
+
+    console.log("Trans", this.state.dataJanji);
+    const objekSelesai = objekLokasi2.filter(
+      (objek) => objek.status === "selesai"
+    );
+    const objekBerlangsung = objekLokasi2.filter(
+      (objek) => objek.status === "berlangsung"
+    );
+
+    const jumlahAll2 = objekLokasi2.length;
+    const jumlahSelesai = objekSelesai.length;
+    const jumlahNow = objekBerlangsung.length;
+    this.setState({
+      jumlahBulan: jumlahAll,
+      totalBiaya: totalBiaya,
+      durasi: durasi,
+      jumlahNow: jumlahNow,
+      jumlahSelesai: jumlahSelesai,
+      jumlahSemua: jumlahAll2,
+      lokasi: selectedOption,
+    });
+  };
   render() {
     return (
       <div
@@ -284,20 +335,58 @@ class DashboardAdmin extends React.Component {
           overflowX: "hidden",
         }}
       >
-        <div className="flex flex-col gap-0 h-auto items-center pb-2 font-medium bg-slate-50 w-[100%] mt-16">
+        <div className="flex flex-col gap-0 h-auto items-center pb-2 font-medium bg-slate-50 w-[100%] mt-1">
           <div className="flex gap-2 self-stretch p-4 w-full justify-between rounded-md items-center flex-col text-center text-white bg-gradient-to-r from-emerald-500 to-emerald-800 h-[27%]">
+            <div className="flex justify-start gap-4  mt-3 w-full text-sm leading-4 capitalize  h-auto text-neutral-950 mb-3">
+              <button
+                className="w-[10rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white shadow-md rounded-md"
+                style={{
+                  backgroundColor:
+                    this.state.lokasi == "GTS Kemiling" ? "#10B981" : "white",
+                  color:
+                    this.state.lokasi == "GTS Kemiling" ? "white" : "#10B981",
+                  border:
+                    this.state.lokasi == "GTS Kemiling"
+                      ? " "
+                      : "1px solid #10B981",
+                }}
+                onClick={() => {
+                  this.handleFilterLokasi("GTS Kemiling");
+                }}
+              >
+                GTS Kemiling
+              </button>
+              <button
+                className="w-[10rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white shadow-md rounded-md"
+                onClick={() => {
+                  this.handleFilterLokasi("GTS Tirtayasa");
+                }}
+                style={{
+                  backgroundColor:
+                    this.state.lokasi == "GTS Tirtayasa" ? "#10B981" : "white",
+                  color:
+                    this.state.lokasi == "GTS Tirtayasa" ? "white" : "#10B981",
+                  border:
+                    this.state.lokasi == "GTS Tirtayasa"
+                      ? ""
+                      : " 1px solid #10B981",
+                }}
+              >
+                GTS Tirtayasa
+              </button>
+            </div>
             <div className="flex-auto gap-0 text-lg font-medium">
               Dashboard Admin
             </div>
             <div className="flex justify-between w-full items-end">
               Halo Super Admin !
-              <div className="flex  justify-between gap-2 p-2 items-center text-sm bg-white rounded-md  text-emerald-500">
+              <div className="flex  justify-between gap-2 p-2 items-center text-sm bg-white rounded-md  text-emerald-500 mt-3">
                 <img
                   loading="lazy"
                   src={userImage}
                   className="shrink-0 my-auto aspect-[0.85] fill-zinc-300 w-[18px]"
                 />
-                Admin
+                {this.state.lokasi}
               </div>
             </div>
           </div>
