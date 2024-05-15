@@ -69,6 +69,7 @@ class HomePage extends Component {
       dokterLokasi: [],
       jenisKelamin: "semua",
       guide: guide,
+      dataJanjiLokasi: [],
     };
     this.sectionRef = React.createRef();
   }
@@ -175,6 +176,7 @@ class HomePage extends Component {
           namaDokter: namaDokter,
           fotoDokter: fotoDokter,
           namaTindakan: namaTindakan,
+          lokasi: janjiData.lokasi,
         });
       }
 
@@ -203,15 +205,18 @@ class HomePage extends Component {
             objek.tanggal.substring(0, 4),
         };
       });
+      const objekLokasi = hasilTransformasi.filter(
+        (objek) => objek.lokasi === "GTS Tirtayasa"
+      );
       console.log("Trans", hasilTransformasi);
-      const objekSelesai = hasilTransformasi.filter(
+      const objekSelesai = objekLokasi.filter(
         (objek) => objek.status === "selesai"
       );
-      const objekBerlangsung = hasilTransformasi.filter(
+      const objekBerlangsung = objekLokasi.filter(
         (objek) => objek.status === "berlangsung"
       );
 
-      const hasilSortir = this.sortirBerdasarkanJamKeluar(hasilTransformasi);
+      const hasilSortir = this.sortirBerdasarkanJamKeluar(objekLokasi);
       this.cekJamKosong(hasilSortir);
 
       // console.log(rentangWaktu, "waktuuuuu");
@@ -219,6 +224,7 @@ class HomePage extends Component {
         this.setState(
           {
             dataJanji: processedJanjiList,
+            dataJanjiLokasi: objekLokasi,
             janjiSaatIni: objekBerlangsung,
             dataSelesai: objekSelesai,
           },
@@ -545,10 +551,28 @@ class HomePage extends Component {
     const selectedLokasi = this.state.dokterHadir.filter(
       (objek) => objek.lokasi === selectedOption
     );
+    const selectedLokasiJanji = this.state.dataJanji.filter(
+      (objek) => objek.lokasi === selectedOption
+    );
+
+    const objekSelesai = selectedLokasiJanji.filter(
+      (objek) => objek.status === "selesai"
+    );
+    const objekBerlangsung = selectedLokasiJanji.filter(
+      (objek) => objek.status === "berlangsung"
+    );
+
+    const hasilSortir = this.sortirBerdasarkanJamKeluar(selectedLokasiJanji);
+    this.cekJamKosong(hasilSortir);
+
+    // console.log(rentangWaktu, "waktuuuuu");
 
     this.setState({
       dokterLokasi: selectedLokasi,
       lokasi: selectedOption,
+      dataJanjiLokasi: selectedLokasiJanji,
+      janjiSaatIni: objekBerlangsung,
+      dataSelesai: objekSelesai,
     });
     this.handleFilter(this.state.jenisKelamin);
   };
