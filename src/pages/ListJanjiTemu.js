@@ -663,7 +663,7 @@ class JanjiTemu extends React.Component {
             onClick={() => {
               window.location.href = "/janji-temu/tambah-data";
             }}
-            className="justify-center p-2 w-full text-base text-center text-white bg-emerald-500 rounded-lg max-w-[320px]"
+            className="justify-center p-2 w-full text-base text-center text-white bg-emerald-500 rounded-lg max-w-[320px] floating-btn-add"
           >
             Tambah
           </button>
