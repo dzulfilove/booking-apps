@@ -202,13 +202,6 @@ class JanjiTemuBulan extends React.Component {
           overflowX: "hidden",
         }}
       >
-        {this.state.loading == true && (
-          <>
-            <div className="w-[100%] h-[100%] absolute z-[999999] bg-white">
-              <Loading />
-            </div>
-          </>
-        )}
         <div className="flex flex-col gap-0 h-[100%] items-center pb-2 font-medium bg-slate-50 w-[100%]">
           <div className="flex gap-5 self-stretch p-4 w-full  text-center text-stone-900">
             <div className="flex-auto gap-0 text-xl font-medium">

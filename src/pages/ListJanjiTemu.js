@@ -120,7 +120,7 @@ class JanjiTemu extends React.Component {
 
       const processedJanjiList = [];
       const tanggal = this.state.tanggalString;
-      const q = query(janjiCollection, where("tanggal", "==", tanggal));
+      const q = query(janjiCollection, where("tanggal", "==", "2024-05-15"));
 
       const querySnapshot = await getDocs(q);
 
@@ -394,7 +394,7 @@ class JanjiTemu extends React.Component {
           </div>
           {this.state.value == "tab1" && (
             <>
-              <div className="flex flex-col w-full h-[27rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
+              <div className="flex flex-col w-full h-[27rem] justify-start items-center p-3 gap-3 overflow-y-scroll pb-16">
                 {this.state.dataSaatIni.length > 0 ? (
                   <>
                     {this.state.dataSaatIni.map((item) => (
@@ -483,7 +483,7 @@ class JanjiTemu extends React.Component {
           )}
           {this.state.value == "tab2" && (
             <>
-              <div className="flex flex-col w-full h-[27rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
+              <div className="flex flex-col w-full h-[27rem] justify-start items-center p-3 gap-3 overflow-y-scroll pb-16">
                 {this.state.dataJanji.length > 0 ? (
                   <>
                     {this.state.dataJanji.map((item) => (
@@ -572,7 +572,7 @@ class JanjiTemu extends React.Component {
           )}
           {this.state.value == "tab3" && (
             <>
-              <div className="flex flex-col w-full h-[27rem] justify-start items-center p-3 gap-3 overflow-y-scroll">
+              <div className="flex flex-col w-full h-[27rem] justify-start items-center p-3 gap-3 overflow-y-scroll pb-16">
                 {this.state.dataSelesai.length > 0 ? (
                   <>
                     {this.state.dataSelesai.map((item) => (

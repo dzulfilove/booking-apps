@@ -98,7 +98,7 @@ class DashboardAdmin extends React.Component {
 
       const processedJanjiList = [];
       const tanggal = this.state.tanggalString;
-      const q = query(janjiCollection, where("tanggal", "==", tanggal));
+      const q = query(janjiCollection, where("tanggal", "==", "2024-05-15"));
 
       const querySnapshot = await getDocs(q);
 
@@ -192,14 +192,11 @@ class DashboardAdmin extends React.Component {
         const janjiData = doc.data();
 
         // Mendapatkan nama dokter dari referensi dokter_ref
-        const dokterDoc = await getDoc(janjiData.dokter_ref);
-        const namaDokter = dokterDoc.data().nama;
-        const fotoDokter = dokterDoc.data().foto;
 
         // Mendapatkan data tindakan dari referensi tindakan_ref
-        const tindakanDoc = await getDoc(janjiData.tindakan_ref);
-        const tindakanData = tindakanDoc.data();
-        const namaTindakan = tindakanData.nama_tindakan;
+        // const tindakanDoc = await getDoc(janjiData.tindakan_ref);
+        // const tindakanData = tindakanDoc.data();
+        // const namaTindakan = tindakanData.nama_tindakan;
 
         // Mendapatkan durasi dan biaya dari subkoleksi waktu_tindakan di dalam dokumen tindakan
         const waktuTindakanRef = janjiData.waktu_tindakan_ref;
@@ -211,22 +208,19 @@ class DashboardAdmin extends React.Component {
         // Menambahkan data janji temu ke dalam list processedJanjiList
         processedJanjiList.push({
           id: doc.id,
-          dokter: namaDokter,
           jam_mulai: janjiData.jam_mulai,
           jam_selesai: janjiData.jam_selesai,
           nama_pasien: janjiData.nama_pasien,
           status: janjiData.status,
           tanggal: janjiData.tanggal,
-          tindakan: namaTindakan,
           durasi: durasi,
           biaya: biaya,
-          foto: fotoDokter,
           bulan: janjiData.bulan,
           lokasi: janjiData.lokasi,
         });
       }
 
-      console.log("Trans", processedJanjiList);
+      console.log("Trans Bulan", processedJanjiList);
       const objekLokasi = processedJanjiList.filter(
         (objek) => objek.lokasi === "GTS Tirtayasa"
       );

@@ -403,7 +403,7 @@ class Terapis extends React.Component {
               </Tabs>
             </div>
           </div>
-          <div className="flex flex-col w-full px-5 h-[60%] justify-start items-center p-2 gap-3 overflow-y-scroll bg-slate-50">
+          <div className="flex flex-col w-full px-5 h-[60%] justify-start items-center p-2 gap-3 overflow-y-scroll bg-slate-50 pb-20">
             {this.state.value == "semua" && (
               <>
                 {/* Looping semua data terapis */}
