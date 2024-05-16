@@ -116,6 +116,23 @@ class HomePage extends Component {
     this.setState({ tanggalTampil: hasil });
   };
 
+  sortirBerdasarkanJamKeluarDesc(arrayObjek) {
+    // Menggunakan metode sort() untuk melakukan pengurutan
+    arrayObjek.sort((a, b) => {
+      // Memisahkan jam dan menit dari string jamKeluar pada setiap objek
+      let [jamAInt, menitAInt] = a.jam_selesai.split(":").map(Number);
+      let [jamBInt, menitBInt] = b.jam_selesai.split(":").map(Number);
+
+      // Membandingkan jam keluar dari dua objek
+      if (jamAInt !== jamBInt) {
+        return jamBInt - jamAInt;
+      } else {
+        return menitBInt - menitAInt;
+      }
+    });
+
+    return arrayObjek;
+  }
   sortirBerdasarkanJamKeluar(arrayObjek) {
     // Menggunakan metode sort() untuk melakukan pengurutan
     arrayObjek.sort((a, b) => {
@@ -216,6 +233,10 @@ class HomePage extends Component {
         (objek) => objek.status === "berlangsung"
       );
 
+      const selesaiSortir = this.sortirBerdasarkanJamKeluarDesc(objekSelesai);
+      const berlangsungSortir =
+        this.sortirBerdasarkanJamKeluarDesc(objekBerlangsung);
+
       const hasilSortir = this.sortirBerdasarkanJamKeluar(objekLokasi);
       this.cekJamKosong(hasilSortir);
 
@@ -225,8 +246,8 @@ class HomePage extends Component {
           {
             dataJanji: processedJanjiList,
             dataJanjiLokasi: objekLokasi,
-            janjiSaatIni: objekBerlangsung,
-            dataSelesai: objekSelesai,
+            janjiSaatIni: berlangsungSortir,
+            dataSelesai: selesaiSortir,
           },
           resolve
         );
@@ -600,6 +621,9 @@ class HomePage extends Component {
     const objekBerlangsung = selectedLokasiJanji.filter(
       (objek) => objek.status === "berlangsung"
     );
+    const selesaiSortir = this.sortirBerdasarkanJamKeluarDesc(objekSelesai);
+    const berlangsungSortir =
+      this.sortirBerdasarkanJamKeluarDesc(objekBerlangsung);
 
     const hasilSortir = this.sortirBerdasarkanJamKeluar(selectedLokasiJanji);
     this.cekJamKosong(hasilSortir);
@@ -610,8 +634,8 @@ class HomePage extends Component {
       dokterLokasi: selectedLokasi,
       lokasi: selectedOption,
       dataJanjiLokasi: selectedLokasiJanji,
-      janjiSaatIni: objekBerlangsung,
-      dataSelesai: objekSelesai,
+      janjiSaatIni: berlangsungSortir,
+      dataSelesai: selesaiSortir,
     });
     this.handleFilter(this.state.jenisKelamin);
   };
