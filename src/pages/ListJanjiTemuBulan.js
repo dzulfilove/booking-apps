@@ -30,10 +30,13 @@ class JanjiTemuBulan extends React.Component {
       tanggalString: dayjs().locale("id").format("YYYY-MM-DD"),
       value: "tab2",
       dataJanji: [],
+      dataJanjiLokasi: [],
       dataSelesai: [],
       dataSaatIni: [],
+      lokasi: "GTS Tirtayasa",
       bulan: "",
       loading: true,
+      bulanString: "",
     };
   }
   handleTab = (newValue) => {
@@ -79,12 +82,45 @@ class JanjiTemuBulan extends React.Component {
     return namaHari[hariInggris];
   };
 
-  getAllJanjiBulan = async (bulan) => {
+  handleDelete = async (id) => {
+    try {
+      const result = await Swal.fire({
+        icon: "info",
+        title: "Apakah Anda Yakin Untuk Menghapus ?",
+        showConfirmButton: true,
+        showDenyButton: true,
+        confirmButtonText: "Ya",
+        denyButtonText: "Tidak",
+        customClass: {
+          actions: "my-actions",
+          cancelButton: "order-1 right-gap",
+          confirmButton: "order-2",
+        },
+      });
+
+      if (result.isConfirmed) {
+        await deleteDoc(doc(db, "janji_temu", id));
+        this.getAllJanjiBulan();
+      } else if (result.isDenied) {
+        // Tidak melakukan apa pun jika pengguna menolak
+      }
+    } catch (error) {
+      console.error("Error menghapus data:", error);
+      Swal.fire("Error", "Gagal Memperbarui Data Detail Tindakan", "error");
+    }
+  };
+
+  getAllJanjiBulan = async (bln) => {
     try {
       const janjiCollection = collection(db, "janji_temu");
+      let bulan = "";
 
+      if (!bln) {
+        bulan = this.state.bulanString;
+      } else {
+        bulan = bln;
+      }
       const processedJanjiList = [];
-
       const q = query(janjiCollection, where("bulan", "==", bulan));
 
       const querySnapshot = await getDocs(q);
@@ -94,11 +130,20 @@ class JanjiTemuBulan extends React.Component {
 
         // Mendapatkan nama dokter dari referensi dokter_ref
         const dokterDoc = await getDoc(janjiData.dokter_ref);
+
+        if (dokterDoc.data() == undefined) {
+          console.log("Dokter tidak ditemukan");
+          console.log(janjiData);
+        }
         const namaDokter = dokterDoc.data().nama;
         const fotoDokter = dokterDoc.data().foto;
 
         // Mendapatkan data tindakan dari referensi tindakan_ref
         const tindakanDoc = await getDoc(janjiData.tindakan_ref);
+        if (tindakanDoc.data() == undefined) {
+          console.log("tindakan tidak ditemukan");
+          console.log(janjiData);
+        }
         const tindakanData = tindakanDoc.data();
         const namaTindakan = tindakanData.nama_tindakan;
 
@@ -123,6 +168,7 @@ class JanjiTemuBulan extends React.Component {
           biaya: biaya,
           foto: fotoDokter,
           bulan: janjiData.bulan,
+          lokasi: janjiData.lokasi,
         });
       }
       const hasilTransformasi = processedJanjiList.map((objek) => {
@@ -147,25 +193,31 @@ class JanjiTemuBulan extends React.Component {
         };
       });
       console.log("Trans", hasilTransformasi);
-      const objekSelesai = hasilTransformasi.filter(
+
+      const objekLokasi = hasilTransformasi.filter(
+        (objek) => objek.lokasi === "GTS Tirtayasa"
+      );
+      const objekSelesai = objekLokasi.filter(
         (objek) => objek.status === "selesai"
       );
-      const objekBerlangsung = hasilTransformasi.filter(
+      const objekBerlangsung = objekLokasi.filter(
         (objek) => objek.status === "berlangsung"
       );
-      const totalBiaya = hasilTransformasi.reduce(
+
+      const totalBiaya = objekLokasi.reduce(
         (total, item) => total + item.biaya,
         0
       );
 
-      const jumlahAll = processedJanjiList.length;
-      console.log(processedJanjiList);
-      console.log("jumlah bulan", jumlahAll);
+      const jumlahAll = objekLokasi.length;
+      console.log(objekLokasi, "lokasi");
+      console.log("jumlah bulan", hasilTransformasi);
       // Setelah semua data diproses, atur state janjis dan kembalikan processedJanjiList
       await new Promise((resolve) => {
         this.setState(
           {
             dataJanji: hasilTransformasi,
+            dataJanjiLokasi: objekLokasi,
             dataSaatIni: objekBerlangsung,
             dataSelesai: objekSelesai,
             jumlahBulan: jumlahAll,
@@ -187,9 +239,27 @@ class JanjiTemuBulan extends React.Component {
     const hasil = bulan + " " + tanggal.substring(0, 4);
     console.log("tanggal", hasil);
     this.getAllJanjiBulan(bulan);
-    this.setState({ bulan: hasil });
+    this.setState({ bulan: hasil, bulanString: bulan });
   };
+  handleFilterLokasi = (selectedOption) => {
+    const objekLokasi = this.state.dataJanji.filter(
+      (objek) => objek.lokasi == selectedOption
+    );
+    const objekSelesai = objekLokasi.filter(
+      (objek) => objek.status === "selesai"
+    );
+    const objekBerlangsung = objekLokasi.filter(
+      (objek) => objek.status === "berlangsung"
+    );
 
+    this.setState({
+      dataJanjiLokasi: objekLokasi,
+      dataSaatIni: objekBerlangsung,
+      dataSelesai: objekSelesai,
+      loading: false,
+      lokasi: selectedOption,
+    });
+  };
   render() {
     return (
       <div
@@ -209,6 +279,44 @@ class JanjiTemuBulan extends React.Component {
             </div>
           </div>
           <div className="w-full h-auto px-3">
+            <div className="flex justify-start gap-4  mt-3 w-full text-sm leading-4 capitalize  h-auto text-neutral-950 mb-4">
+              <button
+                className="w-[10rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white shadow-md rounded-md"
+                style={{
+                  backgroundColor:
+                    this.state.lokasi == "GTS Kemiling" ? "#10B981" : "white",
+                  color:
+                    this.state.lokasi == "GTS Kemiling" ? "white" : "#10B981",
+                  border:
+                    this.state.lokasi == "GTS Kemiling"
+                      ? " "
+                      : "1px solid #10B981",
+                }}
+                onClick={() => {
+                  this.handleFilterLokasi("GTS Kemiling");
+                }}
+              >
+                GTS Kemiling
+              </button>
+              <button
+                className="w-[10rem] h-auto p-2 flex justify-center items-center text-emerald-500 bg-white shadow-md rounded-md"
+                onClick={() => {
+                  this.handleFilterLokasi("GTS Tirtayasa");
+                }}
+                style={{
+                  backgroundColor:
+                    this.state.lokasi == "GTS Tirtayasa" ? "#10B981" : "white",
+                  color:
+                    this.state.lokasi == "GTS Tirtayasa" ? "white" : "#10B981",
+                  border:
+                    this.state.lokasi == "GTS Tirtayasa"
+                      ? ""
+                      : " 1px solid #10B981",
+                }}
+              >
+                GTS Tirtayasa
+              </button>
+            </div>
             <Tabs
               id="controlled-tab-example"
               activeKey={this.state.value}
@@ -242,8 +350,8 @@ class JanjiTemuBulan extends React.Component {
                                 className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
                               />
                               <div className="flex flex-col flex-1">
-                                <div className="flex gap-2 text-center text-emerald-500 whitespace-nowrap">
-                                  <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
+                                <div className="flex gap-2 text-center text-emerald-500 ">
+                                  <div className="flex flex-wrap justify-center w-[10.5rem] px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
                                     {item.tindakan}
                                   </div>
                                 </div>
@@ -278,8 +386,8 @@ class JanjiTemuBulan extends React.Component {
                               </div>
                               {item.status == "berlangsung" ? (
                                 <>
-                                  <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-sm font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
-                                    <div className="shrink-0 my-auto w-2 h-2 bg-emerald-500 rounded-full" />
+                                  <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-sm font-medium text-center text-yellow-500 whitespace-nowrap rounded-2xl bg-yellow-500 bg-opacity-10">
+                                    <div className="shrink-0 my-auto w-2 h-2 bg-yellow-500 rounded-full" />
                                     <div>Berlangsung</div>
                                   </div>
                                 </>
@@ -319,9 +427,9 @@ class JanjiTemuBulan extends React.Component {
             {this.state.value == "tab2" && (
               <>
                 <div className="flex flex-col w-full h-[100%] justify-start items-center p-3 gap-3 overflow-y-scroll">
-                  {this.state.dataJanji.length > 0 ? (
+                  {this.state.dataJanjiLokasi.length > 0 ? (
                     <>
-                      {this.state.dataJanji.map((item) => (
+                      {this.state.dataJanjiLokasi.map((item) => (
                         <>
                           <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
                             <div className="flex gap-2.5 justify-center text-sm font-medium">
@@ -331,8 +439,8 @@ class JanjiTemuBulan extends React.Component {
                                 className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
                               />
                               <div className="flex flex-col flex-1">
-                                <div className="flex gap-2 text-center text-emerald-500 whitespace-nowrap">
-                                  <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
+                                <div className="flex gap-2 text-center text-emerald-500 ">
+                                  <div className="flex flex-wrap justify-center w-[10.5rem] px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
                                     {item.tindakan}
                                   </div>
                                 </div>
@@ -367,8 +475,8 @@ class JanjiTemuBulan extends React.Component {
                               </div>
                               {item.status == "berlangsung" ? (
                                 <>
-                                  <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-sm font-medium text-center text-emerald-500 whitespace-nowrap rounded-2xl bg-emerald-500 bg-opacity-10">
-                                    <div className="shrink-0 my-auto w-2 h-2 bg-emerald-500 rounded-full" />
+                                  <div className="flex gap-2.5 justify-center self-end px-2 py-1 mt-6 text-sm font-medium text-center text-yellow-500 whitespace-nowrap rounded-2xl bg-yellow-500 bg-opacity-10">
+                                    <div className="shrink-0 my-auto w-2 h-2 bg-yellow-500 rounded-full" />
                                     <div>Berlangsung</div>
                                   </div>
                                 </>
@@ -420,8 +528,8 @@ class JanjiTemuBulan extends React.Component {
                                 className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
                               />
                               <div className="flex flex-col flex-1">
-                                <div className="flex gap-2 text-center text-emerald-500 whitespace-nowrap">
-                                  <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
+                                <div className="flex gap-2 text-center text-emerald-500 ">
+                                  <div className="flex flex-wrap justify-center w-[10.5rem] px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
                                     {item.tindakan}
                                   </div>
                                 </div>

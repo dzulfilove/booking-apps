@@ -407,8 +407,8 @@ class JanjiTemu extends React.Component {
                               className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
                             />
                             <div className="flex flex-col flex-1">
-                              <div className="flex gap-2 text-center text-emerald-500 whitespace-nowrap">
-                                <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
+                              <div className="flex gap-2 text-center text-emerald-500 ">
+                                <div className="flex flex-wrap justify-center w-[10.5rem] px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
                                   {item.tindakan}
                                 </div>
                               </div>
@@ -484,9 +484,9 @@ class JanjiTemu extends React.Component {
           {this.state.value == "tab2" && (
             <>
               <div className="flex flex-col w-full h-[27rem] justify-start items-center p-3 gap-3 overflow-y-scroll pb-16">
-                {this.state.dataJanji.length > 0 ? (
+                {this.state.dataJanjiLokasi.length > 0 ? (
                   <>
-                    {this.state.dataJanji.map((item) => (
+                    {this.state.dataJanjiLokasi.map((item) => (
                       <>
                         <div className="flex flex-col justify-center p-4 bg-white rounded-xl shadow-md w-full">
                           <div className="flex gap-2.5 justify-center text-sm font-medium">
@@ -496,8 +496,8 @@ class JanjiTemu extends React.Component {
                               className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
                             />
                             <div className="flex flex-col flex-1">
-                              <div className="flex gap-2 text-center text-emerald-500 whitespace-nowrap">
-                                <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
+                              <div className="flex gap-2 text-center text-emerald-500 ">
+                                <div className="flex flex-wrap justify-center w-[10.5rem] px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
                                   {item.tindakan}
                                 </div>
                               </div>
@@ -585,8 +585,8 @@ class JanjiTemu extends React.Component {
                               className="shrink-0 aspect-[0.78] w-[100px] h-[70px] object-cover bg-cover rounded-md "
                             />
                             <div className="flex flex-col flex-1">
-                              <div className="flex gap-2 text-center text-emerald-500 whitespace-nowrap">
-                                <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
+                              <div className="flex gap-2 text-center text-emerald-500 ">
+                                <div className="flex flex-wrap justify-center w-[10.5rem]px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
                                   {item.tindakan}
                                 </div>
                               </div>

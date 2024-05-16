@@ -1245,8 +1245,8 @@ class HomePage extends Component {
                                 className="shrink-0 aspect-[0.78] w-[100px] h-full object-cover bg-cover rounded-md"
                               />
                               <div className="flex flex-col flex-1">
-                                <div className="flex gap-2 text-center text-emerald-600 whitespace-nowrap">
-                                  <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
+                                <div className="flex gap-2 text-center text-emerald-600 ">
+                                  <div className="flex flex-wrap justify-center w-[10.5rem] px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
                                     {dokter.namaTindakan}
                                   </div>
                                 </div>
@@ -1367,8 +1367,8 @@ class HomePage extends Component {
                               className="shrink-0 aspect-[0.78] w-[100px] h-full object-cover bg-cover rounded-md"
                             />
                             <div className="flex flex-col flex-1">
-                              <div className="flex gap-2 text-center text-emerald-600 whitespace-nowrap">
-                                <div className="justify-center px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
+                              <div className="flex gap-2 text-center text-emerald-600 ">
+                                <div className="flex flex-wrap justify-center w-[10.5rem] px-2 py-1 rounded-lg border border-emerald-500 border-solid px-16">
                                   {dokter.namaTindakan}
                                 </div>
                               </div>
