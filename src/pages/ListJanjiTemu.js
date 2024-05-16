@@ -120,7 +120,7 @@ class JanjiTemu extends React.Component {
 
       const processedJanjiList = [];
       const tanggal = this.state.tanggalString;
-      const q = query(janjiCollection, where("tanggal", "==", "2024-05-15"));
+      const q = query(janjiCollection, where("tanggal", "==", tanggal));
 
       const querySnapshot = await getDocs(q);
 
