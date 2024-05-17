@@ -112,7 +112,7 @@ class InputTerapis extends React.Component {
       this.state.lokasi == null
     ) {
       Swal.fire({
-        icon: "success",
+        icon: "error",
         title: "Gagal",
         text: "Lengkapi Semua Data",
         timer: 3000,

@@ -341,97 +341,139 @@ class InputJanjiTemu extends React.Component {
     }
   };
 
+  isStateEmpty = () => {
+    const {
+      dokterRef,
+      tindakanRef,
+      lama,
+      jam_mulai,
+      nama,
+      status,
+      tanggalString,
+      biaya,
+      bulan,
+      lokasi,
+    } = this.state;
+
+    // Cek apakah salah satu nilai state kosong
+    if (
+      !dokterRef ||
+      !tindakanRef ||
+      !lama ||
+      !jam_mulai ||
+      !nama ||
+      !status ||
+      !tanggalString ||
+      !biaya ||
+      !bulan ||
+      !lokasi
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   handleAdd = async () => {
     this.setState({ isProses: true });
 
-    try {
-      const {
-        dokterRef,
-        tindakanRef,
-        lama,
-        jam_mulai,
-        nama,
-        status,
-        tanggalString,
-        biaya,
-        bulan,
-        lokasi,
-      } = this.state;
-
-      // Membuat objek referensi Firestore untuk dokterRef, tindakanRef, dan waktuTindakanRef
-      const dokterDocRef = doc(db, "dokters", dokterRef.value);
-      const tindakanDocRef = doc(db, "tindakans", tindakanRef.value);
-      const waktuTindakanDocRef = doc(
-        db,
-        "tindakans",
-        tindakanRef.value,
-        "waktu_tindakan",
-        lama.value
+    const cekKosong = this.isStateEmpty();
+    if (cekKosong == true) {
+      Swal.fire(
+        "Error",
+        "Gagal menambah data janji temu, Harap Lengkapi Data",
+        "error"
       );
-      const dokterDoc = await getDoc(dokterDocRef);
-      const dokterData = await dokterDoc.data();
+    } else {
       try {
-        const waktuTindakanDocSnap = await getDoc(waktuTindakanDocRef);
-        if (waktuTindakanDocSnap.exists()) {
-          const waktuTindakanData = waktuTindakanDocSnap.data();
-          var durasi = waktuTindakanData.durasi;
+        const {
+          dokterRef,
+          tindakanRef,
+          lama,
+          jam_mulai,
+          nama,
+          status,
+          tanggalString,
+          biaya,
+          bulan,
+          lokasi,
+        } = this.state;
+
+        // Membuat objek referensi Firestore untuk dokterRef, tindakanRef, dan waktuTindakanRef
+        const dokterDocRef = doc(db, "dokters", dokterRef.value);
+        const tindakanDocRef = doc(db, "tindakans", tindakanRef.value);
+        const waktuTindakanDocRef = doc(
+          db,
+          "tindakans",
+          tindakanRef.value,
+          "waktu_tindakan",
+          lama.value
+        );
+        const dokterDoc = await getDoc(dokterDocRef);
+        const dokterData = await dokterDoc.data();
+        try {
+          const waktuTindakanDocSnap = await getDoc(waktuTindakanDocRef);
+          if (waktuTindakanDocSnap.exists()) {
+            const waktuTindakanData = waktuTindakanDocSnap.data();
+            var durasi = waktuTindakanData.durasi;
+          }
+        } catch (error) {
+          console.error("Error fetching waktu_tindakan document:", error);
         }
+
+        const jamAwal = this.bulatkanWaktu(jam_mulai);
+        const jamAkhir = this.bulatkanWaktu(this.state.jam_selesai);
+        const bulanString = this.formatBulan(bulan);
+        // Membuat objek data baru untuk ditambahkan ke koleksi "janji_temu"
+        const newData = {
+          dokter_ref: dokterDocRef,
+          tindakan_ref: tindakanDocRef,
+          waktu_tindakan_ref: waktuTindakanDocRef,
+          jam_mulai: jamAwal,
+          jam_selesai: jamAkhir,
+          nama_pasien: nama,
+          status: status.value,
+          tanggal: tanggalString,
+          bulan: bulanString,
+          biaya: biaya,
+          lokasi: lokasi.value,
+        };
+
+        // Menambahkan data baru ke koleksi "janji_temu"
+        await addDoc(collection(db, "janji_temu"), newData);
+
+        // Memberikan notifikasi bahwa data berhasil ditambahkan
+        Swal.fire({
+          title: "Berhasil",
+          text: "Data janji temu berhasil ditambah",
+          type: "warning",
+          confirmButtonColor: "#10B981",
+          confirmButtonText: "Oke",
+          closeOnConfirm: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/janji-temu";
+          }
+        });
+        // Mendapatkan dokumen dokter berdasarkan referensi
+
+        // Reset nilai state setelah data berhasil ditambahkan
+        this.setState({
+          dokterRef: null,
+          tindakanRef: null,
+          lama: null,
+          jamMulai: "",
+          jam_selesai: "",
+          nama: "",
+          status: "",
+        });
+
+        // Mengambil ulang data janji temu untuk mengupdate tampilan
       } catch (error) {
-        console.error("Error fetching waktu_tindakan document:", error);
+        // Menampilkan pesan error jika terjadi kesalahan
+        console.error("Error menambah data janji temu:", error);
+        Swal.fire("Error", "Gagal menambah data janji temu", "error");
       }
-
-      const jamAwal = this.bulatkanWaktu(jam_mulai);
-      const jamAkhir = this.bulatkanWaktu(this.state.jam_selesai);
-      const bulanString = this.formatBulan(bulan);
-      // Membuat objek data baru untuk ditambahkan ke koleksi "janji_temu"
-      const newData = {
-        dokter_ref: dokterDocRef,
-        tindakan_ref: tindakanDocRef,
-        waktu_tindakan_ref: waktuTindakanDocRef,
-        jam_mulai: jamAwal,
-        jam_selesai: jamAkhir,
-        nama_pasien: nama,
-        status: status.value,
-        tanggal: tanggalString,
-        bulan: bulanString,
-        biaya: biaya,
-        lokasi: lokasi.value,
-      };
-
-      // Menambahkan data baru ke koleksi "janji_temu"
-      await addDoc(collection(db, "janji_temu"), newData);
-
-      // Memberikan notifikasi bahwa data berhasil ditambahkan
-      Swal.fire({
-        title: "Berhasil",
-        text: "Data janji temu berhasil ditambah",
-        type: "warning",
-        confirmButtonColor: "#10B981",
-        confirmButtonText: "Oke",
-        closeOnConfirm: false,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = "/janji-temu";
-        }
-      });
-      // Mendapatkan dokumen dokter berdasarkan referensi
-
-      // Reset nilai state setelah data berhasil ditambahkan
-      this.setState({
-        dokterRef: null,
-        tindakanRef: null,
-        lama: null,
-        jamMulai: "",
-        jam_selesai: "",
-        nama: "",
-        status: "",
-      });
-
-      // Mengambil ulang data janji temu untuk mengupdate tampilan
-    } catch (error) {
-      // Menampilkan pesan error jika terjadi kesalahan
-      console.error("Error menambah data janji temu:", error);
-      Swal.fire("Error", "Gagal menambah data janji temu", "error");
     }
   };
 
