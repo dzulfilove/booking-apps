@@ -170,6 +170,7 @@ class HomePage extends Component {
         let fotoDokter = null;
 
         if (dokterDoc.data() == undefined) {
+          console.log(dokterDoc, "dokkterrr");
           namaDokter = "Nama Dokter";
           fotoDokter =
             "https://w7.pngwing.com/pngs/48/259/png-transparent-profile-man-male-photo-face-portrait-illustration-vector-people-blue-thumbnail.png";
@@ -183,7 +184,8 @@ class HomePage extends Component {
 
         let tindakanData = null;
         let namaTindakan = null;
-        if (tindakanDoc == undefined) {
+        if (tindakanDoc.data() == undefined) {
+          console.log(tindakanDoc, "timdakaanan");
           tindakanData = "Tindakan";
           namaTindakan = "Nama Tindakan";
         } else {
