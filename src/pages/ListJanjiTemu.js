@@ -126,16 +126,33 @@ class JanjiTemu extends React.Component {
 
       for (const doc of querySnapshot.docs) {
         const janjiData = doc.data();
+        let namaDokter = null;
+        let fotoDokter = null;
 
         // Mendapatkan nama dokter dari referensi dokter_ref
         const dokterDoc = await getDoc(janjiData.dokter_ref);
-        const namaDokter = dokterDoc.data().nama;
-        const fotoDokter = dokterDoc.data().foto;
-
+        if (dokterDoc.data() == undefined) {
+          console.log(dokterDoc, "dokkterrr");
+          namaDokter = "Nama Dokter";
+          fotoDokter =
+            "https://w7.pngwing.com/pngs/48/259/png-transparent-profile-man-male-photo-face-portrait-illustration-vector-people-blue-thumbnail.png";
+        } else {
+          namaDokter = dokterDoc.data().nama;
+          fotoDokter = dokterDoc.data().foto;
+        }
         // Mendapatkan data tindakan dari referensi tindakan_ref
         const tindakanDoc = await getDoc(janjiData.tindakan_ref);
-        const tindakanData = tindakanDoc.data();
-        const namaTindakan = tindakanData.nama_tindakan;
+
+        let tindakanData = null;
+        let namaTindakan = null;
+        if (tindakanDoc.data() == undefined) {
+          console.log(tindakanDoc, "timdakaanan");
+          tindakanData = "Tindakan";
+          namaTindakan = "Nama Tindakan";
+        } else {
+          tindakanData = tindakanDoc.data();
+          namaTindakan = tindakanData.nama_tindakan;
+        }
 
         // Mendapatkan durasi dan biaya dari subkoleksi waktu_tindakan di dalam dokumen tindakan
         const waktuTindakanRef = janjiData.waktu_tindakan_ref;
