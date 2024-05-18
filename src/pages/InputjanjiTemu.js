@@ -22,6 +22,8 @@ import {
   addDoc,
   deleteDoc,
   updateDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 
@@ -52,10 +54,13 @@ class InputJanjiTemu extends React.Component {
       bulan: dayjs().locale("id").format("MMMM"),
       lokasi: null,
       setLokasi: false,
+      dokterHadir: [],
+      dokterLokasi: [],
     };
   }
   componentDidMount() {
     this.getAllTindakan();
+    this.getAllKehadiran();
     this.getAllDokter();
   }
 
@@ -66,6 +71,68 @@ class InputJanjiTemu extends React.Component {
     this.setState({ [name]: value }, () => {
       // Callback to ensure state is updated before calling getRegistrasi
     });
+  };
+  getAllKehadiran = async () => {
+    try {
+      const currentDate = new Date();
+
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+      const day = String(currentDate.getDate()).padStart(2, "0"); //
+      const formattedDate = `${year}-${month}-${day}`;
+
+      const kehadiranCollection = collection(db, "kehadirans");
+      const querySnapshot = await getDocs(
+        query(kehadiranCollection, where("tanggal", "==", formattedDate))
+      );
+
+      const kehadiranList = [];
+      for (const doc of querySnapshot.docs) {
+        const kehadiranData = doc.data();
+
+        // Mendapatkan nama dokter dari referensi dokter_ref
+        const dokterDoc = await getDoc(kehadiranData.dokter_ref);
+        const foto = dokterDoc.data().foto;
+        const namaDokter = dokterDoc.data().nama;
+        const jenisKelamin = dokterDoc.data().jenis_kelamin;
+        const pengalaman = dokterDoc.data().pengalaman;
+        const umur = dokterDoc.data().umur;
+
+        kehadiranList.push({
+          id: doc.id,
+          foto: foto,
+          idDokter: kehadiranData.dokter_ref,
+          nama: namaDokter,
+          jenis_kelamin: jenisKelamin,
+          pengalaman: pengalaman,
+          umur: umur,
+          is_hadir: kehadiranData.is_hadir,
+          lokasi: dokterDoc.data().lokasi,
+          pasien: dokterDoc.data().jml_pasien,
+        });
+      }
+      const filteredArray = kehadiranList.filter(
+        (item) => item.is_hadir == true
+      );
+      const selectedLokasi = filteredArray.filter(
+        (objek) => objek.lokasi === "GTS Tirtayasa"
+      );
+      console.log(selectedLokasi, "LOkasi");
+      await new Promise((resolve) => {
+        this.setState(
+          {
+            dokterHadir: filteredArray,
+            dokterLokasi: selectedLokasi,
+            lokasi: "GTS Tirtayasa",
+            loading: false,
+          },
+          resolve
+        );
+      });
+    } catch (error) {
+      console.error("Error fetching kehadiran:", error);
+      throw error;
+    }
   };
   getAllDokter = async () => {
     try {
@@ -216,7 +283,9 @@ class InputJanjiTemu extends React.Component {
   };
   handleDropdown = (name, selectedOption) => {
     if (name == "dokter") {
+      console.log(selectedOption, "jhshsh");
       this.setState({ dokterRef: selectedOption });
+      console.log(selectedOption);
     } else if (name == "tindakan") {
       this.setState({ tindakanRef: selectedOption });
       console.log("id", selectedOption.value);
@@ -254,19 +323,35 @@ class InputJanjiTemu extends React.Component {
     } else if (name == "lokasi") {
       this.setState({ lokasi: selectedOption });
       console.log("id", selectedOption.value);
-      const selectedLokasi = this.state.dataTerapis.filter(
+      const selectedLokasi = this.state.dokterHadir.filter(
         (objek) => objek.lokasi === selectedOption.value
       );
+      const hasil = selectedLokasi.map((hadir) => {
+        const dokter = this.state.dataTerapis.find(
+          (dok) => dok.nama === hadir.nama
+        );
+        return {
+          value: dokter.id,
+          label: dokter.nama,
+        };
+      });
+      console.log(this.state.dataTerapis);
       const data = [];
       let newData = [...data];
       // Menambahkan objek baru ke dalam array newData
-      newData.push(selectedLokasi);
-      const panjang = selectedLokasi.length;
-
+      newData.push(hasil);
+      const panjang = hasil.length;
+      console.log(hasil, "terapisss");
       if (panjang > 0) {
-        console.log("find", selectedLokasi);
+        console.log("find", hasil);
 
-        this.setState({ dataDokter: selectedLokasi, setLokasi: true });
+        this.setState({ dataDokter: hasil, setLokasi: true });
+      } else {
+        Swal.fire(
+          "Gagal",
+          "Harap Input Kehadiran Terapis Terlebih Dahulu",
+          "error"
+        );
       }
     } else if (name == "lama") {
       const tindakan = this.state.dataTindakan.find(
@@ -459,7 +544,7 @@ class InputJanjiTemu extends React.Component {
 
         // Reset nilai state setelah data berhasil ditambahkan
         this.setState({
-          dokterRef: null,
+          dokterRef: "",
           tindakanRef: null,
           lama: null,
           jamMulai: "",
@@ -484,8 +569,8 @@ class InputJanjiTemu extends React.Component {
   };
   render() {
     const optionsTerapis = this.state.dataDokter.map((data) => ({
-      value: data.id,
-      label: data.nama,
+      value: data.value,
+      label: data.label,
     }));
     const optionsLokasi = [
       { value: "GTS Tirtayasa", label: "GTS Tirta" },

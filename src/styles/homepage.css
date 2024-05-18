@@ -110,7 +110,7 @@
   background-color: #10b981;
   font-weight: 500;
   color: white;
-  display: flex;
+  display: flex; 
   justify-content: space-between;
   align-items: center;
 }
