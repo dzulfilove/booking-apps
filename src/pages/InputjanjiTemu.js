@@ -352,6 +352,7 @@ class InputJanjiTemu extends React.Component {
           "Harap Input Kehadiran Terapis Terlebih Dahulu",
           "error"
         );
+        this.setState({ setLokasi: false });
       }
     } else if (name == "lama") {
       const tindakan = this.state.dataTindakan.find(
